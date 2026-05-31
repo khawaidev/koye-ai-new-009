@@ -28,7 +28,6 @@ interface FileMention {
 
 const MANUAL_MODELS = [
 
-  { id: "gemini-3-flash-live", name: "Gemini 3 Flash Live", icon: "/images/aimodels/GEMINI-ICON.png" },
   { id: "gemini-3.1-flash-lite", name: "Gemini 3.1 Flash Lite", icon: "/images/aimodels/GEMINI-ICON.png" },
   { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash", icon: "/images/aimodels/GEMINI-ICON.png" },
   { id: "claude-opus-4-7-thinking", name: "Claude Opus 4.7 Thinking", icon: "/images/aimodels/CLAUDE-ICON.png" },

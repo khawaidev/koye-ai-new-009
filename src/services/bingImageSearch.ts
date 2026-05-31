@@ -113,38 +113,26 @@ async function fetchBingImages(query: string, size?: string): Promise<BingImageR
 // ─── Composite search (merges multiple source-targeted queries) ──────────────
 
 /**
- * Performs a Bing Image Search using composite queries aimed at game-art sources.
- * Runs up to 3 searches in parallel, merges, deduplicates, and shuffles results.
+ * Performs a Bing Image Search using the provided query directly.
+ * Does not add site indexes. Deduplicates and returns up to 35 results.
  */
 export async function searchBingImages(userQuery: string): Promise<BingImageResult[]> {
   const trimmed = userQuery.trim()
   if (!trimmed) return []
 
-  // Build the three source-targeted queries
-  const queries = [
-    `site:pinterest.com game ${trimmed} clean background`,
-    `site:artstation.com game ${trimmed} concept art`,
-    `site:sketchfab.com ${trimmed}`,
-  ]
+  console.log(`[BingImageSearch] Launching search for: "${trimmed}"`)
 
-  console.log(`[BingImageSearch] Launching composite search for: "${trimmed}"`)
-
-  // Run all three in parallel — allow individual ones to fail gracefully
-  const results = await Promise.all(
-    queries.map(q =>
-      fetchBingImages(q, "large").catch(err => {
-        console.warn(`[BingImageSearch] Sub-query failed: "${q}"`, err)
-        return [] as BingImageResult[]
-      })
-    )
-  )
-
-  // Merge all results
-  const merged = results.flat()
+  let results: BingImageResult[] = []
+  try {
+    results = await fetchBingImages(trimmed, "large")
+  } catch (err) {
+    console.warn(`[BingImageSearch] Query failed: "${trimmed}"`, err)
+    return []
+  }
 
   // Deduplicate by original URL
   const seen = new Set<string>()
-  const unique = merged.filter(img => {
+  const unique = results.filter(img => {
     const key = img.originalUrl || img.thumbnailUrl
     if (seen.has(key)) return false
     seen.add(key)

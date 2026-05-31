@@ -77,10 +77,9 @@ const ORCHESTRATOR_MODELS = [
 ] as const
 
 const GENERAL_CHATTING_MODELS = [
-  "gemini-3-flash-live",
   "gemini-3.1-flash-lite",
-  "gemini-3.5-flash",
   "gemini-3-flash",
+  "gemini-3.5-flash",
   "gemini-2.5-flash",
 ] as const
 
@@ -112,31 +111,31 @@ export function getModelInfo(intent: OrchestratorIntent, isHeavy: boolean = fals
       }
       return {
          intent,
-         modelName: "gpt-5.3-codex",
-         displayName: "GPT 5.3 Codex",
-         preferredModelId: "gpt-5.3-codex"
+         modelName: "claude-sonnet-4-5-20250929",
+         displayName: "Claude Sonnet 4.5",
+         preferredModelId: "claude-sonnet-4-5-20250929"
       }
     case "game_coding":
       if (isHeavy) {
         return {
           intent,
-          modelName: "gpt-5.3-codex",
-          displayName: "GPT 5.3 Codex",
-          preferredModelId: "gpt-5.3-codex",
+          modelName: "claude-sonnet-4-5-20250929",
+          displayName: "Claude Sonnet 4.5",
+          preferredModelId: "claude-sonnet-4-5-20250929",
         }
       }
       return {
         intent,
-        modelName: "gemini-3-flash-live",
-        displayName: "Gemini 3 Flash Live",
-        preferredModelId: "gemini-3-flash-live",
+        modelName: "gemini-3.1-flash-lite",
+        displayName: "Gemini 3.1 Flash Lite",
+        preferredModelId: "gemini-3.1-flash-lite",
       }
     case "general_chatting":
     default:
       return {
         intent: "general_chatting",
-        modelName: "gemini-3-flash-live",
-        displayName: "Gemini 3 Flash Live",
+        modelName: "gemini-3.1-flash-lite",
+        displayName: "Gemini 3.1 Flash Lite",
         preferredModelId: GENERAL_CHATTING_MODELS[0],
         allowedModelIds: [...GENERAL_CHATTING_MODELS],
       }
@@ -221,7 +220,6 @@ export async function* routeMessageStream(
       "claude-opus-4-7-thinking",
       "claude-sonnet-4.5",
       "claude-sonnet-4-5-20250929",
-      "gpt-5.3-codex",
     ].includes(selectedModelId)
     
     onModelSwitch?.({
@@ -230,7 +228,7 @@ export async function* routeMessageStream(
       displayName: selectedModelId,
       preferredModelId: selectedModelId,
       allowedModelIds: [selectedModelId],
-      thinkingLevel: (selectedModelId === "gemini-3-flash-live" || selectedModelId === "gemini-3.1-flash-lite" || selectedModelId === "gemini-3.5-flash") ? "medium" : undefined
+      thinkingLevel: (selectedModelId === "gemini-3.1-flash-lite" || selectedModelId === "gemini-3.5-flash") ? "medium" : undefined
     })
 
     if (isGeminiSDKModel) {
@@ -278,9 +276,11 @@ export async function* routeMessageStream(
   // Mode overrides
   if (selectedMode === "auto" && intent === "general_chatting") {
     intent = "orchestrator"
-  } else if (selectedMode === "paralium" && intent === "general_chatting") {
-    // Paralium chat uses general chatting but with premium focus if heavy
-    if (isHeavy) intent = "initial_prototype"
+  } else if (selectedMode === "paralium") {
+    // Paralium chat uses general chatting for the Idea Intake phase.
+    // Downstream heavy tasks are triggered automatically via marker [PARALIUM_IDEA_COMPLETE]
+    // so we lock the intent to general chatting for standard interactions.
+    intent = "general_chatting"
   } else if (selectedMode === "fast") {
      // Fast mode tries to keep everything in fast Gemini fallback chain
      if (intent === "initial_prototype" || intent === "playable_game_active" || intent === "orchestrator") {
@@ -299,9 +299,9 @@ export async function* routeMessageStream(
         yield chunk
       }
     } catch (e) {
-      console.warn("[Orchestrator] LaysoAI opus failed, trying gpt-5.3-codex fallback", e)
-      onModelSwitch?.({ ...modelInfo, modelName: "gpt-5.3-codex", displayName: "GPT 5.3 Codex (LaysoAI)" })
-      for await (const chunk of sendMessageToLaysoAIStream("gpt-5.3-codex", msgs)) {
+      console.warn("[Orchestrator] LaysoAI opus failed, trying claude-sonnet-4-5-20250929 fallback", e)
+      onModelSwitch?.({ ...modelInfo, modelName: "claude-sonnet-4-5-20250929", displayName: "Claude Sonnet 4.5" })
+      for await (const chunk of sendMessageToLaysoAIStream("claude-sonnet-4-5-20250929", msgs)) {
         yield chunk
       }
     }
@@ -313,7 +313,7 @@ export async function* routeMessageStream(
     onModelSwitch?.(modelInfo)
     const msgs = convertToStandardMessages(geminiMessages) as LaysoAIMessage[]
     try {
-       const targetModel = modelInfo.preferredModelId || "gpt-5.3-codex"
+       const targetModel = modelInfo.preferredModelId || "claude-sonnet-4-5-20250929"
        for await (const chunk of sendMessageToLaysoAIStream(targetModel, msgs)) {
          yield chunk
        }
@@ -328,10 +328,10 @@ export async function* routeMessageStream(
   // ─── GAME CODING ──────────────────────────────────────────────────────────────
   if (intent === "game_coding") {
     if (isHeavy) {
-      onModelSwitch?.({ ...modelInfo, modelName: "gpt-5.3-codex", displayName: "GPT 5.3 Codex (Heavy)", allowedModelIds: ["gpt-5.3-codex"] })
+      onModelSwitch?.({ ...modelInfo, modelName: "claude-sonnet-4-5-20250929", displayName: "Claude Sonnet 4.5 (Heavy)", allowedModelIds: ["claude-sonnet-4-5-20250929"] })
       const msgs = convertToStandardMessages(geminiMessages) as LaysoAIMessage[]
       try {
-        for await (const chunk of sendMessageToLaysoAIStream("gpt-5.3-codex", msgs)) {
+        for await (const chunk of sendMessageToLaysoAIStream("claude-sonnet-4-5-20250929", msgs)) {
           yield chunk
         }
       } catch (e) {

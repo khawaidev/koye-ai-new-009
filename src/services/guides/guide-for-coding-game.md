@@ -1,4 +1,4 @@
-# Guide for Game Code Generation (GPT-5.3-Codex)
+# Guide for Game Code Generation (Claude Sonnet 4.5)
 
 You are an **expert game developer** specializing in **Babylon.js 3D action games**. You will receive a complete game development plan (plan.md) and must generate all the code files to build the first playable prototype.
 

@@ -84,6 +84,7 @@ interface AppState {
   // Actions
   setStage: (stage: string) => void
   setCurrentProject: (project: Project | null) => void
+  updateCurrentProject: (updates: Partial<Project>) => void
   setCurrentAsset: (asset: Asset | null) => void
   setCurrentUserId: (userId: string | null) => void
   resetStore: (userId: string | null) => void
@@ -328,6 +329,25 @@ export const useAppStore = create<AppState>((set, get) => {
         })
       } else {
         set({ currentProject: project })
+      }
+      
+      // Save project connection to localStorage for persistence across reloads
+      const sessionId = get().currentSessionId
+      if (sessionId && project) {
+        localStorage.setItem(`project_${sessionId}`, JSON.stringify(project))
+      }
+    },
+    updateCurrentProject: (updates) => {
+      const current = get().currentProject
+      if (current) {
+        const updated = { ...current, ...updates }
+        set({ currentProject: updated })
+        
+        // Persist to localStorage
+        const sessionId = get().currentSessionId
+        if (sessionId) {
+          localStorage.setItem(`project_${sessionId}`, JSON.stringify(updated))
+        }
       }
     },
     setCurrentAsset: (asset) => set({ currentAsset: asset }),

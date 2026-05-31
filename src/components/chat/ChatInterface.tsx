@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { Folder, Link2, X } from "lucide-react"
+import { Folder, Link2, X, Sparkles } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import appIcon from "../../assets/icon2.png"
 import { useAuth } from "../../hooks/useAuth"
@@ -35,7 +35,7 @@ import { ChatInput } from "./ChatInput"
 import { MessageBubble } from "./MessageBubble"
 import { ResponseMessage } from "./ResponseMessage"
 import { VoiceChatLayout } from "./VoiceChatLayout"
-import { useParaliumStore } from "../../store/useParaliumStore"
+import { useParaliumStore, SCREEN_CATEGORIES } from "../../store/useParaliumStore"
 import { ParaliumImageSelector } from "./ParaliumImageSelector"
 import { ParaliumStatusCard } from "./ParaliumStatusCard"
 
@@ -672,10 +672,12 @@ export function ChatInterface() {
 
         // Build project history from previous chat sessions
         const projectHistory = buildProjectHistoryPrompt(currentProject.id)
+        const screenStatus = currentProject.initialGameScreenSelected ? "TRUE" : "FALSE"
 
         // Add project context to inform AI about file operation capabilities
         projectContext = `\n\n[PROJECT CONTEXT]
 Connected Project: "${currentProject.name}" (ID: ${currentProject.id})
+Initial Game Screens Selected: ${screenStatus} (If FALSE, remind the user to click the 'Search Reference Game Screens' button in the UI to select their game UI references)
 
 ${projectHistory}IMPORTANT: You have FULL PERMISSION to create, edit, and delete files in this project.
 When the user asks you to add code, modify files, or create new files - DO IT automatically using the tool call markers below.
@@ -1080,18 +1082,39 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
             const assistantMessage: Message = {
               id: assistantMessageId,
               role: "assistant",
-              content: finalContent.replace(/\[PARALIUM_IDEA_COMPLETE\][\s\S]*/, "").trim() || finalContent,
+              content: finalContent.replace(/\[PARALIUM_IDEA_COMPLETE\][\s\S]*/, "").replace(/\[PARALIUM_IMAGE_SEARCH:[^\]]*\]/g, "").trim() || finalContent,
               timestamp: new Date(),
             }
             addStreamingMessage(assistantMessage)
 
             // --- PARALIUM COMPLETE CHECK ---
             if (selectedModelMode === "paralium") {
-              const { checkIdeaComplete, startParaliumPipeline } = await import("../../services/paraliumService")
-              const ideaData = checkIdeaComplete(accumulatedText)
-              if (ideaData) {
-                // start pipeline async!
-                startParaliumPipeline(ideaData).catch(console.error)
+              const { useParaliumStore } = await import("../../store/useParaliumStore")
+              const store = useParaliumStore.getState()
+              
+              if (store.phase === "idle") {
+                const { checkIdeaComplete, startParaliumPipeline } = await import("../../services/paraliumService")
+                const ideaData = checkIdeaComplete(accumulatedText)
+                if (ideaData) {
+                  // start pipeline async!
+                  startParaliumPipeline(ideaData).catch(console.error)
+                } else {
+                  // Check for explicit AI image search trigger
+                  const imageSearchMatch = accumulatedText.match(/\[PARALIUM_IMAGE_SEARCH:\s*(.+?)\]/)
+                  if (imageSearchMatch) {
+                    const rawGames = imageSearchMatch[1]
+                    const regex = /\*(.*?)\*/g
+                    const searchGames = Array.from(rawGames.matchAll(regex)).map(m => m[1].trim())
+                    if (searchGames.length > 0) {
+                      store.clearAllImageState()
+                      store.setReferenceGames(searchGames)
+                      store.setPhase("selecting_images", "Waiting for you to select screen ideas...")
+                      store.setCurrentSearchGameIndex(0)
+                      const { searchGameScreensForGame } = await import("../../services/paraliumService")
+                      searchGameScreensForGame(searchGames[0]).catch(console.error)
+                    }
+                  }
+                }
               }
             }
 
@@ -2123,7 +2146,7 @@ Now complete the request. REQUIREMENTS:
             resumeParaliumPipelineAfterSelection()
           }}
           onAbort={() => {
-            // Already handled by component
+            paraliumStore.setPhase("idle", "Image selection closed.")
           }}
         />
       )}
@@ -2330,6 +2353,60 @@ Now complete the request. REQUIREMENTS:
 
                 {/* Input Container - at bottom when messages exist */}
                 <div className="shrink-0 bg-background dark:bg-transparent px-6 md:px-0 py-5 w-full max-w-[760px] mx-auto">
+                  {/* Manual Search Trigger */}
+                  {selectedModelMode === "paralium" && paraliumStore.phase !== "selecting_images" && currentProject?.initialGameScreenSelected !== true && (
+                     <div className="mb-4 flex flex-wrap gap-4 justify-center animate-in slide-in-from-bottom-2">
+                       {(getGeneratedFiles()["reference games.md"] || getGeneratedFiles()["reference-games.md"]) && (
+                         <Button 
+                           onClick={async () => {
+                             const fileContent = getGeneratedFiles()["reference games.md"] || getGeneratedFiles()["reference-games.md"];
+                             if (!fileContent) return;
+                             
+                             const regex = /\*(.*?)\*/g;
+                             const matches = Array.from(fileContent.matchAll(regex)).map(m => m[1].trim());
+                             
+                             if (matches.length > 0) {
+                               const { searchGameScreensForGame } = await import("../../services/paraliumService");
+                               paraliumStore.clearAllImageState();
+                               paraliumStore.setReferenceGames(matches);
+                               paraliumStore.setPhase("selecting_images", "Waiting for you to select screen ideas...");
+                               paraliumStore.setCurrentSearchGameIndex(0);
+                               searchGameScreensForGame(matches[0]).catch(console.error);
+                             }
+                           }} 
+                           className="bg-white text-black hover:bg-zinc-200 gap-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                         >
+                           <Sparkles className="w-4 h-4" />
+                           Search Reference Game Screens
+                         </Button>
+                       )}
+                       
+                       {SCREEN_CATEGORIES.some(cat => (paraliumStore.searchedImages[cat]?.length || 0) > 0) && (
+                         <div className="relative group inline-block">
+                           <Button 
+                             onClick={() => {
+                               paraliumStore.setPhase("selecting_images", "Waiting for you to select screen ideas...");
+                             }} 
+                             variant="outline"
+                             className="text-white border-white/20 hover:bg-white/10 gap-2 pr-10"
+                           >
+                             <Folder className="w-4 h-4" />
+                             Open Screen Selection
+                           </Button>
+                           <button
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               paraliumStore.clearAllImageState();
+                             }}
+                             className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full opacity-0 group-hover:opacity-100 hover:bg-white/20 text-zinc-400 hover:text-white transition-opacity"
+                             title="Clear saved results"
+                           >
+                             <X className="w-3.5 h-3.5" />
+                           </button>
+                         </div>
+                       )}
+                     </div>
+                  )}
                   {/* Agent Tool Approval Banners (above input) */}
                   {pendingAgentToolCalls.length > 0 && (
                     <div className="space-y-2 pb-3">

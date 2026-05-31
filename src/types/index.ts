@@ -13,6 +13,7 @@ export interface Project {
   name: string
   description: string
   createdAt: string
+  initialGameScreenSelected?: boolean
   // GitHub sync fields
   githubRepoId?: string
   githubRepoName?: string

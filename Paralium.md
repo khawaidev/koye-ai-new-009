@@ -4,12 +4,15 @@
 
 from gemini api key
 
- - gemini-3.1-flash-lite
+- gemini-3.1-flash-lite
 
  - gemini-3-flash
 
  - gemini-3.5-flash
- - these above models are for chatting with users, keeping other advnaced models running in loosps, reporting errors to coding models, until the first playable game is ready
+- these above models are for chatting with users, keeping other advnaced models running in loosps, reporting errors to coding models, until the first playable game is ready
+- routing order for paralium chat and reference-game lookup should stay on the gemini api key chain only:
+  gemini-3.1-flash-lite -> gemini-3-flash -> gemini-3.5-flash
+- gemini-3-flash and gemini-3.5-flash should only be used if gemini-3.1-flash-lite is rate limited for the current minute or day
 
 from laysoai api key:
 

@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import type { BingImageResult } from "../services/bingImageSearch"
 
 // All 12 mandatory screen categories for 3D action games
@@ -53,7 +54,8 @@ export interface ParaliumState {
   currentSearchGameIndex: number // 0, 1, or 2 — which game is being searched
 
   // Phase 3: Image search results
-  searchedImages: Record<string, BingImageResult[]> // category → 3 images
+  searchedImages: Record<string, BingImageResult[]> // category → 5 images (current page)
+  imagePageIndices: Record<string, number> // category → current page index
 
   // Phase 4: User selection
   selectedImages: Record<string, BingImageResult> // category → chosen image
@@ -76,7 +78,9 @@ export interface ParaliumState {
   setReferenceGames: (games: string[]) => void
   setCurrentSearchGameIndex: (index: number) => void
   setSearchedImages: (category: string, images: BingImageResult[]) => void
+  setImagePageIndex: (category: string, index: number) => void
   clearSearchedImages: () => void
+  clearAllImageState: () => void
   selectImage: (category: string, image: BingImageResult) => void
   deselectImage: (category: string) => void
   setImageDescription: (category: string, description: string) => void
@@ -102,6 +106,7 @@ const initialState = {
   referenceGames: [],
   currentSearchGameIndex: 0,
   searchedImages: {} as Record<string, BingImageResult[]>,
+  imagePageIndices: {} as Record<string, number>,
   selectedImages: {} as Record<string, BingImageResult>,
   imageDescriptions: {} as Record<string, string>,
   gamePlanMarkdown: "",
@@ -109,7 +114,9 @@ const initialState = {
   currentTaskIndex: 0,
 }
 
-export const useParaliumStore = create<ParaliumState>((set, get) => ({
+export const useParaliumStore = create<ParaliumState>()(
+  persist(
+    (set, get) => ({
   ...initialState,
 
   setPhase: (phase, message) =>
@@ -132,7 +139,14 @@ export const useParaliumStore = create<ParaliumState>((set, get) => ({
       searchedImages: { ...s.searchedImages, [category]: images },
     })),
 
-  clearSearchedImages: () => set({ searchedImages: {} }),
+  setImagePageIndex: (category, index) =>
+    set((s) => ({
+      imagePageIndices: { ...s.imagePageIndices, [category]: index },
+    })),
+
+  clearSearchedImages: () => set({ searchedImages: {}, imagePageIndices: {} }),
+
+  clearAllImageState: () => set({ searchedImages: {}, imagePageIndices: {}, selectedImages: {} }),
 
   selectImage: (category, image) =>
     set((s) => ({
@@ -180,4 +194,9 @@ export const useParaliumStore = create<ParaliumState>((set, get) => ({
   getSelectedCount: () => Object.keys(get().selectedImages).length,
 
   resetParalium: () => set({ ...initialState }),
-}))
+    }),
+    {
+      name: "paralium-storage",
+    }
+  )
+)

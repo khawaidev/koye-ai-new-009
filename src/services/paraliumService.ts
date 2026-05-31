@@ -2,12 +2,13 @@
  * Paralium Service — End-to-end agentic game building pipeline
  *
  * Orchestrates: Gemini Flash (chat) → Bing Image Search → SkillBoss GPT-5.1 (vision)
- *             → LaysoAI Opus 4.7 Thinking (plan) → LaysoAI GPT-5.3-Codex (code)
+ *             → LaysoAI Opus 4.7 Thinking (plan) → Claude Sonnet 4.5 (code)
  */
 
 import { searchBingImages, downloadImageAsBlob, type BingImageResult } from "./bingImageSearch"
 import { sendVisionToSkillBoss } from "./skillbossapi"
 import { sendMessageToLaysoAIStream, type LaysoAIMessage } from "./laysoai"
+import { sendMessageToGeminiStream } from "./gemini"
 import { useParaliumStore, SCREEN_CATEGORIES, type ScreenCategory, type CodingTask } from "../store/useParaliumStore"
 import { uuidv4 } from "../lib/uuid"
 
@@ -15,41 +16,25 @@ import { uuidv4 } from "../lib/uuid"
 import guideImageScreens from "./guides/guide-for-game-image-screens.md?raw"
 import guideGamePlan from "./guides/guide-for-generating-game-plan.md?raw"
 import guideCodingGame from "./guides/guide-for-coding-game.md?raw"
+import guideParaliumOrchestrator from "./guides/guide-for-paralium-orchestrator.md?raw"
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const PARALIUM_SYSTEM_PROMPT = `You are KOYE AI's Paralium Mode — a premium end-to-end agentic game building assistant for 3D action games built with Babylon.js.
-
-Your current phase is IDEA INTAKE. Your job is to understand the user's game idea deeply by asking structured questions in batches.
-
-RULES:
-1. Ask 3-5 focused questions per batch. Don't overwhelm the user.
-2. Questions should cover: core gameplay, setting/theme, art style, characters, enemies, levels, progression, unique mechanics.
-3. After each batch of answers, decide if you have ENOUGH information to build a first prototype.
-4. When you have enough info (typically after 2-4 batches), output the marker [PARALIUM_IDEA_COMPLETE] followed by a structured summary of the collected information.
-5. The summary after [PARALIUM_IDEA_COMPLETE] must be a well-organized markdown section covering:
-   - Game title / working name
-   - Genre (3D action, hack-and-slash, shooter, platformer, etc.)
-   - Setting and theme
-   - Player character description
-   - Core gameplay mechanics
-   - Enemy types
-   - Level/environment description
-   - Win/lose conditions
-   - Art style direction
-   - Special features or unique mechanics
-6. Be encouraging and enthusiastic. This is a premium feature.
-7. Do NOT ask about 2D games. This is exclusively for 3D action games using Babylon.js.
-8. Keep responses concise but thorough.
-
-Start by welcoming the user to Paralium mode and asking the first batch of questions about their 3D action game idea.`
+const PARALIUM_SYSTEM_PROMPT = guideParaliumOrchestrator
+const PARALIUM_GEMINI_FALLBACK_CHAIN = [
+  "gemini-3.1-flash-lite",
+  "gemini-3-flash",
+  "gemini-3.5-flash",
+] as const
 
 const FIND_GAMES_PROMPT = `Based on the following game idea, identify exactly 3 famous, well-known video games that are in the same category/genre/type. These should be popular games that people would recognize and whose screenshots are widely available online.
+
+IMPORTANT: If the game idea already mentions a specific famous game (e.g. "like Mobile Legends", "inspired by Genshin Impact"), you MUST include that game as the FIRST entry in your list, then find 2 more similar games.
 
 Game idea:
 {IDEA_DATA}
 
-Respond with ONLY a JSON array of 3 game names, nothing else. Example: ["Call of Duty", "Halo", "Destiny"]`
+Respond with ONLY a JSON array of 3 game names, nothing else. Example: ["Mobile Legends", "League of Legends", "Arena of Valor"]`
 
 // ─── Phase 1: Idea Intake (Gemini Flash chat — handled by ChatInterface stream) ─
 
@@ -116,9 +101,18 @@ export function parseGameNames(response: string): string[] {
 // ─── Phase 3: Parallel Image Search ─────────────────────────────────────────
 
 /**
+ * Cache key for storing all fetched images per category in sessionStorage.
+ */
+const CACHE_KEY_PREFIX = "paralium_img_cache_"
+
+function getCacheKey(category: string): string {
+  return `${CACHE_KEY_PREFIX}${category.replace(/\s+/g, "_")}`
+}
+
+/**
  * Search for game screen images for a single game across all 12 categories.
- * Runs all 12 searches in parallel.
- * Returns results map: { category: BingImageResult[] }
+ * Fetches 20 images per category, caches all in sessionStorage,
+ * and shows the first 5 in the store.
  */
 export async function searchGameScreensForGame(
   gameName: string,
@@ -126,21 +120,64 @@ export async function searchGameScreensForGame(
 ): Promise<Record<string, BingImageResult[]>> {
   const store = useParaliumStore.getState()
 
-  console.log(`[Paralium] Searching game screens for: "${gameName}"`)
+  console.log(`[Paralium] Searching game screens for: "${gameName}" (fetching 20 per category, caching)`)
 
   const searchPromises = SCREEN_CATEGORIES.map(async (category) => {
-    const query = `${gameName} ${category}`
     try {
-      const results = await searchBingImages(query)
-      // Take top 3 results
-      const top3 = results.slice(0, 3)
-      store.setSearchedImages(category, top3)
-      onProgress?.(category, top3.length)
-      console.log(`[Paralium] Found ${top3.length} images for "${query}"`)
-      return { category, images: top3 }
+      const getCategoryQuery = (cat: string) => {
+        // Appending "game UI" ensures Pinterest returns actual game interfaces
+        switch (cat) {
+          case "splash screen": return "game UI splash screen";
+          case "loading screen": return "game UI loading screen";
+          case "main menu screen": return "game UI main menu";
+          case "lobby screen": return "game UI lobby";
+          case "character selection screen": return "game UI character selection";
+          case "gameplay HUD": return "game UI gameplay HUD";
+          case "battle UI": return "game UI battle combat";
+          case "pause menu": return "game UI pause menu";
+          case "victory screen": return "game UI victory win screen";
+          case "defeat screen": return "game UI defeat game over screen";
+          case "reward screen": return "game UI reward loot screen";
+          case "settings screen": return "game UI settings options menu";
+          default: return `game UI ${cat}`;
+        }
+      }
+
+      const query = getCategoryQuery(category);
+      // Exactly ONE API call per category
+      const results = await searchBingImages(`${gameName} ${query}`).catch(() => [] as BingImageResult[]);
+      
+      // Deduplicate and collect up to 20 images
+      const seenUrls = new Set<string>();
+      const allResults: BingImageResult[] = [];
+      
+      for (const img of results) {
+        const url = img.originalUrl || img.thumbnailUrl;
+        if (!seenUrls.has(url)) {
+          seenUrls.add(url);
+          allResults.push(img);
+          if (allResults.length >= 20) break;
+        }
+      }
+
+      // Cache all 20 in sessionStorage
+      try {
+        sessionStorage.setItem(getCacheKey(category), JSON.stringify(allResults))
+      } catch (e) {
+        console.warn(`[Paralium] Failed to cache images for "${category}"`, e)
+      }
+
+      // Show first 5 in the store
+      const firstPage = allResults.slice(0, 5)
+      store.setSearchedImages(category, firstPage)
+      store.setImagePageIndex(category, 0)
+      onProgress?.(category, firstPage.length)
+      console.log(`[Paralium] Cached ${allResults.length} images for "${category}", showing first ${firstPage.length}`)
+      return { category, images: firstPage }
     } catch (error) {
-      console.warn(`[Paralium] Search failed for "${query}":`, error)
+      console.warn(`[Paralium] Search failed for "${category}":`, error)
       store.setSearchedImages(category, [])
+      store.setImagePageIndex(category, 0)
       onProgress?.(category, 0)
       return { category, images: [] }
     }
@@ -154,6 +191,79 @@ export async function searchGameScreensForGame(
   }
 
   return resultMap
+}
+
+/**
+ * Load the next page of 5 images from sessionStorage cache for all categories.
+ * Returns true if there were more images to show, false if we've exhausted the cache.
+ */
+export function loadNextPageFromCache(): boolean {
+  const store = useParaliumStore.getState()
+  let hasMore = false
+
+  for (const category of SCREEN_CATEGORIES) {
+    const currentPageIndex = store.imagePageIndices[category] ?? 0
+    const nextPage = currentPageIndex + 1
+    const start = nextPage * 5
+    const end = start + 5
+
+    try {
+      const cached = sessionStorage.getItem(getCacheKey(category))
+      if (!cached) continue
+
+      const allImages: BingImageResult[] = JSON.parse(cached)
+      
+      if (start < allImages.length) {
+        const pageImages = allImages.slice(start, end)
+        store.setSearchedImages(category, pageImages)
+        store.setImagePageIndex(category, nextPage)
+        hasMore = true
+        console.log(`[Paralium] Showing page ${nextPage + 1} for "${category}" (${pageImages.length} images)`)
+      } else {
+        // No more images for this category, keep showing the last page
+        console.log(`[Paralium] No more cached images for "${category}" (total: ${allImages.length})`)
+      }
+    } catch (e) {
+      console.warn(`[Paralium] Failed to load cache for "${category}"`, e)
+    }
+  }
+
+  return hasMore
+}
+
+/**
+ * Load the previous page of 5 images from sessionStorage cache for all categories.
+ * Returns true if we went back a page, false if we were already at page 0.
+ */
+export function loadPreviousPageFromCache(): boolean {
+  const store = useParaliumStore.getState()
+  let hasLess = false
+
+  for (const category of SCREEN_CATEGORIES) {
+    const currentPageIndex = store.imagePageIndices[category] ?? 0
+    if (currentPageIndex === 0) continue
+
+    const prevPage = currentPageIndex - 1
+    const start = prevPage * 5
+    const end = start + 5
+
+    try {
+      const cached = sessionStorage.getItem(getCacheKey(category))
+      if (!cached) continue
+
+      const allImages: BingImageResult[] = JSON.parse(cached)
+      
+      const pageImages = allImages.slice(start, end)
+      store.setSearchedImages(category, pageImages)
+      store.setImagePageIndex(category, prevPage)
+      hasLess = true
+      console.log(`[Paralium] Showing previous page ${prevPage + 1} for "${category}" (${pageImages.length} images)`)
+    } catch (e) {
+      console.warn(`[Paralium] Failed to load cache for "${category}"`, e)
+    }
+  }
+
+  return hasLess
 }
 
 // ─── Phase 5: Image Analysis via SkillBoss GPT-5.1 ─────────────────────────
@@ -286,7 +396,7 @@ export async function generateAndDispatchAssetPrompts(gamePlan: string): Promise
   console.log("TODO: Implement generateAndDispatchAssetPrompts");
 }
 
-// ─── Phase 7: Code Generation Loop via GPT-5.3-Codex ───────────────────────
+// ─── Phase 7: Code Generation Loop via Claude Sonnet 4.5 ───────────────────────
 
 /**
  * Parse the task list from the coding model's first response.
@@ -471,18 +581,30 @@ export async function startParaliumPipeline(ideaData: string) {
   
   store.setIdeaData(ideaData)
   
+  // Auto-save idea data to the user's project files
   try {
-    // Phase 2: Find games
+    const { useAppStore } = await import("../store/useAppStore")
+    useAppStore.getState().addGeneratedFile("game-idea.md", ideaData)
+  } catch (e) {
+    console.warn("[Paralium] Could not save idea to project files", e)
+  }
+  
+  try {
+    // Phase 2: Find reference games
     store.setPhase("finding_games", "Identifying reference games...")
     
-    // Use the existing LaysoAI for a quick fast-path or just use the stream manually
+    // Open the image selection UI immediately so user sees the loading spinner
+    store.setPhase("selecting_images", "Finding reference games and searching screens...")
+    
     const findPrompt = buildFindGamesPrompt(ideaData)
     let findResponse = ""
-    for await (const chunk of sendMessageToLaysoAIStream(
-      "gemini-3.5-flash",
-      [{ role: "user", content: findPrompt }],
-      0.2,
-      500
+    
+    for await (const chunk of sendMessageToGeminiStream(
+      [{ role: "user", parts: [{ text: findPrompt }] }],
+      {
+        preferredModelId: "gemini-3.1-flash-lite",
+        allowedModelIds: ["gemini-3.1-flash-lite", "gemini-3.5-flash", "gemini-3-flash"]
+      }
     )) {
       findResponse += chunk
     }
@@ -494,14 +616,22 @@ export async function startParaliumPipeline(ideaData: string) {
     store.setReferenceGames(games)
     console.log("[Paralium] Reference games:", games)
     
-    // Phase 3: Image Search
-    store.setPhase("searching_images", `Searching UI screens for ${games[0]}...`)
+    // Auto-save reference games to the user's project
+    try {
+      const { useAppStore } = await import("../store/useAppStore")
+      const referenceContent = `# Reference Games\n\nThe following games were identified as references for your game idea:\n\n${games.map(g => `- *${g}*`).join("\n")}\n`
+      useAppStore.getState().addGeneratedFile("reference games.md", referenceContent)
+    } catch (e) {
+      console.warn("[Paralium] Could not save reference games to project files", e)
+    }
+    
+    // Phase 3: Image Search (1 API call per category = 12 total)
+    store.clearAllImageState() // Completely wipe old cache and selections for a fresh start
     store.setCurrentSearchGameIndex(0)
+    store.setPhaseMessage("Searching Pinterest for game UI screens...")
     await searchGameScreensForGame(games[0])
     
-    // Phase 4: User Selection (Waiting state)
-    // The UI (ParaliumImageSelector) will pop up now.
-    store.setPhase("selecting_images", "Waiting for you to select screen ideas...")
+    store.setPhaseMessage("Waiting for you to select screen ideas...")
     
   } catch (error) {
     console.error("[Paralium] Pipeline error:", error)
@@ -516,6 +646,10 @@ export async function resumeParaliumPipelineAfterSelection() {
   const store = useParaliumStore.getState()
   
   try {
+    // Mark the initial game screen as selected for the project
+    const { useAppStore } = await import("../store/useAppStore")
+    useAppStore.getState().updateCurrentProject({ initialGameScreenSelected: true })
+
     // Phase 5: Analyze Images
     store.setPhase("analyzing_images", "Vision AI is analyzing selected screens...")
     await analyzeSelectedImages((category, status) => {

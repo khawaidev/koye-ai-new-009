@@ -5,16 +5,14 @@
  * tracking RPM / TPM / RPD usage per model per key in IndexedDB.
  *
  * Model priority (per key, default/simple chain):
- *   1. gemini-3-flash-live            (primary)
- *   2. gemini-3.1-flash-lite          (fallback 1)
- *   3. gemini-2.5-flash               (fallback 2)
- *   4. gemini-2.5-flash-lite          (fallback 3)
+ *   1. gemini-3.1-flash-lite          (primary)
+ *   2. gemini-3-flash                 (fallback 1)
+ *   3. gemini-3.5-flash               (fallback 2)
+ *   4. gemini-2.5-flash               (fallback 3)
  *   5. gemma-4-31b                    (fallback 4)
  *   6. gemma-4-26b                    (fallback 5)
  *   7. gemma-3-27b                    (fallback 6)
- *   8. gemini-3-flash                 (complex-task fallback)
- *   9. gemini-3.5-flash               (complex-task fallback)
- *   10. gemma-3-12b                   (orchestrator)
+ *   8. gemma-3-12b                    (orchestrator)
  *
  * The orchestrator can also provide a restricted model allowlist for complex tasks.
  *
@@ -44,10 +42,9 @@ export interface SmartRouteOptions {
 
 export const MODEL_SPECS: ModelSpec[] = [
   // Fast/primary Gemini chain
-  { id: "gemini-3-flash-live",           rpm: 15, tpm: 1_000_000, rpd: 1500 },
   { id: "gemini-3.1-flash-lite",         rpm: 15, tpm: 250_000, rpd: 500 },
-  { id: "gemini-3.5-flash",              rpm: 15, tpm: 1_000_000, rpd: 1500 },
   { id: "gemini-3-flash",                rpm: 15, tpm: 1_000_000, rpd: 1500 },
+  { id: "gemini-3.5-flash",              rpm: 15, tpm: 1_000_000, rpd: 1500 },
   { id: "gemini-2.5-flash",              rpm: 10, tpm: 250_000, rpd: 20 },
   // Orchestrator fallback
   { id: "gemma-4-31b",                   rpm: 5,  tpm: 250_000, rpd: 20 },

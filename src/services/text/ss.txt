@@ -1,0 +1,64 @@
+
+
+const API_KEY = "AIzaSyCRxsnSLLq7BzZeiowhKrPEjrV1BpL-XcI";
+
+const ws = new WebSocket(
+  `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${API_KEY}`
+);
+
+ws.onopen = () => {
+  console.log("Connected");
+
+  // Setup session
+  ws.send(
+    JSON.stringify({
+      setup: {
+        model: "models/gemini-3-flash-live"
+      }
+    })
+  );
+
+  // Wait a bit, then send text
+  setTimeout(() => {
+    ws.send(
+      JSON.stringify({
+        clientContent: {
+          turns: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: "Hello Gemini. Tell me a cool fact about black holes."
+                }
+              ]
+            }
+          ],
+          turnComplete: true
+        }
+      })
+    );
+  }, 1000);
+};
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+
+  console.log("Response:", data);
+
+  try {
+    const text =
+      data.serverContent?.modelTurn?.parts?.[0]?.text;
+
+    if (text) {
+      console.log("Gemini:", text);
+    }
+  } catch (e) {}
+};
+
+ws.onerror = (err) => {
+  console.error("WebSocket Error:", err);
+};
+
+ws.onclose = () => {
+  console.log("Connection closed");
+};
