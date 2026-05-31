@@ -1,0 +1,18 @@
+
+
+1. GITHUB MODELS MARKETPLACE
+
+2.Cohere
+
+3.Cerebras
+
+4.ISH chat
+
+5.clawrouter
+
+6.nvidia nvim
+
+7.agentrouter[github only] 125 usd
+
+8.megallm.io
+
