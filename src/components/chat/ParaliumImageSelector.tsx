@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X } from "lucide-react"
+import { CheckCircle2, ChevronLeft, ChevronRight, RefreshCw, Sparkles, X } from "lucide-react"
 import { useParaliumStore, SCREEN_CATEGORIES } from "../../store/useParaliumStore"
 import { searchGameScreensForGame, loadNextPageFromCache, loadPreviousPageFromCache } from "../../services/paraliumService"
 import { Button } from "../ui/button"

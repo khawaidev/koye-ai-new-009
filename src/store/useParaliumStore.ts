@@ -53,12 +53,26 @@ export interface ParaliumState {
   referenceGames: string[] // 3 famous game names
   currentSearchGameIndex: number // 0, 1, or 2 — which game is being searched
 
-  // Phase 3: Image search results
+  // Search approval gate
+  // When true, the UI shows an Approve/Reject bar before the first search fires
+  searchApprovalPending: boolean
+  // gameIndex → category → images (current page for that game)
+  searchedImagesByGame: Record<number, Record<string, BingImageResult[]>>
+  // gameIndex → category → current page index
+  imagePageIndicesByGame: Record<number, Record<string, number>>
+  // How many games have been searched so far (0–3)
+  searchedGameCount: number
+  // Which game tab the user is currently viewing in the selector
+  viewingGameIndex: number
+
+  // Phase 3: Image search results (active page, forwarded from viewingGameIndex)
   searchedImages: Record<string, BingImageResult[]> // category → 5 images (current page)
   imagePageIndices: Record<string, number> // category → current page index
 
   // Phase 4: User selection
   selectedImages: Record<string, BingImageResult> // category → chosen image
+  // Which game tab each selection was made in (category → gameIndex)
+  selectedImageSources: Record<string, number>
 
   // Phase 5: Image descriptions from GPT-5.1
   imageDescriptions: Record<string, string> // category → description text
@@ -77,11 +91,23 @@ export interface ParaliumState {
   incrementQuestionBatch: () => void
   setReferenceGames: (games: string[]) => void
   setCurrentSearchGameIndex: (index: number) => void
+
+  // Search approval
+  setSearchApprovalPending: (pending: boolean) => void
+
+  // Multi-game search
+  setSearchedImagesForGame: (gameIndex: number, category: string, images: BingImageResult[]) => void
+  setImagePageIndexForGame: (gameIndex: number, category: string, index: number) => void
+  setViewingGameIndex: (index: number) => void
+  incrementSearchedGameCount: () => void
+
+  // Legacy single-game (still used by page nav helpers)
   setSearchedImages: (category: string, images: BingImageResult[]) => void
   setImagePageIndex: (category: string, index: number) => void
   clearSearchedImages: () => void
   clearAllImageState: () => void
-  selectImage: (category: string, image: BingImageResult) => void
+
+  selectImage: (category: string, image: BingImageResult, gameIndex: number) => void
   deselectImage: (category: string) => void
   setImageDescription: (category: string, description: string) => void
   setGamePlan: (markdown: string) => void
@@ -94,6 +120,9 @@ export interface ParaliumState {
   allCategoriesSelected: () => boolean
   getSelectedCount: () => number
 
+  // Sync active-view images from a specific game
+  syncViewFromGame: (gameIndex: number) => void
+
   // Reset
   resetParalium: () => void
 }
@@ -105,9 +134,15 @@ const initialState = {
   questionBatchCount: 0,
   referenceGames: [],
   currentSearchGameIndex: 0,
+  searchApprovalPending: false,
+  searchedImagesByGame: {} as Record<number, Record<string, BingImageResult[]>>,
+  imagePageIndicesByGame: {} as Record<number, Record<string, number>>,
+  searchedGameCount: 0,
+  viewingGameIndex: 0,
   searchedImages: {} as Record<string, BingImageResult[]>,
   imagePageIndices: {} as Record<string, number>,
   selectedImages: {} as Record<string, BingImageResult>,
+  selectedImageSources: {} as Record<string, number>,
   imageDescriptions: {} as Record<string, string>,
   gamePlanMarkdown: "",
   codingTasks: [] as CodingTask[],
@@ -134,6 +169,63 @@ export const useParaliumStore = create<ParaliumState>()(
   setCurrentSearchGameIndex: (currentSearchGameIndex) =>
     set({ currentSearchGameIndex }),
 
+  setSearchApprovalPending: (searchApprovalPending) =>
+    set({ searchApprovalPending }),
+
+  // ── Multi-game storage ────────────────────────────────────────────────────
+
+  setSearchedImagesForGame: (gameIndex, category, images) =>
+    set((s) => {
+      const prev = s.searchedImagesByGame[gameIndex] || {}
+      const updated = {
+        ...s.searchedImagesByGame,
+        [gameIndex]: { ...prev, [category]: images },
+      }
+      // If this is the currently viewed game, also update the active view
+      const activeView =
+        gameIndex === s.viewingGameIndex
+          ? { searchedImages: { ...s.searchedImages, [category]: images } }
+          : {}
+      return { searchedImagesByGame: updated, ...activeView }
+    }),
+
+  setImagePageIndexForGame: (gameIndex, category, index) =>
+    set((s) => {
+      const prev = s.imagePageIndicesByGame[gameIndex] || {}
+      const updated = {
+        ...s.imagePageIndicesByGame,
+        [gameIndex]: { ...prev, [category]: index },
+      }
+      const activeView =
+        gameIndex === s.viewingGameIndex
+          ? { imagePageIndices: { ...s.imagePageIndices, [category]: index } }
+          : {}
+      return { imagePageIndicesByGame: updated, ...activeView }
+    }),
+
+  setViewingGameIndex: (viewingGameIndex) =>
+    set((s) => {
+      const gameImages = s.searchedImagesByGame[viewingGameIndex] || {}
+      const gamePageIndices = s.imagePageIndicesByGame[viewingGameIndex] || {}
+      return {
+        viewingGameIndex,
+        searchedImages: gameImages,
+        imagePageIndices: gamePageIndices,
+      }
+    }),
+
+  incrementSearchedGameCount: () =>
+    set((s) => ({ searchedGameCount: s.searchedGameCount + 1 })),
+
+  syncViewFromGame: (gameIndex) =>
+    set((s) => ({
+      searchedImages: s.searchedImagesByGame[gameIndex] || {},
+      imagePageIndices: s.imagePageIndicesByGame[gameIndex] || {},
+      viewingGameIndex: gameIndex,
+    })),
+
+  // ── Legacy helpers (used by cache page nav) ───────────────────────────────
+
   setSearchedImages: (category, images) =>
     set((s) => ({
       searchedImages: { ...s.searchedImages, [category]: images },
@@ -144,20 +236,37 @@ export const useParaliumStore = create<ParaliumState>()(
       imagePageIndices: { ...s.imagePageIndices, [category]: index },
     })),
 
-  clearSearchedImages: () => set({ searchedImages: {}, imagePageIndices: {} }),
+  clearSearchedImages: () =>
+    set({ searchedImages: {}, imagePageIndices: {} }),
 
-  clearAllImageState: () => set({ searchedImages: {}, imagePageIndices: {}, selectedImages: {} }),
+  clearAllImageState: () =>
+    set({
+      searchedImages: {},
+      imagePageIndices: {},
+      selectedImages: {},
+      selectedImageSources: {},
+      searchedImagesByGame: {},
+      imagePageIndicesByGame: {},
+      searchedGameCount: 0,
+      viewingGameIndex: 0,
+      currentSearchGameIndex: 0,
+    }),
 
-  selectImage: (category, image) =>
+  // ── Selection ─────────────────────────────────────────────────────────────
+
+  selectImage: (category, image, gameIndex) =>
     set((s) => ({
       selectedImages: { ...s.selectedImages, [category]: image },
+      selectedImageSources: { ...s.selectedImageSources, [category]: gameIndex },
     })),
 
   deselectImage: (category) =>
     set((s) => {
-      const next = { ...s.selectedImages }
-      delete next[category]
-      return { selectedImages: next }
+      const nextSel = { ...s.selectedImages }
+      const nextSrc = { ...s.selectedImageSources }
+      delete nextSel[category]
+      delete nextSrc[category]
+      return { selectedImages: nextSel, selectedImageSources: nextSrc }
     }),
 
   setImageDescription: (category, description) =>

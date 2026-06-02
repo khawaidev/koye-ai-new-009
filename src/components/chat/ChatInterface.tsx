@@ -680,8 +680,9 @@ Connected Project: "${currentProject.name}" (ID: ${currentProject.id})
 Initial Game Screens Selected: ${screenStatus} (If FALSE, remind the user to click the 'Search Reference Game Screens' button in the UI to select their game UI references)
 
 ${projectHistory}IMPORTANT: You have FULL PERMISSION to create, edit, and delete files in this project.
-When the user asks you to add code, modify files, or create new files - DO IT automatically using the tool call markers below.
+When the user EXPLICITLY asks you to add code, modify files, or create new files - DO IT using the tool call markers below.
 Do NOT just show code snippets - actually save them to the project files.
+CRITICAL: Only make file changes when the user explicitly requests them. Do NOT auto-create or auto-edit files based on casual conversation, greetings, or general discussion.
 If there is a PROJECT HISTORY section above, use it to understand what has been done in previous chat sessions.
 Continue from where the previous sessions left off. Do NOT repeat or re-create work that was already done.
 
@@ -735,11 +736,11 @@ RULES:
 5. If a file was recently discussed, you can continue editing it without the user using @mention.
 6. Remember which files you've created/edited in this conversation.
 7. When editing images, if the user doesn't specify a model, ask them or use the default (nano-banana-edit). Always provide the full file path.
-8. Whenever the user starts to describe their game idea, or discusses the idea, changes, theme, or assets of the game, ALWAYS automatically create or update a file named "game-context.md" in the project using CREATE_FILE or EDIT_FILE. It should contain the user's game idea refined by you through the discussions. You MUST keep this file updated as the user's game theme/idea/flow changes.
+8. Only create or update a file named "game-context.md" when the user EXPLICITLY asks you to save, track, document, or record their game idea (e.g. "save my game idea", "track this", "update the game context", "document the idea"). Do NOT auto-create this file just because the user mentions the game or discusses ideas casually. When you do create/update it, use CREATE_FILE or EDIT_FILE and fill it with a refined version of the user's idea.
 9. If the user asks to modify/update/add details to an existing file, DO NOT stop at read-only tools (like get_file_contents/list_files/search_codebase). In the SAME response, you MUST also emit at least one file-modifying tool call (replace_code/edit_file/etc.) that performs the requested change.
 10. Never return only a filename or only read-only tool calls for an edit request. Always include a short natural-language response plus the required file-modifying tool call(s).
 11. COMMON MISTAKE TO AVOID: Do NOT use edit_file with just a small snippet of code. That will ERASE the rest of the file. Use replace_code instead for targeted changes.
-12. IMPORTANT: DO NOT edit or create any code files UNLESS the user explicitly asks you to make changes or create files. If the user is just asking a question or discussing ideas (other than the game-context.md rule), answer without modifying files.
+12. CRITICAL — DO NOT MAKE UNSOLICITED FILE CHANGES: NEVER edit, create, or delete any file UNLESS the user has explicitly and clearly asked you to do so in their latest message. Casual conversation, greetings, questions, or discussions about the game do NOT count as permission to modify files. Only the game-context.md exception in rule 8 applies, and even that requires the user to explicitly request it.
 
 COMPLEXITY SELF-ASSESSMENT:
 - You are currently running as Gemini Flash — optimized for fast, lightweight coding tasks.
@@ -1108,10 +1109,10 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
                     if (searchGames.length > 0) {
                       store.clearAllImageState()
                       store.setReferenceGames(searchGames)
-                      store.setPhase("selecting_images", "Waiting for you to select screen ideas...")
                       store.setCurrentSearchGameIndex(0)
-                      const { searchGameScreensForGame } = await import("../../services/paraliumService")
-                      searchGameScreensForGame(searchGames[0]).catch(console.error)
+                      // Show the approval gate instead of auto-searching
+                      store.setSearchApprovalPending(true)
+                      store.setPhase("selecting_images", "Waiting for your approval to start the image search...")
                     }
                   }
                 }

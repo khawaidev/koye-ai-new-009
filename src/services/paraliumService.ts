@@ -102,88 +102,94 @@ export function parseGameNames(response: string): string[] {
 
 /**
  * Cache key for storing all fetched images per category in sessionStorage.
+ * Namespaced per game index so all 3 sets can coexist.
  */
 const CACHE_KEY_PREFIX = "paralium_img_cache_"
 
-function getCacheKey(category: string): string {
-  return `${CACHE_KEY_PREFIX}${category.replace(/\s+/g, "_")}`
+function getCacheKey(gameIndex: number, category: string): string {
+  return `${CACHE_KEY_PREFIX}g${gameIndex}_${category.replace(/\s+/g, "_")}`
 }
 
 /**
  * Search for game screen images for a single game across all 12 categories.
- * Fetches 20 images per category, caches all in sessionStorage,
- * and shows the first 5 in the store.
+ * Fetches 20 images per category, caches all in sessionStorage (keyed by gameIndex),
+ * and stores the first 5 in the per-game slot of the store.
+ *
+ * @param gameName  The display name of the reference game
+ * @param gameIndex Which slot (0, 1, 2) this game occupies in referenceGames
+ * @param onProgress Optional progress callback
  */
 export async function searchGameScreensForGame(
   gameName: string,
+  gameIndex: number,
   onProgress?: (category: string, count: number) => void
 ): Promise<Record<string, BingImageResult[]>> {
   const store = useParaliumStore.getState()
 
-  console.log(`[Paralium] Searching game screens for: "${gameName}" (fetching 20 per category, caching)`)
+  console.log(`[Paralium] Searching game #${gameIndex} "${gameName}" (20 per category, cached)`)
 
   const searchPromises = SCREEN_CATEGORIES.map(async (category) => {
     try {
       const getCategoryQuery = (cat: string) => {
-        // Appending "game UI" ensures Pinterest returns actual game interfaces
         switch (cat) {
-          case "splash screen": return "game UI splash screen";
-          case "loading screen": return "game UI loading screen";
-          case "main menu screen": return "game UI main menu";
-          case "lobby screen": return "game UI lobby";
+          case "splash screen":             return "game UI splash screen";
+          case "loading screen":            return "game UI loading screen";
+          case "main menu screen":          return "game UI main menu";
+          case "lobby screen":              return "game UI lobby";
           case "character selection screen": return "game UI character selection";
-          case "gameplay HUD": return "game UI gameplay HUD";
-          case "battle UI": return "game UI battle combat";
-          case "pause menu": return "game UI pause menu";
-          case "victory screen": return "game UI victory win screen";
-          case "defeat screen": return "game UI defeat game over screen";
-          case "reward screen": return "game UI reward loot screen";
-          case "settings screen": return "game UI settings options menu";
-          default: return `game UI ${cat}`;
+          case "gameplay HUD":              return "game UI gameplay HUD";
+          case "battle UI":                 return "game UI battle combat";
+          case "pause menu":               return "game UI pause menu";
+          case "victory screen":           return "game UI victory win screen";
+          case "defeat screen":            return "game UI defeat game over screen";
+          case "reward screen":            return "game UI reward loot screen";
+          case "settings screen":          return "game UI settings options menu";
+          default:                          return `game UI ${cat}`;
         }
       }
 
-      const query = getCategoryQuery(category);
-      // Exactly ONE API call per category
-      const results = await searchBingImages(`${gameName} ${query}`).catch(() => [] as BingImageResult[]);
-      
-      // Deduplicate and collect up to 20 images
-      const seenUrls = new Set<string>();
-      const allResults: BingImageResult[] = [];
-      
+      const query = getCategoryQuery(category)
+      const results = await searchBingImages(`${gameName} ${query} reddit`).catch(() => [] as BingImageResult[])
+
+      // Deduplicate up to 20
+      const seenUrls = new Set<string>()
+      const allResults: BingImageResult[] = []
       for (const img of results) {
-        const url = img.originalUrl || img.thumbnailUrl;
+        const url = img.originalUrl || img.thumbnailUrl
         if (!seenUrls.has(url)) {
-          seenUrls.add(url);
-          allResults.push(img);
-          if (allResults.length >= 20) break;
+          seenUrls.add(url)
+          allResults.push(img)
+          if (allResults.length >= 20) break
         }
       }
 
-      // Cache all 20 in sessionStorage
+      // Cache to sessionStorage (per game)
       try {
-        sessionStorage.setItem(getCacheKey(category), JSON.stringify(allResults))
+        sessionStorage.setItem(getCacheKey(gameIndex, category), JSON.stringify(allResults))
       } catch (e) {
-        console.warn(`[Paralium] Failed to cache images for "${category}"`, e)
+        console.warn(`[Paralium] Failed to cache images for g${gameIndex} "${category}"`, e)
       }
 
-      // Show first 5 in the store
+      // Store first 5 in the per-game slot
       const firstPage = allResults.slice(0, 5)
-      store.setSearchedImages(category, firstPage)
-      store.setImagePageIndex(category, 0)
+      store.setSearchedImagesForGame(gameIndex, category, firstPage)
+      store.setImagePageIndexForGame(gameIndex, category, 0)
       onProgress?.(category, firstPage.length)
-      console.log(`[Paralium] Cached ${allResults.length} images for "${category}", showing first ${firstPage.length}`)
+      console.log(`[Paralium] g${gameIndex} cached ${allResults.length} for "${category}"`)  
       return { category, images: firstPage }
     } catch (error) {
-      console.warn(`[Paralium] Search failed for "${category}":`, error)
-      store.setSearchedImages(category, [])
-      store.setImagePageIndex(category, 0)
+      console.warn(`[Paralium] Search failed g${gameIndex} "${category}":`, error)
+      store.setSearchedImagesForGame(gameIndex, category, [])
+      store.setImagePageIndexForGame(gameIndex, category, 0)
       onProgress?.(category, 0)
       return { category, images: [] }
     }
   })
 
   const results = await Promise.all(searchPromises)
+
+  // Increment count after all categories are done
+  store.incrementSearchedGameCount()
 
   const resultMap: Record<string, BingImageResult[]> = {}
   for (const r of results) {
@@ -194,11 +200,44 @@ export async function searchGameScreensForGame(
 }
 
 /**
+ * Trigger a search for the next un-searched reference game.
+ * Skips the approval gate (since user explicitly clicked "New Search").
+ * Returns the new gameIndex that was searched, or -1 if all 3 already done.
+ */
+export async function searchNextReferenceGame(
+  onProgress?: (category: string, count: number) => void
+): Promise<number> {
+  const store = useParaliumStore.getState()
+  const { referenceGames, searchedGameCount } = store
+
+  if (searchedGameCount >= referenceGames.length) {
+    console.log("[Paralium] All reference games already searched")
+    return -1
+  }
+
+  const nextIndex = searchedGameCount  // 0-based; count equals next index to search
+  const gameName = referenceGames[nextIndex]
+  if (!gameName) return -1
+
+  store.setCurrentSearchGameIndex(nextIndex)
+  store.setPhaseMessage(`Searching ${gameName} screens...`)
+
+  await searchGameScreensForGame(gameName, nextIndex, onProgress)
+
+  // Immediately show this new tab's results
+  store.syncViewFromGame(nextIndex)
+
+  return nextIndex
+}
+
+/**
  * Load the next page of 5 images from sessionStorage cache for all categories.
- * Returns true if there were more images to show, false if we've exhausted the cache.
+ * Uses the currently viewed game index.
+ * Returns true if there were more images to show.
  */
 export function loadNextPageFromCache(): boolean {
   const store = useParaliumStore.getState()
+  const gameIndex = store.viewingGameIndex
   let hasMore = false
 
   for (const category of SCREEN_CATEGORIES) {
@@ -208,23 +247,19 @@ export function loadNextPageFromCache(): boolean {
     const end = start + 5
 
     try {
-      const cached = sessionStorage.getItem(getCacheKey(category))
+      const cached = sessionStorage.getItem(getCacheKey(gameIndex, category))
       if (!cached) continue
 
       const allImages: BingImageResult[] = JSON.parse(cached)
-      
+
       if (start < allImages.length) {
         const pageImages = allImages.slice(start, end)
-        store.setSearchedImages(category, pageImages)
-        store.setImagePageIndex(category, nextPage)
+        store.setSearchedImagesForGame(gameIndex, category, pageImages)
+        store.setImagePageIndexForGame(gameIndex, category, nextPage)
         hasMore = true
-        console.log(`[Paralium] Showing page ${nextPage + 1} for "${category}" (${pageImages.length} images)`)
-      } else {
-        // No more images for this category, keep showing the last page
-        console.log(`[Paralium] No more cached images for "${category}" (total: ${allImages.length})`)
       }
     } catch (e) {
-      console.warn(`[Paralium] Failed to load cache for "${category}"`, e)
+      console.warn(`[Paralium] Failed to load cache g${gameIndex} "${category}"`, e)
     }
   }
 
@@ -233,10 +268,12 @@ export function loadNextPageFromCache(): boolean {
 
 /**
  * Load the previous page of 5 images from sessionStorage cache for all categories.
- * Returns true if we went back a page, false if we were already at page 0.
+ * Uses the currently viewed game index.
+ * Returns true if we went back a page.
  */
 export function loadPreviousPageFromCache(): boolean {
   const store = useParaliumStore.getState()
+  const gameIndex = store.viewingGameIndex
   let hasLess = false
 
   for (const category of SCREEN_CATEGORIES) {
@@ -248,18 +285,16 @@ export function loadPreviousPageFromCache(): boolean {
     const end = start + 5
 
     try {
-      const cached = sessionStorage.getItem(getCacheKey(category))
+      const cached = sessionStorage.getItem(getCacheKey(gameIndex, category))
       if (!cached) continue
 
       const allImages: BingImageResult[] = JSON.parse(cached)
-      
       const pageImages = allImages.slice(start, end)
-      store.setSearchedImages(category, pageImages)
-      store.setImagePageIndex(category, prevPage)
+      store.setSearchedImagesForGame(gameIndex, category, pageImages)
+      store.setImagePageIndexForGame(gameIndex, category, prevPage)
       hasLess = true
-      console.log(`[Paralium] Showing previous page ${prevPage + 1} for "${category}" (${pageImages.length} images)`)
     } catch (e) {
-      console.warn(`[Paralium] Failed to load cache for "${category}"`, e)
+      console.warn(`[Paralium] Failed to load cache g${gameIndex} "${category}"`, e)
     }
   }
 
@@ -625,14 +660,13 @@ export async function startParaliumPipeline(ideaData: string) {
       console.warn("[Paralium] Could not save reference games to project files", e)
     }
     
-    // Phase 3: Image Search (1 API call per category = 12 total)
-    store.clearAllImageState() // Completely wipe old cache and selections for a fresh start
+    // Phase 3: Stop here — show the search approval gate.
+    // The search will only fire once the user approves it.
+    store.clearAllImageState()
     store.setCurrentSearchGameIndex(0)
-    store.setPhaseMessage("Searching Pinterest for game UI screens...")
-    await searchGameScreensForGame(games[0])
-    
-    store.setPhaseMessage("Waiting for you to select screen ideas...")
-    
+    store.setSearchApprovalPending(true)
+    store.setPhase("selecting_images", "Waiting for your approval to start the image search...")
+
   } catch (error) {
     console.error("[Paralium] Pipeline error:", error)
     store.setPhase("idle", "Pipeline failed.")
