@@ -389,4 +389,16 @@
   .font-greeting {
     font-family: var(--greeting-font);
   }
+  .font-schibsted {
+    font-family: 'Schibsted Grotesk', sans-serif;
+  }
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+  .font-fustat {
+    font-family: 'Fustat', sans-serif;
+  }
+  .font-noto {
+    font-family: 'Noto Sans', sans-serif;
+  }
 }

@@ -2,3 +2,11 @@ git add . && git commit -m "auto update" && git push
 
 
 D:\koye-ai-air-1\koye-cli\opencode\packages\opencode
+
+
+https://github.com/khawaidev/koye-ai-new-009.git
+
+
+[run ollama without thinking]:
+
+/set system You must never output <think> tags or reasoning. Reply only with the final answer.

@@ -17,7 +17,7 @@ export const AppIcon: React.FC<AppIconProps> = ({
   forceDefault = false,
   alt = "KOYE AI",
 }) => {
-  const { subscription } = usePricing()
+  const { subscription } = usePricing({ includeUsage: false })
   const { theme } = useTheme()
 
   // Determine if user has a Pro/Studio tier subscription

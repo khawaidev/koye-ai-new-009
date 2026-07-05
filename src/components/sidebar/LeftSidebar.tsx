@@ -1,12 +1,11 @@
 import { Bone, Box, ExternalLink, File, Folder, Image, ListTodo, MessageSquare, Music, Plus, Search, Sparkles, Trash2, User, Video, X } from "lucide-react"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { cn } from "../../lib/utils"
 import { recordSessionToProjectContext } from "../../services/projectContext"
 import { useAppStore } from "../../store/useAppStore"
 import { useGameDevStore } from "../../store/useGameDevStore"
 import { useTaskStore } from "../../store/useTaskStore"
-import { useTheme } from "../theme-provider"
 import { Button } from "../ui/button"
 import { ThemeToggle } from "../ui/theme-toggle"
 import { FileSystemSidebar } from "./FileSystemSidebar"
@@ -32,8 +31,6 @@ const navItems = [
 ]
 
 export function LeftSidebar({ isOpen, stage, setStage, onToggleSidebar }: LeftSidebarProps) {
-  const { theme } = useTheme()
-
   const {
     sessions,
     currentSessionId,
@@ -59,9 +56,7 @@ export function LeftSidebar({ isOpen, stage, setStage, onToggleSidebar }: LeftSi
   const [sessionToDelete, setSessionToDelete] = useState<string | null>(null)
   const [sessionTitle, setSessionTitle] = useState<string>("")
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
-  const [showSessionSearch, setShowSessionSearch] = useState(false)
   const [sessionSearchQuery, setSessionSearchQuery] = useState("")
-  const sessionSearchInputRef = useRef<HTMLInputElement | null>(null)
 
   const normalizedSessionQuery = sessionSearchQuery.trim().toLowerCase()
   const filteredSessions = normalizedSessionQuery
@@ -77,30 +72,29 @@ export function LeftSidebar({ isOpen, stage, setStage, onToggleSidebar }: LeftSi
       })
     : sessions
 
-  useEffect(() => {
-    if (isOpen && leftSidebarMode === "chat" && showSessionSearch) {
-      sessionSearchInputRef.current?.focus()
-    }
-  }, [isOpen, leftSidebarMode, showSessionSearch])
-
   const handleDisconnectProject = (e?: React.MouseEvent) => {
     if (e) {
+      e.preventDefault()
       e.stopPropagation()
     }
-    if (currentProject && currentSessionId) {
+    if (currentProject) {
       saveProjectState(currentProject.id)
-      const currentSession = useAppStore.getState().sessions.find(s => s.id === currentSessionId)
-      if (currentSession && currentSession.messages.length > 0) {
-        recordSessionToProjectContext(
-          currentProject.id,
-          currentProject.name,
-          currentSessionId,
-          currentSession.title,
-          currentSession.messages.map(m => ({ role: m.role, content: m.content }))
-        )
+      
+      if (currentSessionId) {
+        const currentSession = useAppStore.getState().sessions.find(s => s.id === currentSessionId)
+        if (currentSession && currentSession.messages.length > 0) {
+          recordSessionToProjectContext(
+            currentProject.id,
+            currentProject.name,
+            currentSessionId,
+            currentSession.title,
+            currentSession.messages.map(m => ({ role: m.role, content: m.content }))
+          )
+        }
+        localStorage.removeItem(`project_${currentSessionId}`)
+        localStorage.removeItem(`chat_project_sync_${currentSessionId}`)
       }
-      localStorage.removeItem(`project_${currentSessionId}`)
-      localStorage.removeItem(`chat_project_sync_${currentSessionId}`)
+      
       setCurrentProject(null)
       clearActiveState()
     }
@@ -276,16 +270,18 @@ export function LeftSidebar({ isOpen, stage, setStage, onToggleSidebar }: LeftSi
               <div className="flex items-center justify-between px-2 py-1.5 border-b border-border/50">
                 <span className="text-sm font-medium mr-3 truncate max-w-[120px]">{currentProject.name}</span>
                 <button
-                  onClick={handleDisconnectProject}
+                  onPointerDown={handleDisconnectProject}
                   className="hover:bg-muted p-1 rounded-sm text-muted-foreground hover:text-foreground transition-colors"
                   title="Disconnect from project"
+                  type="button"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
               <button
-                onClick={() => window.open(`${window.location.origin}/builder/${currentProject.id}?hideSidebar=true`, '_blank')}
+                onPointerDown={() => window.open(`${window.location.origin}/builder/${currentProject.id}?hideSidebar=true`, '_blank')}
                 className="flex items-center gap-2 w-full text-left px-2 py-1.5 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-colors rounded-sm"
+                type="button"
               >
                 <ExternalLink className="h-3 w-3" />
                 Open in new tab
@@ -361,69 +357,31 @@ export function LeftSidebar({ isOpen, stage, setStage, onToggleSidebar }: LeftSi
             {/* Panel Header */}
             <div className="shrink-0 px-4 py-3 flex items-center justify-between">
               {leftSidebarMode === "chat" ? (
-              <div className="flex items-baseline gap-2">
-  <span className="text-xl font-bold tracking-[-0.02em] text-foreground">
-    KOYE AI
-  </span>
-</div>
-                  
-               
+                <div className="flex items-center gap-2 w-full">
+                  <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-background px-3 h-9 w-full">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                    <input
+                      value={sessionSearchQuery}
+                      onChange={(e) => setSessionSearchQuery(e.target.value)}
+                      placeholder="Search chats..."
+                      className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleNewChat}
+                      className="inline-flex items-center justify-center h-7 w-7 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+                      title="New chat"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <span className="text-sm font-bold text-foreground tracking-tight">
                   Files
                 </span>
               )}
-              {leftSidebarMode === "chat" && (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleNewChat}
-                    disabled={sessions.some(s => s.messages.length === 0)}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-lg px-3 h-9 text-xs font-semibold transition-colors border border-border/60",
-                      sessions.some(s => s.messages.length === 0)
-                        ? "opacity-50 cursor-not-allowed text-muted-foreground bg-muted/30"
-                        : "text-foreground bg-foreground/5 hover:bg-foreground/10"
-                    )}
-                  >
-                    <Plus className="h-4 w-4" />
-                    New
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowSessionSearch((prev) => {
-                        const next = !prev
-                        if (!next) setSessionSearchQuery("")
-                        return next
-                      })
-                    }}
-                    className={cn(
-                      "inline-flex items-center justify-center rounded-lg h-9 w-9 border border-border/60 transition-colors",
-                      showSessionSearch
-                        ? "bg-foreground/10 text-foreground"
-                        : "text-muted-foreground bg-background hover:bg-muted/50 hover:text-foreground"
-                    )}
-                    title="Search chats"
-                  >
-                    <Search className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
             </div>
-
-            {leftSidebarMode === "chat" && showSessionSearch && (
-              <div className="px-4 pb-2">
-                <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-background px-3 h-9">
-                  <Search className="h-4 w-4 text-muted-foreground" />
-                  <input
-                    ref={sessionSearchInputRef}
-                    value={sessionSearchQuery}
-                    onChange={(e) => setSessionSearchQuery(e.target.value)}
-                    placeholder="Search chats..."
-                    className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                  />
-                </div>
-              </div>
-            )}
 
             {/* New Chat / Create File Buttons */}
             <div className="px-3 pb-2">

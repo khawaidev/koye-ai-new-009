@@ -646,3 +646,26 @@ export function applySandboxChangesToFileMap(
 
   return nextFiles
 }
+
+export async function executeAgentToolCall(
+  toolCall: ToolCall,
+  source: string = "system"
+): Promise<{ status: "approved" | "rejected" | "auto" | "pending"; error?: string }> {
+  try {
+    const { useAppStore } = await import("../store/useAppStore")
+    const { useAgentToolStore } = await import("../store/useAgentToolStore")
+    
+    const currentFiles = useAppStore.getState().generatedFiles || {}
+    const { changes, result } = executeToolInSandbox(toolCall, currentFiles)
+    
+    if (changes.length > 0) {
+      const agentStore = useAgentToolStore.getState()
+      agentStore.addSandboxChanges(changes)
+      agentStore.addPendingToolCall(toolCall)
+    }
+
+    return { status: result?.status || "pending" }
+  } catch (error: any) {
+    return { status: "rejected", error: error.message || "Unknown error" }
+  }
+}

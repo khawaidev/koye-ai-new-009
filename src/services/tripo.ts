@@ -366,7 +366,7 @@ export type TripoModelVersion =
     | "v2.0-20240919"
     | "v1.4-20240625"
 
-export type TripoTextureQuality = "standard" | "detailed"
+export type TripoTextureQuality = "standard" | "detailed" | "extreme"
 export type TripoGeometryQuality = "standard" | "detailed"
 
 export interface TextTo3DOptions {
@@ -564,6 +564,93 @@ export async function createImageTo3DTask(imageUrl: string, options?: ImageTo3DO
         }
     }
     throw lastError || new Error("All Tripo API keys failed for image-to-3D");
+}
+
+export interface MultiviewTo3DOptions {
+    model_version?: TripoModelVersion
+    model_seed?: number
+    texture_seed?: number
+    texture_quality?: TripoTextureQuality
+    geometry_quality?: TripoGeometryQuality
+    face_limit?: number
+    texture?: boolean
+    pbr?: boolean
+    auto_size?: boolean
+    quad?: boolean
+    smart_low_poly?: boolean
+    generate_parts?: boolean
+    export_uv?: boolean
+    compress?: boolean
+}
+
+export async function createMultiviewTo3DTask(imageUrls: string[], options?: MultiviewTo3DOptions): Promise<string> {
+    const keys = getAllTripoApiKeys();
+    let lastError: any = null;
+
+    if (!imageUrls || imageUrls.length === 0) {
+        throw new Error("Image URLs are required for multiview-to-3D generation");
+    }
+
+    for (let i = 0; i < keys.length; i++) {
+        const apiKey = keys[i];
+        try {
+            console.log(`[Tripo Multiview-to-3D] Creating task with key ${i + 1}`);
+
+            const files = imageUrls.map(url => ({
+                type: url.startsWith("data:") ? url.split(";")[0].split(":")[1].split("/")[1] : url.split('.').pop() || "png",
+                url: url
+            }));
+
+            const payload: Record<string, any> = {
+                type: "multiview_to_model",
+                files: files,
+                model_version: options?.model_version || "v2.5-20250123",
+            };
+
+            if (options?.model_seed !== undefined) payload.model_seed = options.model_seed;
+            if (options?.texture_seed !== undefined) payload.texture_seed = options.texture_seed;
+            if (options?.face_limit !== undefined) payload.face_limit = options.face_limit;
+            if (options?.texture !== undefined) payload.texture = options.texture;
+            if (options?.pbr !== undefined) payload.pbr = options.pbr;
+            if (options?.texture_quality) payload.texture_quality = options.texture_quality;
+            if (options?.auto_size !== undefined) payload.auto_size = options.auto_size;
+            if (options?.quad !== undefined) payload.quad = options.quad;
+            if (options?.smart_low_poly !== undefined) payload.smart_low_poly = options.smart_low_poly;
+            if (options?.geometry_quality) payload.geometry_quality = options.geometry_quality;
+            if (options?.generate_parts !== undefined) payload.generate_parts = options.generate_parts;
+            if (options?.export_uv !== undefined) payload.export_uv = options.export_uv;
+            if (options?.compress !== undefined) payload.compress = options.compress;
+
+            const response = await fetch(`${TRIPO_API_BASE}/task`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+
+            const data = await response.json();
+            if (data.code !== 0) {
+                throw new Error(`Tripo Error ${data.code}: ${data.message || "Unknown"}`);
+            }
+
+            const taskId = data.data.task_id;
+            console.log(`[Tripo Multiview-to-3D] ✅ Task created: ${taskId}`);
+            return taskId;
+
+        } catch (error) {
+            lastError = error;
+            console.warn(`[Tripo Multiview-to-3D] Key ${i + 1} failed:`, error);
+            if (!shouldTryNextKey(error)) throw error;
+        }
+    }
+    throw lastError || new Error("All Tripo API keys failed for multiview-to-3D");
 }
 
 /**

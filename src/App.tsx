@@ -9,19 +9,21 @@ import { GameEngine } from "./pages/GameEngine"
 import { LandingPage } from "./pages/LandingPage"
 import { Login } from "./pages/Login"
 import { Phaser2DGameEngine } from "./pages/Phaser2DGameEngine"
-import { Pricing } from "./pages/Pricing"
 import { ProjectEngineRender } from "./pages/ProjectEngineRender"
 import { SignUp } from "./pages/SignUp"
+import { UpgradeModal } from "./pages/Pricing"
+import { useAppStore } from "./store/useAppStore"
 
 function App() {
   console.log("App component rendering")
+  const { isUpgradeModalOpen, setIsUpgradeModalOpen } = useAppStore()
   return (
     <ToastProvider>
+      <UpgradeModal open={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} />
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/pricing" element={<Pricing />} />
         <Route path="/builder" element={<Builder />} />
         <Route path="/builder/:projectId" element={<Builder />} />
         <Route path="/game-engine" element={<GameEngine />} />

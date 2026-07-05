@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { Folder, Link2, X, Sparkles } from "lucide-react"
+import { Bell, Coins, Crown, Folder, Link2, Sparkles, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import appIcon from "../../assets/icon2.png"
 import { useAuth } from "../../hooks/useAuth"
+import { usePricing } from "../../hooks/usePricing"
 import { cn } from "../../lib/utils"
 import { uuidv4 } from "../../lib/uuid"
 import { generateChatTitle } from "../../services/chatTitleGenerator"
@@ -26,7 +27,6 @@ import { useAppStore } from "../../store/useAppStore"
 import { useGameDevStore } from "../../store/useGameDevStore"
 import { getTaskDisplayName, useTaskStore, type TaskConfig, type TaskType } from "../../store/useTaskStore"
 import type { Project } from "../../types"
-import { GameDevFlowUI } from "../game-flow/GameDevFlowUI"
 import { TaskProposalCard } from "../tasks/TaskProposalCard"
 import { useTheme } from "../theme-provider"
 import { Button } from "../ui/button"
@@ -38,10 +38,12 @@ import { VoiceChatLayout } from "./VoiceChatLayout"
 import { useParaliumStore, SCREEN_CATEGORIES } from "../../store/useParaliumStore"
 import { ParaliumImageSelector } from "./ParaliumImageSelector"
 import { ParaliumStatusCard } from "./ParaliumStatusCard"
+import { Builder } from "../../pages/Builder"
 
 export function ChatInterface() {
   const { theme } = useTheme()
   const { user } = useAuth()
+  const { subscription } = usePricing({ includeUsage: false })
   const {
     messages,
     addMessage,
@@ -57,6 +59,7 @@ export function ChatInterface() {
     addGeneratedFile,
     selectedModelMode,
     selectedModelId,
+    setIsUpgradeModalOpen,
   } = useAppStore()
 
   // Make sure we type this appropriately if it can be pulled from a higher context or context wrapper
@@ -104,23 +107,31 @@ export function ChatInterface() {
 
 
 
-  // Load projects when dialog opens
+  // Load projects for the workspace dropdown + connect dialog
   useEffect(() => {
-    if (showConnectDialog && user) {
-      const loadProjects = async () => {
-        setIsLoadingProjects(true)
-        try {
-          const userProjects = await getProjects(user.id)
-          setProjects(userProjects)
-        } catch (error) {
-          console.error("Error loading projects:", error)
-        } finally {
-          setIsLoadingProjects(false)
-        }
-      }
-      loadProjects()
+    if (!user) {
+      setProjects([])
+      return
     }
-  }, [showConnectDialog, user])
+
+    let cancelled = false
+    const loadProjects = async () => {
+      setIsLoadingProjects(true)
+      try {
+        const userProjects = await getProjects(user.id)
+        if (!cancelled) setProjects(userProjects)
+      } catch (error) {
+        console.error("Error loading projects:", error)
+      } finally {
+        if (!cancelled) setIsLoadingProjects(false)
+      }
+    }
+
+    loadProjects()
+    return () => {
+      cancelled = true
+    }
+  }, [user?.id])
 
   const handleConnectProject = async (project: Project) => {
     // If there was a previous project, save its state first
@@ -188,9 +199,6 @@ export function ChatInterface() {
 
     // Mark this session as connected to project for sync
     localStorage.setItem(`chat_project_sync_${currentSessionId}`, project.id)
-
-    // Open integrated builder
-    setStage?.("build")
   }
 
 
@@ -218,9 +226,6 @@ export function ChatInterface() {
 
         // Clear the pending connection
         localStorage.removeItem('pending_project_connection')
-
-        // Open integrated builder
-        setStage?.("build")
       } catch (error) {
         console.error("Error connecting pending project:", error)
         localStorage.removeItem('pending_project_connection')
@@ -336,7 +341,7 @@ export function ChatInterface() {
       })
 
       // Update local state
-      setProjects([newProject, ...projects])
+      setProjects((prev) => [newProject, ...prev])
       setCurrentProject(newProject)
       setNewProjectName("")
       setNewProjectDescription("")
@@ -347,9 +352,6 @@ export function ChatInterface() {
         localStorage.setItem(`project_${currentSessionId}`, JSON.stringify(newProject))
         localStorage.setItem(`chat_project_sync_${currentSessionId}`, newProject.id)
       }
-
-      // Open integrated builder
-      setStage?.("build")
     } catch (error) {
       console.error("Error creating project:", error)
       alert(error instanceof Error ? error.message : "Failed to create project. Please try again.")
@@ -923,7 +925,7 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
                 thinkingLevel: info.thinkingLevel,
               }
             : undefined
-          if (info.intent !== "general") {
+          if (info.intent !== "general_chatting") {
             setIsSwitchingModel(true)
             setSwitchingMessage(`Routing to ${info.displayName}...`)
             console.log(`[Orchestrator] Switching to ${info.modelName} for ${info.intent}`)
@@ -2137,6 +2139,74 @@ Now complete the request. REQUIREMENTS:
   const heroPromptChips: string[] = []
 
   const paraliumStore = useParaliumStore()
+  
+  const isSidebarOpen = useAppStore(state => state.isSidebarOpen)
+
+  // Resizable builder logic
+  const [builderWidth, setBuilderWidth] = useState(() => window.innerWidth * 0.4)
+  const isDraggingBuilder = useRef(false)
+  const [isBuilderResizeHover, setIsBuilderResizeHover] = useState(false)
+
+  useEffect(() => {
+      const handleResize = () => {
+          const vw = window.innerWidth
+          let minWidth = 0
+          let maxWidth = 0
+          if (!isSidebarOpen) {
+              minWidth = vw * 0.4
+              maxWidth = vw * 0.60
+          } else {
+              minWidth = vw * 0.25
+              maxWidth = vw * 0.43
+          }
+          setBuilderWidth(prev => Math.max(minWidth, Math.min(prev, maxWidth)))
+      }
+      
+      window.addEventListener('resize', handleResize)
+      handleResize()
+      return () => window.removeEventListener('resize', handleResize)
+  }, [isSidebarOpen])
+
+  useEffect(() => {
+      const handleMouseMove = (e: MouseEvent) => {
+          if (!isDraggingBuilder.current) return
+          e.preventDefault()
+          
+          const vw = window.innerWidth
+          let minWidth = 0
+          let maxWidth = 0
+          if (!isSidebarOpen) {
+              minWidth = vw * 0.4
+              maxWidth = vw * 0.60
+          } else {
+              minWidth = vw * 0.25
+              maxWidth = vw * 0.43
+          }
+
+          const newWidth = vw - e.clientX
+          setBuilderWidth(Math.max(minWidth, Math.min(newWidth, maxWidth)))
+      }
+
+      const handleMouseUp = () => {
+          if (isDraggingBuilder.current) {
+              isDraggingBuilder.current = false
+              document.body.style.cursor = 'auto'
+          }
+      }
+
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+
+      return () => {
+          document.removeEventListener('mousemove', handleMouseMove)
+          document.removeEventListener('mouseup', handleMouseUp)
+      }
+  }, [isSidebarOpen])
+
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 1000;
+  const currentMinWidth = !isSidebarOpen ? vw * 0.4 : vw * 0.25;
+  const isBuilderExpanded = builderWidth > currentMinWidth + 10; // 10px buffer
+  const creditsBalance = subscription?.creditsBalance ?? 0
 
   return (
     <>
@@ -2152,13 +2222,47 @@ Now complete the request. REQUIREMENTS:
         />
       )}
     <VoiceChatLayout>
-      <div className="flex h-full w-full items-center justify-center bg-background">
-        <div className="w-full max-w-[86rem] h-full flex flex-col min-h-0">
+      <div className={cn("flex h-full w-full bg-background overflow-hidden relative flex-row transition-all duration-300", isBuilderExpanded ? "gap-3 p-4" : "")}>
+        {/* Chat Area */}
+        <div className={cn("flex-1 flex flex-col min-h-0 min-w-0 h-full items-center justify-center transition-all duration-300", isBuilderExpanded ? "rounded-xl bg-background overflow-hidden" : "bg-background")}>
+          <div className="w-full max-w-[86rem] h-full flex flex-col min-h-0">
           {/* Terminal Window */}
           <div className="flex-1 flex flex-col bg-background min-h-0 dark:bg-transparent dark:shadow-2xl">
             {/* Title Bar */}
             <div className="px-4 py-2 flex items-center justify-between shrink-0 bg-background relative">
+              <div className="flex items-center gap-2" />
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="Notifications"
+                  className={cn(
+                    "relative h-9 w-9 rounded-full flex items-center justify-center transition-colors",
+                    theme === "dark" ? "hover:bg-white/10 text-white/80" : "hover:bg-muted text-foreground"
+                  )}
+                >
+                  <Bell className="h-4 w-4" />
+                  <span className={cn("absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full text-[10px] font-black flex items-center justify-center", theme === "dark" ? "bg-white text-black" : "bg-foreground text-background")}>
+                    1
+                  </span>
+                </button>
+
+                <div className={cn("h-9 px-3 rounded-full border flex items-center gap-2 text-sm font-semibold", theme === "dark" ? "border-white/10 bg-white/[0.03] text-white/90" : "border-border bg-background text-foreground")}>
+                  <Coins className={cn("h-4 w-4", theme === "dark" ? "text-white/70" : "text-muted-foreground")} />
+                  <span>{creditsBalance}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsUpgradeModalOpen(true)}
+                  className={cn(
+                    "h-9 px-4 rounded-full text-sm font-semibold transition-colors",
+                    theme === "dark"
+                      ? "bg-white text-black hover:bg-white/90"
+                      : "bg-foreground text-background hover:opacity-90"
+                  )}
+                >
+                  Upgrade
+                </button>
               </div>
             </div>
 
@@ -2197,30 +2301,11 @@ Now complete the request. REQUIREMENTS:
                   <div className="flex items-center justify-center gap-4 text-center">
                     <img src="/images/app/new-icon2.png" alt="KOYE" className="h-[40px] w-[40px] shadow-sm" />
                     <h1 
-                      className="text-[40px] sm:text-[48px] leading-tight tracking-[-0.03em] text-foreground dark:text-[#C3C2B7] font-greeting font-[400]"
+                      className="text-[40px] sm:text-[48px] leading-tight tracking-[-0.03em] text-foreground dark:text-[#C3C2B7] font-light font-serif italic"
                     >
-                      {timeGreeting}, {firstName}
+                      3D Game builder
                     </h1>
                   </div>
-
-                  {!currentProject && (
-                    <div className="flex flex-wrap items-center justify-center gap-3">
-                      <button
-                        onClick={() => setShowConnectDialog(true)}
-                        className="flex items-center gap-2 rounded-full border border-border/70 bg-card/70 px-4 py-2 text-sm text-muted-foreground transition-all hover:text-foreground hover:bg-muted/30 dark:border-[#323230] dark:bg-[#262625] dark:hover:bg-white/5"
-                      >
-                        <Folder className="h-4 w-4" />
-                        Connect Project
-                      </button>
-                      <button
-                        onClick={() => setShowCreateProjectDialog(true)}
-                        className="flex items-center gap-2 rounded-full border border-border/70 bg-card/70 px-4 py-2 text-sm text-muted-foreground transition-all hover:text-foreground hover:bg-muted/30 dark:border-[#323230] dark:bg-[#262625] dark:hover:bg-white/5"
-                      >
-                        <Link2 className="h-4 w-4" />
-                        Create Project
-                      </button>
-                    </div>
-                  )}
 
                   <div className="w-full max-w-2xl">
                     <ChatInput
@@ -2231,7 +2316,74 @@ Now complete the request. REQUIREMENTS:
                       variant="hero"
                       placeholder="How can I help you today?"
                       promptChips={heroPromptChips}
+                      onCreateProject={() => setShowCreateProjectDialog(true)}
+                      onConnectProject={handleConnectProject}
+                      projects={projects}
+                      isLoadingProjects={isLoadingProjects}
                     />
+                  </div>
+                  
+                  {/* What others build with koye */}
+                  <div className="w-full max-w-4xl mt-12 mb-2 overflow-hidden">
+                    <p className="text-muted-foreground text-sm font-medium mb-4 text-center">What others build with Koye</p>
+                    <div className="flex gap-4 overflow-x-auto scrollbar-none pb-4 snap-x">
+                      {[
+                        "8253dec-251693246.webp",
+                        "OIP-226731792.jpg",
+                        "OIP-3285539972.jpg",
+                        "maxresdefault-3730074767.jpg",
+                        "ss_0df1a7f796753fb6d76e55aff95c042ca88ab3bf.1920x1080-1880673191.jpg",
+                        "8253dec-251693246.webp",
+                        "OIP-226731792.jpg",
+                        "OIP-3285539972.jpg",
+                        "maxresdefault-3730074767.jpg",
+                        "ss_0df1a7f796753fb6d76e55aff95c042ca88ab3bf.1920x1080-1880673191.jpg"
+                      ].map((img, idx) => (
+                        <div key={idx} className="shrink-0 snap-center">
+                          <img 
+                            src={`/images/interface/${img}`} 
+                            alt={`Gallery ${idx}`} 
+                            className="w-[300px] h-[180px] object-cover rounded-xl shadow-md border border-border/50"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Seele-Style Prompt Cards with images */}
+                  <div className="w-full max-w-4xl mt-4 mb-12">
+                    <p className="text-muted-foreground text-sm font-medium mb-4 text-center">Discover what Koye can do</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {[
+                        { title: "Game Generator", label: "Auto", bg: "bg-gradient-to-br from-indigo-500/20 to-purple-500/20", border: "border-indigo-500/30", prompt: "Create a new 3D game from scratch", img: "8253dec-251693246.webp" },
+                        { title: "Custom Game Remake", label: "Remix", bg: "bg-gradient-to-br from-emerald-500/20 to-teal-500/20", border: "border-emerald-500/30", prompt: "Remake a classic arcade game in 3D", img: "maxresdefault-3730074767.jpg" },
+                        { title: "3D FPS Game", label: "Action", bg: "bg-gradient-to-br from-rose-500/20 to-orange-500/20", border: "border-rose-500/30", prompt: "Build a first person shooter with a sci-fi theme", img: "ss_0df1a7f796753fb6d76e55aff95c042ca88ab3bf.1920x1080-1880673191.jpg" },
+                        { title: "Arcade Crossing", label: "Casual", bg: "bg-gradient-to-br from-blue-500/20 to-cyan-500/20", border: "border-blue-500/30", prompt: "Create a frogger style road crossing game", img: "OIP-3285539972.jpg" }
+                      ].map((card, idx) => (
+                        <div 
+                          key={idx}
+                          onClick={() => handleSend(card.prompt, [])}
+                          className={cn(
+                            "relative overflow-hidden rounded-2xl border cursor-pointer transition-all hover:scale-[1.02] hover:-translate-y-1 group flex flex-col",
+                            card.bg, card.border, "dark:bg-opacity-10"
+                          )}
+                        >
+                          <div className="absolute top-3 right-3 text-[10px] font-mono px-2 py-0.5 rounded-full bg-background/50 border border-border/50 backdrop-blur-sm z-10">
+                            {card.label}
+                          </div>
+                          <img 
+                            src={`/images/interface/${card.img}`} 
+                            alt={card.title} 
+                            className="w-full h-[120px] object-cover"
+                          />
+                          <div className="p-4 flex flex-1 items-end bg-background/40 backdrop-blur-[2px]">
+                            <h3 className="font-semibold text-sm text-foreground/90 group-hover:text-foreground transition-colors">
+                              {card.title}
+                            </h3>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2367,12 +2519,10 @@ Now complete the request. REQUIREMENTS:
                              const matches = Array.from(fileContent.matchAll(regex)).map(m => m[1].trim());
                              
                              if (matches.length > 0) {
-                               const { searchGameScreensForGame } = await import("../../services/paraliumService");
                                paraliumStore.clearAllImageState();
                                paraliumStore.setReferenceGames(matches);
                                paraliumStore.setPhase("selecting_images", "Waiting for you to select screen ideas...");
                                paraliumStore.setCurrentSearchGameIndex(0);
-                               searchGameScreensForGame(matches[0]).catch(console.error);
                              }
                            }} 
                            className="bg-white text-black hover:bg-zinc-200 gap-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]"
@@ -2435,12 +2585,49 @@ Now complete the request. REQUIREMENTS:
                     isGenerating={isGenerating}
                     variant="docked"
                     placeholder="Write a message..."
+                    onCreateProject={() => setShowCreateProjectDialog(true)}
+                    onConnectProject={handleConnectProject}
+                    projects={projects}
+                    isLoadingProjects={isLoadingProjects}
                   />
                 </div>
               </>
             )}
           </div>
         </div>
+      </div>
+
+        {/* Resizable Divider and Builder Area */}
+        {currentProject && (
+           <>
+               <div 
+                   className={cn(
+                     "relative h-full shrink-0 flex flex-col bg-background border-border/60 z-40 hidden md:flex transition-all duration-300",
+                     isBuilderExpanded ? "rounded-xl border overflow-hidden shadow-2xl" : "border-l",
+                     isBuilderResizeHover ? "cursor-col-resize" : ""
+                   )}
+                   style={{ width: builderWidth }}
+                   onMouseMoveCapture={(e) => {
+                     if (isDraggingBuilder.current) return
+                     const bounds = e.currentTarget.getBoundingClientRect()
+                     const x = e.clientX - bounds.left
+                     setIsBuilderResizeHover(x <= 6)
+                   }}
+                   onMouseLeave={() => setIsBuilderResizeHover(false)}
+                   onMouseDownCapture={(e) => {
+                     const bounds = e.currentTarget.getBoundingClientRect()
+                     const x = e.clientX - bounds.left
+                     if (x > 6) return
+                     e.preventDefault()
+                     e.stopPropagation()
+                     isDraggingBuilder.current = true
+                     document.body.style.cursor = 'col-resize'
+                   }}
+               >
+                   <Builder hideSidebar={true} />
+               </div>
+           </>
+        )}
       </div>
       {/* Connect Project Dialog */}
       {showConnectDialog && (
@@ -2576,10 +2763,6 @@ Now complete the request. REQUIREMENTS:
           </div>
         </div>
       )}
-
-
-
-      <GameDevFlowUI />
     </VoiceChatLayout>
     </>
   )

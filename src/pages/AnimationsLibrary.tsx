@@ -48,27 +48,15 @@ const parseAnimations = (): AnimationInfo[] => {
   return animations
 }
 
-const gifModules = import.meta.glob("../assets/gifs/gifs/*.gif", {
-  eager: true,
-  import: "default",
-}) as Record<string, string>
-
-const gifMap = Object.entries(gifModules).reduce<Record<number, string>>((acc, [path, src]) => {
-  const match = path.match(/(\d+)\.gif$/)
-  if (match) {
-    acc[Number(match[1])] = src
-  }
-  return acc
-}, {})
-
 const animationsData = parseAnimations().map((animation) => ({
   ...animation,
-  gif: gifMap[animation.id],
+  gif: `/gifs/${animation.id}.gif`,
 }))
 
 export function AnimationsLibrary() {
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
 
   const categories = useMemo(() => {
     const unique = new Set(animationsData.map((a) => a.category))
@@ -140,7 +128,7 @@ export function AnimationsLibrary() {
                     <p className="text-xs text-muted-foreground">{animation.subCategory}</p>
                   </div>
                   <div className="flex-1">
-                    {animation.gif ? (
+                    {animation.gif && !failedImages.has(animation.id) ? (
                       <div className="border border-border bg-muted/20 flex items-center justify-center overflow-hidden h-48">
                         <img
                           src={animation.gif}
@@ -148,6 +136,13 @@ export function AnimationsLibrary() {
                           className="w-full h-full object-contain"
                           style={{ objectFit: "contain" }}
                           loading="lazy"
+                          onError={() => {
+                            setFailedImages((prev) => {
+                              const newSet = new Set(prev)
+                              newSet.add(animation.id)
+                              return newSet
+                            })
+                          }}
                         />
                       </div>
                     ) : (

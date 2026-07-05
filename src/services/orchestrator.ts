@@ -4,7 +4,7 @@ import { sendMessageToLaysoAIStream, type LaysoAIMessage } from "./laysoai"
 import { sendMessageToClodStream, type ClodMessage } from "./clodapi"
 import { sendMessageToCerebrasStream, type CerebrasMessage } from "./cerebras"
 
-export type OrchestratorIntent = "orchestrator" | "general_chatting" | "game_coding" | "initial_prototype" | "playable_game_active"
+export type OrchestratorIntent = "orchestrator" | "general_chatting" | "game_coding" | "initial_prototype" | "playable_game_active" | "paralium_agent"
 
 export interface ModelSwitchInfo {
   intent: OrchestratorIntent
@@ -65,6 +65,20 @@ export async function classifyIntent(
     return "game_coding"
   }
 
+  // Paralium agent triggers
+  const paraliumAgentKeywords = [
+    "paralium agent",
+    "agentic paralium",
+    "start paralium v3",
+    "make it agentic",
+    "paralium feature a truely agentic"
+  ]
+  const isParaliumAgent = paraliumAgentKeywords.some(kw => text.includes(kw))
+  if (isParaliumAgent) {
+    console.log("[Orchestrator] Strict match → paralium_agent")
+    return "paralium_agent"
+  }
+
   console.log("[Orchestrator] Defaulting to general_chatting")
   return "general_chatting"
 }
@@ -114,6 +128,14 @@ export function getModelInfo(intent: OrchestratorIntent, isHeavy: boolean = fals
          modelName: "claude-sonnet-4-5-20250929",
          displayName: "Claude Sonnet 4.5",
          preferredModelId: "claude-sonnet-4-5-20250929"
+      }
+    case "paralium_agent":
+      return {
+        intent,
+        modelName: "gemma-4-31b",
+        displayName: "Gemma 4 31B (Paralium Agent)",
+        preferredModelId: ORCHESTRATOR_MODELS[0],
+        allowedModelIds: [...ORCHESTRATOR_MODELS]
       }
     case "game_coding":
       if (isHeavy) {

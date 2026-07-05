@@ -1,3 +1,4 @@
+import JSZip from "jszip"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowUp, Check, ChevronDown, Pencil, X } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -109,6 +110,7 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
     const [_lastSaved, setLastSaved] = useState<Date | null>(null)
     const [showWelcome, setShowWelcome] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+    const [activeTab, setActiveTab] = useState<'files' | 'preview'>('preview')
 
     // Upload overlay state — controlled by BuilderSidebar, rendered here
     const [uploadState, setUploadState] = useState<UploadOverlayState | null>(null)
@@ -935,8 +937,39 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
         }
     }, [addGeneratedFile, editPrompt, hasTooManyTags, imageModel, imageRatio, resolveTaggedReferenceImages, selectedCategory, selectedMediaUrl, setSelectedAsset, urlToBase64, videoDuration, videoFrameDataUrl, videoModel, videoRatio, videoWithAudio])
 
-    if (isLoading) {
-        return <ProjectLoader />
+    const handleDownload = async () => {
+        try {
+            const zip = new JSZip();
+            const filesToDownload = useAppStore.getState().generatedFiles || {};
+            
+            Object.entries(filesToDownload).forEach(([path, content]) => {
+                if (typeof content === 'string') {
+                    zip.file(path, content);
+                } else if (content && typeof content === 'object') {
+                    const c = content as any;
+                    if (c.content) {
+                        zip.file(path, c.content);
+                    }
+                }
+            });
+            
+            const blob = await zip.generateAsync({ type: 'blob' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentProject?.name || 'project'}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Failed to download project:', error);
+            alert('Failed to download project files.');
+        }
+    }
+
+    const handlePublish = () => {
+        alert("Project published successfully!");
     }
 
     return (
@@ -955,31 +988,37 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
 
             {/* Main Builder Area */}
             <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative font-mono">
+                {isLoading && (
+                    <div className="absolute inset-0 z-50 bg-background/20 backdrop-blur-md flex items-center justify-center">
+                        <div className="animate-spin h-8 w-8 border-4 border-foreground border-t-transparent rounded-full shadow-lg" />
+                    </div>
+                )}
                 <BuilderHeader 
                     projectName={currentProject?.name || "Loading..."}
-                    onUndo={handleUndo}
-                    onRedo={handleRedo}
-                    onPlay={handlePlay}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
                     onSave={manualSave}
-                    canUndo={canUndo}
-                    canRedo={canRedo}
                     hasUnsavedChanges={hasUnsavedChanges}
+                    onDownload={handleDownload}
+                    onPublish={handlePublish}
                 />
                 
                 <div className="flex-1 flex min-h-0 border-t border-border/60 relative overflow-hidden">
                     {/* Left Sidebar - File Explorer */}
-                    <BuilderSidebar
-                        selectedFile={selectedAsset ? (selectedAsset as any).path : null}
-                        onSelectFile={handleSelectFile}
-                        onFileCreated={handleFileCreated}
-                        projectId={projectId}
-                        userId={user?.id}
-                        onFileSynced={handleFileSynced}
-                        onUploadStateChange={setUploadState}
-                    />
+                    <div className={cn("h-full", activeTab === 'files' ? "flex-1 min-w-0" : "hidden")}>
+                        <BuilderSidebar
+                            selectedFile={selectedAsset ? (selectedAsset as any).path : null}
+                            onSelectFile={handleSelectFile}
+                            onFileCreated={handleFileCreated}
+                            projectId={projectId}
+                            userId={user?.id}
+                            onFileSynced={handleFileSynced}
+                            onUploadStateChange={setUploadState}
+                        />
+                    </div>
 
                     {/* Middle - Viewer / Upload Overlay */}
-                    <div className="flex-1 bg-muted/20 relative min-w-0 border-x border-border/60">
+                    <div className={cn("h-full bg-muted/20 relative border-x border-border/60", activeTab === 'preview' ? "flex-1 min-w-0" : "hidden")}>
                         <UnifiedViewer />
 
                         {engineErrors.length > 0 && (

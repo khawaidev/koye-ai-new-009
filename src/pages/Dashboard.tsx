@@ -66,6 +66,7 @@ export function Dashboard() {
   const [searchParams] = useSearchParams()
   const { user, session, loading } = useAuth()
   const { subscription, usage, refresh: refreshPricing } = usePricing()
+  const { setIsUpgradeModalOpen } = useAppStore()
   const tabParam = searchParams.get("tab") as TabType | null
   const [activeTab, setActiveTab] = useState<TabType>(tabParam || "explore")
   const [userImages, setUserImages] = useState<ImageWithDb[]>([])
@@ -458,7 +459,7 @@ export function Dashboard() {
   }
 
   const handleUpgrade = async () => {
-    navigate("/pricing")
+    setIsUpgradeModalOpen(true)
   }
 
   const handleChangePassword = async () => {
@@ -1827,4 +1828,3 @@ function FeatureSection({ title, description, steps }: FeatureSectionProps) {
     </div>
   )
 }
-

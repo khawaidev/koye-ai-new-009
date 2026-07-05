@@ -1,14 +1,12 @@
-import { ArrowUp, File, FolderClosed, Mic, Plus, Square, X, Paperclip, AtSign, Film, FileText, Zap, Rocket, ChevronDown, ChevronUp, Sparkles, Crown, Check } from "lucide-react"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import { ArrowUp, File, FolderClosed, Mic, Plus, Square, X, Paperclip, AtSign, Film, FileText, ChevronDown, ChevronUp, Crown, Check } from "lucide-react"
+import React, { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue, useTransform } from "framer-motion"
 import { cn } from "../../lib/utils"
 import { useAppStore } from "../../store/useAppStore"
 import { TaskBar } from "../tasks/TaskBar"
 import { PixelImage } from "../ui/pixel-image"
 import { usePricing } from "../../hooks/usePricing"
-import { useNavigate } from "react-router-dom"
 import { useTheme } from "../../components/theme-provider"
-import type { ModelMode } from "../../types"
 
 interface ChatInputProps {
   onSend: (message: string, images: File[], mentionedFiles?: string[]) => void
@@ -18,6 +16,10 @@ interface ChatInputProps {
   variant?: "hero" | "docked"
   placeholder?: string
   promptChips?: string[]
+  onCreateProject?: () => void
+  onConnectProject?: (project: any) => void
+  projects?: any[]
+  isLoadingProjects?: boolean
 }
 
 interface FileMention {
@@ -133,6 +135,10 @@ export function ChatInput({
   variant = "docked",
   placeholder,
   promptChips = [],
+  onCreateProject,
+  onConnectProject,
+  projects = [],
+  isLoadingProjects = false,
 }: ChatInputProps) {
   const {
     currentProject,
@@ -142,9 +148,9 @@ export function ChatInput({
     selectedModelId,
     setSelectedModelMode,
     setSelectedModelId,
+    setIsUpgradeModalOpen,
   } = useAppStore()
-  const { subscription } = usePricing()
-  const navigate = useNavigate()
+  const { subscription } = usePricing({ includeUsage: false })
   const { theme } = useTheme()
 
   const [images, setImages] = useState<File[]>([])
@@ -152,6 +158,7 @@ export function ChatInput({
   const [suggestionSearch, setSuggestionSearch] = useState("")
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0)
   const [showPlusMenu, setShowPlusMenu] = useState(false)
+  const [showProjectMenu, setShowProjectMenu] = useState(false)
   const [showModelSelector, setShowModelSelector] = useState(false)
   const [showManualModelList, setShowManualModelList] = useState(false)
   const [inputHeight, setInputHeight] = useState(52)
@@ -162,7 +169,9 @@ export function ChatInput({
   const editorRef = useRef<HTMLDivElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
   const plusMenuRef = useRef<HTMLDivElement>(null)
+  const projectMenuRef = useRef<HTMLDivElement>(null)
   const modelSelectorRef = useRef<HTMLDivElement>(null)
+  const didApplyDefaultModeRef = useRef(false)
 
   const hasMessages = messages.length > 0
   const isHero = variant === "hero"
@@ -182,12 +191,22 @@ export function ChatInput({
     return planName === "FREE" || planName === "INDIE" || isTrial
   }, [subscription?.planName, subscription?.status])
 
+  const isParalliumLocked = showUpgradeButton
+
   const upgradeButtonLabel = React.useMemo(() => {
     const planName = (subscription?.planName || "FREE").toUpperCase()
     if (planName === "INDIE") return "Upgrade to Pro"
     if (subscription?.status === "trial") return "Upgrade to Pro"
     return "Upgrade Plan"
   }, [subscription?.planName, subscription?.status])
+
+  useEffect(() => {
+    if (didApplyDefaultModeRef.current) return
+    didApplyDefaultModeRef.current = true
+    if (selectedModelMode !== "paralium") {
+      setSelectedModelMode("fast")
+    }
+  }, [selectedModelMode, setSelectedModelMode])
 
   // Get available files and folders from project
   const availableFiles = React.useMemo(() => {
@@ -416,6 +435,9 @@ export function ChatInput({
       if (plusMenuRef.current && !plusMenuRef.current.contains(target)) {
         setShowPlusMenu(false)
       }
+      if (projectMenuRef.current && !projectMenuRef.current.contains(target)) {
+        setShowProjectMenu(false)
+      }
       if (modelSelectorRef.current && !modelSelectorRef.current.contains(target)) {
         setShowModelSelector(false)
         setShowManualModelList(false)
@@ -559,6 +581,59 @@ export function ChatInput({
                 </AnimatePresence>
               </div>
 
+              <div className="relative" ref={projectMenuRef}>
+                <button
+                  onClick={() => setShowProjectMenu(!showProjectMenu)}
+                  disabled={disabled || isGenerating}
+                  type="button"
+                  className="flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] text-muted-foreground hover:bg-muted/60 hover:text-foreground dark:hover:bg-white/5 transition-colors group"
+                >
+                  <FolderClosed className="h-4 w-4" />
+                  <span className="font-medium tracking-tight">{currentProject ? currentProject.name : "New Workspace"}</span>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors" />
+                </button>
+                <AnimatePresence>
+                  {showProjectMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute bottom-full left-0 mb-2 w-64 bg-popover border border-border shadow-lg rounded-2xl overflow-hidden z-50 py-1 dark:bg-[#262625] dark:border-[#323230]"
+                    >
+                      <button
+                        onClick={() => { onCreateProject?.(); setShowProjectMenu(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left dark:hover:bg-white/5 font-bold"
+                      >
+                        <Plus className="h-4 w-4" />
+                        <span>Start New Project</span>
+                      </button>
+                      {projects.length > 0 && (
+                        <>
+                          <div className="my-1 border-t border-border/50"></div>
+                          <div className="px-3 py-1 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Previous Projects</div>
+                          <div className="max-h-48 overflow-y-auto scrollbar-mini">
+                            {projects.map(p => (
+                              <button
+                                key={p.id}
+                                onClick={() => { onConnectProject?.(p); setShowProjectMenu(false); }}
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left dark:hover:bg-white/5"
+                              >
+                                <FolderClosed className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                <span className="truncate">{p.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      {isLoadingProjects && (
+                        <div className="px-4 py-3 text-sm text-muted-foreground text-center">Loading...</div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               <div className="ml-auto flex items-center gap-1.5">
                 <div className="relative" ref={modelSelectorRef}>
                   <button
@@ -592,7 +667,7 @@ export function ChatInput({
                         </span>
                       ) : selectedModelMode === "paralium" ? (
                         <ShinyText
-                          text="✦ Paralium"
+                          text="✦ Parallium"
                           speed={2.2}
                           spread={120}
                           color={paraliumBaseColor}
@@ -631,6 +706,7 @@ export function ChatInput({
                                 ? "bg-foreground text-background"
                                 : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
                             )}
+                            type="button"
                           >
                             <div className="flex-1 text-left">
                               <div className="font-bold leading-tight">Fast</div>
@@ -640,97 +716,60 @@ export function ChatInput({
                           </button>
 
                           <button
-                            onClick={() => { setSelectedModelMode('auto'); setShowManualModelList(false); setShowModelSelector(false); }}
+                            onClick={() => {
+                              if (isParalliumLocked) {
+                                setIsUpgradeModalOpen(true)
+                                return
+                              }
+                              setSelectedModelMode('paralium')
+                              setShowManualModelList(false)
+                              setShowModelSelector(false)
+                            }}
                             className={cn(
-                              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group",
-                              selectedModelMode === 'auto'
-                                ? "bg-foreground text-background"
-                                : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
-                            )}
-                          >
-                            <div className="flex-1 text-left">
-                              <div className="font-bold leading-tight">Auto</div>
-                              <div className={cn("text-[10px] font-mono tracking-tighter transition-colors", selectedModelMode === 'auto' ? "opacity-70" : "text-muted-foreground/60 group-hover:text-muted-foreground")}>Smart Orchestrator</div>
-                            </div>
-                            {selectedModelMode === 'auto' && <Check className="h-3.5 w-3.5 ml-auto" />}
-                          </button>
-
-                          <button
-                            onClick={() => { setSelectedModelMode('paralium'); setShowManualModelList(false); setShowModelSelector(false); }}
-                            className={cn(
-                              "w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group overflow-hidden",
+                              "relative w-full overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group border",
                               selectedModelMode === 'paralium'
-                                ? "bg-foreground text-background"
-                                : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                                ? "bg-gradient-to-br from-violet-500/25 to-fuchsia-500/15 border-violet-500/40 text-foreground"
+                                : "bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5 border-violet-500/25 text-foreground/70 hover:text-foreground hover:bg-muted dark:hover:bg-white/5",
+                              isParalliumLocked ? "opacity-90" : ""
                             )}
-                            onMouseEnter={() => setIsParaliumHovered(true)}
-                            onMouseLeave={() => setIsParaliumHovered(false)}
+                            type="button"
                           >
-                            <GleamBorder active={showModelSelector && (selectedModelMode === "paralium" || isParaliumHovered)} roundedClassName="rounded-xl" />
-                            <div className="flex-1 text-left">
-                              <div className="font-bold leading-tight">Paralium</div>
-                              <div className={cn("text-[10px] font-mono tracking-tighter transition-colors", selectedModelMode === 'paralium' ? "opacity-70" : "text-muted-foreground/60 group-hover:text-muted-foreground")}>Premium Agentic Game Builder</div>
+                            <GleamBorder active={true} roundedClassName="rounded-xl" />
+                            <div className="flex-1 text-left relative">
+                              <div className="font-bold leading-tight flex items-center gap-2">
+                                <ShinyText
+                                  text="Parallium"
+                                  speed={2.2}
+                                  spread={120}
+                                  color={paraliumBaseColor}
+                                  shineColor={paraliumShineColor}
+                                  className="font-bold"
+                                />
+                                
+                              </div>
+                              <div className={cn(
+                                "text-[10px] font-mono tracking-tighter transition-colors",
+                                selectedModelMode === 'paralium'
+                                  ? "opacity-70"
+                                  : "text-muted-foreground/60 group-hover:text-muted-foreground"
+                              )}>
+                                Reasoning mode with premium quality
+                              </div>
                             </div>
-                            {selectedModelMode === 'paralium' && <Check className="h-3.5 w-3.5 ml-auto" />}
-                          </button>
-
-                          <button
-                            onClick={() => { setShowManualModelList((prev) => !prev); }}
-                            className={cn(
-                              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all group",
-                              selectedModelMode === 'models' || showManualModelList
-                                ? "bg-foreground text-background"
-                                : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                            {isParalliumLocked ? (
+                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-violet-500" />
+                            ) : selectedModelMode === 'paralium' ? (
+                              <Check className="h-3.5 w-3.5 ml-auto" />
+                            ) : (
+                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-violet-500/70" />
                             )}
-                          >
-                            <div className="flex-1 text-left">
-                              <div className="font-bold leading-tight">Models</div>
-                              <div className={cn("text-[10px] font-mono tracking-tighter transition-colors", selectedModelMode === 'models' || showManualModelList ? "opacity-70" : "text-muted-foreground/60 group-hover:text-muted-foreground")}>Manual model selection</div>
-                            </div>
-                            {selectedModelMode === 'models' || showManualModelList ? <ChevronDown className="h-3.5 w-3.5 ml-auto" /> : null}
                           </button>
                         </div>
-
-                        {(selectedModelMode === 'models' || showManualModelList) && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            className="mt-2 pt-2 border-t border-border/50 px-2 space-y-1 max-h-56 overflow-y-auto scrollbar-mini"
-                          >
-                            {MANUAL_MODELS.map(m => (
-                              <button
-                                key={m.id}
-                                onClick={() => {
-                                  setSelectedModelMode('models')
-                                  setSelectedModelId(m.id)
-                                  setShowManualModelList(false)
-                                  setShowModelSelector(false)
-                                }}
-                                className={cn(
-                                  "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs transition-all",
-                                  selectedModelId === m.id ? "bg-muted font-bold dark:bg-white/10" : "hover:bg-muted/40 dark:hover:bg-white/5"
-                                )}
-                              >
-                                <img
-                                  src={m.icon}
-                                  alt={m.name}
-                                  className={cn(
-                                    "w-4 h-4 object-contain",
-                                    m.id.startsWith('gpt') && theme === 'light' ? "invert" : "",
-                                    m.id.startsWith('deepseek') ? "purple" : ""
-                                  )}
-                                />
-                                <span>{m.name}</span>
-                                {selectedModelId === m.id && <Check className="h-3 w-3 ml-auto text-foreground" />}
-                              </button>
-                            ))}
-                          </motion.div>
-                        )}
 
                         {showUpgradeButton && (
                           <div className="mt-2 p-2 px-3 border-t border-border/50">
                             <button
-                              onClick={() => navigate('/pricing')}
+                              onClick={() => setIsUpgradeModalOpen(true)}
                               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-foreground text-background font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-opacity shadow-lg"
                             >
                               <Crown className="h-3.5 w-3.5 fill-background" />

@@ -1,15 +1,14 @@
-import { Activity, Box, Check, Gamepad2, Loader2, MessageSquare, Palette, Video } from "lucide-react"
-import { useState } from "react"
+import { Check, Crown, Loader2, Sparkles, X } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useTheme } from "../components/theme-provider"
 import { cn } from "../lib/utils"
-import { Button } from "../components/ui/button"
-import { AppIcon } from "../components/ui/AppIcon"
-import { ThemeToggle } from "../components/ui/theme-toggle"
 import { useAuth } from "../hooks/useAuth"
 import { usePricing } from "../hooks/usePricing"
 import { subscribeToPlan } from "../services/pricingService"
 import { openRazorpayCheckout } from "../services/razorpay"
+import { useAppStore } from "../store/useAppStore"
 
 interface PricingPlan {
   name: string
@@ -84,13 +83,53 @@ const plans: PricingPlan[] = [
 
 export function Pricing() {
   const navigate = useNavigate()
-  const { theme } = useTheme()
-  const { isAuthenticated, user } = useAuth()
-  const { plans: dbPlans, subscription, refresh, loading: pricingLoading } = usePricing()
-  const [processingPlan, setProcessingPlan] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { isUpgradeModalOpen, setIsUpgradeModalOpen } = useAppStore()
+
+  useEffect(() => {
+    setIsUpgradeModalOpen(true)
+  }, [setIsUpgradeModalOpen])
 
   // Map plan names to database plan names
+  const planNameMap: Record<string, string> = {
+    INDIE: "INDIE",
+    PRO: "PRO",
+    PRO_PLUS: "PRO_PLUS",
+    STUDIO: "STUDIO",
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <UpgradeModal
+        open={isUpgradeModalOpen}
+        onClose={() => {
+          setIsUpgradeModalOpen(false)
+          navigate(-1)
+        }}
+      />
+    </div>
+  )
+}
+
+export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const navigate = useNavigate()
+  const { theme } = useTheme()
+  const { isAuthenticated, user } = useAuth()
+  const { plans: dbPlans, subscription, refresh, loading: pricingLoading } = usePricing({ includeUsage: false })
+  const [processingPlan, setProcessingPlan] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [billing, setBilling] = useState<"monthly" | "annual">("annual")
+
+  const isDark = theme === "dark"
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown)
+  }, [open, onClose])
+
   const planNameMap: Record<string, string> = {
     INDIE: "INDIE",
     PRO: "PRO",
@@ -109,13 +148,11 @@ export function Pricing() {
       return
     }
 
-    // For STUDIO plan, show contact message
     if (planName === "STUDIO") {
       alert("Please contact sales for STUDIO plan subscription")
       return
     }
 
-    // Find the plan in database
     const dbPlanName = planNameMap[planName]
     const dbPlan = dbPlans.find((p) => p.name === dbPlanName)
 
@@ -124,7 +161,6 @@ export function Pricing() {
       return
     }
 
-    // Check if user already has this plan
     if (subscription && subscription.planName === dbPlanName && subscription.status === "active") {
       alert(`You are already subscribed to ${dbPlan.displayName}`)
       return
@@ -134,20 +170,18 @@ export function Pricing() {
     setError(null)
 
     try {
-      // Calculate amount in paise (smallest currency unit for INR)
-      const amountInPaise = dbPlan.priceInr * 100
-
-      // Convert icon URL to absolute URL for Razorpay
+      const billingMonths = billing === "annual" ? 12 : 1
+      const billingDiscount = billing === "annual" ? 0.9 : 1
+      const amountInPaise = Math.round(dbPlan.priceInr * billingMonths * billingDiscount * 100)
       const iconUrl = new URL("/images/app/new-icon2.png", window.location.origin).href
 
-      // Open Razorpay checkout
       await openRazorpayCheckout(
         {
           amount: amountInPaise,
           currency: "INR",
           name: "KOYE AI",
-          description: `Subscription to ${dbPlan.displayName} plan`,
-          image: iconUrl, // App icon as merchant logo
+          description: `${billing === "annual" ? "Annual" : "Monthly"} subscription to ${dbPlan.displayName}`,
+          image: iconUrl,
           prefill: {
             name: user.email?.split("@")[0] || "User",
             email: user.email || undefined,
@@ -156,26 +190,18 @@ export function Pricing() {
             plan_id: dbPlan.id,
             plan_name: dbPlan.name,
             user_id: user.id,
+            billing_cycle: billing,
           },
           theme: {
             color: "#000000",
           },
         },
-        async (response) => {
-          // Payment successful - update subscription
+        async () => {
           try {
-            console.log("Payment successful:", response)
-
-            // Subscribe user to plan
             await subscribeToPlan(user.id, dbPlan.id)
-
-            // Refresh pricing data
             await refresh()
-
             setProcessingPlan(null)
-            alert(`Successfully subscribed to ${dbPlan.displayName}!`)
-
-            // Navigate to dashboard
+            onClose()
             navigate("/dashboard?tab=usage")
           } catch (error) {
             console.error("Error updating subscription:", error)
@@ -196,359 +222,238 @@ export function Pricing() {
     }
   }
 
+  const featuredPlans = plans.filter((p) => ["INDIE", "PRO", "PRO_PLUS"].includes(p.name))
+
   return (
-    <div className="min-h-screen bg-background font-mono text-foreground">
-      {/* Top Header with Logo and Dashboard Button */}
-      <div className="border-b border-border px-6 py-4 flex items-center justify-between bg-background text-foreground">
-        <div className="flex items-center gap-3 relative">
-          <AppIcon
-
-            alt="KOYE AI"
-            className="h-12 w-12"
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <button
+            type="button"
+            aria-label="Close upgrade modal"
+            onClick={onClose}
+            className="absolute inset-0 bg-black/70"
           />
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground font-mono">
-              KOYE<span className="font-extrabold">_</span>AI
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5 font-mono">
-              AI game builder
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <Button
-            onClick={() => navigate(-1)}
-            className="bg-background text-foreground border-2 border-foreground shadow-[4px_4px_0px_0px_currentColor] hover:shadow-[2px_2px_0px_0px_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] transition-all rounded-none font-bold"
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ duration: 0.16 }}
+            className={cn(
+              "relative w-full max-w-5xl max-h-[90vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col",
+              isDark ? "bg-[#0d0d0f] border-white/10 text-white" : "bg-background border-border text-foreground"
+            )}
           >
-            $ back
-          </Button>
-          <Button
-            onClick={() => navigate(isAuthenticated ? "/dashboard" : "/signup")}
-            className="bg-foreground text-background border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:bg-background hover:text-foreground hover:shadow-[4px_4px_0px_0px_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] transition-all rounded-none font-bold"
-          >
-            {isAuthenticated ? "$ dashboard" : "$ sign_up"}
-          </Button>
-        </div>
-      </div>
+            <div className={cn("flex items-center justify-between px-6 py-4 border-b", isDark ? "border-white/10" : "border-border")}>
+              <div className="flex items-center gap-3">
+                <Sparkles className={cn("h-4 w-4", isDark ? "text-amber-300" : "text-amber-600")} />
+                <div>
+                  <div className="font-semibold">Upgrade Your Plan</div>
+                  <div className={cn("text-xs mt-0.5", isDark ? "text-white/60" : "text-muted-foreground")}>
+                    Choose a plan that matches your workflow. Annual saves 10%.
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className={cn(
+                  "h-9 w-9 rounded-full flex items-center justify-center transition-colors",
+                  isDark ? "hover:bg-white/10" : "hover:bg-muted"
+                )}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
-      <div className="container mx-auto px-6 py-12 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-12 border-b border-border pb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-4">$ pricing_plans</h1>
-          <p className="text-muted-foreground text-sm">Choose the plan that fits your game development needs</p>
-        </div>
-
-        {/* Pricing Cards */}
-        {pricingLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-foreground" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {plans.map((plan) => {
-              // Find matching database plan for price
-              // const dbPlanName = planNameMap[plan.name] // unused
-              // const dbPlan = dbPlans.find((p) => p.name === dbPlanName) // unused
-
-              return (
-                <div
-                  key={plan.name}
-                  className={`
-                bg-background border-2 border-border
-                flex flex-col
-                transition-all
-                ${plan.highlight ? "scale-105 shadow-2xl" : "hover:shadow-lg"}
-              `}
+            <div className="px-6 py-4 flex items-center justify-center">
+              <div className={cn("inline-flex rounded-full border p-1", isDark ? "border-white/10" : "border-border")}>
+                <button
+                  type="button"
+                  onClick={() => setBilling("monthly")}
+                  className={cn(
+                    "px-3 py-1.5 rounded-full text-xs font-semibold transition-colors",
+                    billing === "monthly"
+                      ? isDark ? "bg-white text-black" : "bg-foreground text-background"
+                      : isDark ? "text-white/70 hover:bg-white/5" : "text-muted-foreground hover:bg-muted"
+                  )}
                 >
-                  {/* Plan Header */}
-                  <div className="border-b border-border p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-xl font-bold text-foreground">{plan.name}</h2>
-                      {plan.highlight && (
-                        <span className="text-xs bg-foreground text-background px-2 py-1 font-mono font-bold">
-                          POPULAR
-                        </span>
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBilling("annual")}
+                  className={cn(
+                    "px-3 py-1.5 rounded-full text-xs font-semibold transition-colors flex items-center gap-2",
+                    billing === "annual"
+                      ? isDark ? "bg-white text-black" : "bg-foreground text-background"
+                      : isDark ? "text-white/70 hover:bg-white/5" : "text-muted-foreground hover:bg-muted"
+                  )}
+                >
+                  Annual
+                  <span className={cn("text-[10px] font-black px-2 py-0.5 rounded-full", isDark ? "bg-amber-400/20 text-amber-300" : "bg-amber-500/15 text-amber-700")}>
+                    SAVE 10%
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <div className="px-6 pb-6 flex-1 min-h-0 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {featuredPlans.map((plan) => {
+                  const highlight = plan.name === "PRO"
+                  const dbPlanName = planNameMap[plan.name]
+                  const dbPlan = dbPlans.find((p) => p.name === dbPlanName)
+                  const isCurrent = !!subscription && subscription.planName === dbPlanName && subscription.status === "active"
+                  const isProcessing = processingPlan === plan.name
+                  const monthlyUsd = dbPlan ? dbPlan.priceUsd : parseFloat(plan.priceUsd.replace(/[^0-9.]/g, "")) || 0
+                  const monthlyInr = dbPlan ? dbPlan.priceInr : parseFloat(plan.price.replace(/[^0-9.]/g, "").replaceAll(",", "")) || 0
+                  const discountedMonthlyUsd = billing === "annual" ? monthlyUsd * 0.9 : monthlyUsd
+                  const discountedMonthlyInr = billing === "annual" ? monthlyInr * 0.9 : monthlyInr
+                  const billedText = billing === "annual" ? "billed annually" : "billed monthly"
+                  const annualTotalInr = monthlyInr * 12 * 0.9
+                  const canCheckout = !!dbPlan && !pricingLoading
+
+                  return (
+                    <div
+                      key={plan.name}
+                      className={cn(
+                        "rounded-2xl border p-5 flex flex-col gap-4",
+                        isDark ? "border-white/10 bg-white/[0.03]" : "border-border bg-card",
+                        highlight ? (isDark ? "ring-1 ring-amber-400/30" : "ring-1 ring-amber-500/30") : ""
                       )}
-                    </div>
-                    <p className="text-xs text-muted-foreground mb-4">{plan.description}</p>
-                    <div className="space-y-1">
-                      <div className="text-2xl font-bold text-foreground">{plan.price}</div>
-                      <div className="text-sm text-muted-foreground">{plan.priceUsd}</div>
-                    </div>
-                  </div>
-
-                  {/* Features List */}
-                  <div className="flex-1 p-6 space-y-3">
-                    {plan.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-foreground shrink-0 mt-0.5" />
-                        <span className="text-xs text-foreground font-mono leading-relaxed">
-                          {feature}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* CTA Button */}
-                  <div className="p-6 border-t border-border">
-                    {subscription && subscription.planName === planNameMap[plan.name] && subscription.status === "active" ? (
-                      <div className="w-full px-4 py-2 bg-green-100 dark:bg-green-900 border-2 border-green-600 text-green-800 dark:text-green-100 text-center text-sm font-mono">
-                        $ current_plan
-                      </div>
-                    ) : (
-                      <Button
-                        onClick={() => handleGetStarted(plan.name)}
-                        disabled={processingPlan === plan.name}
-                        className={`
-                      w-full font-mono text-sm
-                      ${plan.highlight
-                            ? "bg-foreground text-background hover:bg-muted-foreground border-2 border-foreground disabled:opacity-50"
-                            : "bg-background text-foreground hover:bg-muted border-2 border-foreground disabled:opacity-50"
-                          }
-                    `}
-                      >
-                        {processingPlan === plan.name ? (
-                          <span className="flex items-center justify-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            $ processing...
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className="text-sm font-semibold">{plan.name === "INDIE" ? "Standard" : plan.name === "PRO" ? "Pro" : "Ultra"}</div>
+                          <div className={cn("mt-1 text-xs", isDark ? "text-white/60" : "text-muted-foreground")}>{plan.description}</div>
+                        </div>
+                        {highlight && (
+                          <span className={cn("whitespace-nowrap text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border", isDark ? "border-amber-400/30 text-amber-300" : "border-amber-500/30 text-amber-700")}>
+                            Most Popular
                           </span>
-                        ) : plan.name === "STUDIO" ? (
-                          "$ contact_sales"
-                        ) : (
-                          "$ get_started"
                         )}
-                      </Button>
-                    )}
-                  </div>
+                      </div>
+
+                      <div className="flex items-end justify-between gap-4">
+                        <div>
+                          <div className="text-3xl font-bold tracking-tight">
+                            ${discountedMonthlyUsd.toFixed(2)}
+                          </div>
+                          <div className={cn("text-xs mt-1", isDark ? "text-white/60" : "text-muted-foreground")}>
+                            ₹{new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Math.round(discountedMonthlyInr))} /mo • {billedText}
+                          </div>
+                          {billing === "annual" && (
+                            <div className={cn("text-xs mt-1", isDark ? "text-amber-300/90" : "text-amber-700")}>
+                              ₹{new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Math.round(annualTotalInr))} /year • save 10%
+                            </div>
+                          )}
+                        </div>
+                        <div className={cn("text-xs pb-1 text-right", isDark ? "text-white/60" : "text-muted-foreground")}>/mo</div>
+                      </div>
+
+                      <button
+                        type="button"
+                        disabled={isProcessing || isCurrent || !canCheckout}
+                        onClick={() => (isCurrent || !canCheckout ? undefined : handleGetStarted(plan.name))}
+                        className={cn(
+                          "w-full rounded-xl py-2.5 text-sm font-bold transition-colors border flex items-center justify-center gap-2",
+                          isCurrent
+                            ? isDark ? "bg-white/10 border-white/10 text-white/80" : "bg-muted border-border text-muted-foreground"
+                            : highlight
+                              ? isDark ? "bg-amber-400 text-black border-amber-400 hover:bg-amber-300" : "bg-foreground text-background border-foreground hover:opacity-90"
+                              : isDark ? "bg-white text-black border-white hover:bg-white/90" : "bg-background text-foreground border-border hover:bg-muted",
+                          !canCheckout ? "opacity-70 cursor-not-allowed" : ""
+                        )}
+                      >
+                        {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                        {!canCheckout ? "Loading..." : isCurrent ? "Current Plan" : plan.name === "INDIE" ? "Get Standard" : plan.name === "PRO" ? "Get Pro" : "Get Ultra"}
+                      </button>
+
+                      <div className="space-y-2 pt-1">
+                        {plan.features.slice(0, 6).map((feature) => (
+                          <div key={feature} className="flex items-start gap-2">
+                            <Check className={cn("h-4 w-4 mt-0.5", isDark ? "text-white/80" : "text-foreground")} />
+                            <div className={cn("text-xs leading-relaxed", isDark ? "text-white/70" : "text-foreground")}>{feature}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {error && (
+                <div className={cn("mt-4 rounded-xl border px-4 py-3 text-sm", isDark ? "border-red-500/30 bg-red-500/10 text-red-200" : "border-red-500/30 bg-red-500/10 text-red-700")}>
+                  {error}
                 </div>
-              )
-            })}
-          </div>
-        )}
+              )}
 
-        {/* Error Message */}
-        {error && (
-          <div className="mt-6 p-4 bg-red-500/10 border-2 border-red-500 rounded text-center">
-            <p className="text-sm text-red-600 dark:text-red-400 font-mono">{error}</p>
-          </div>
-        )}
-
-        {/* Credit Top-Up Packs */}
-        <div className="mt-16 border-t border-border pt-12">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-2">$ credit_topups</h2>
-            <p className="text-sm text-muted-foreground">Need more credits? Buy top-up packs anytime</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {/* $5 Pack */}
-            <div className="border-2 border-border p-6 hover:shadow-lg transition-all">
-              <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-foreground mb-2">$5</div>
-                <div className="text-sm text-muted-foreground">₹375</div>
-              </div>
-              <div className="border-t border-border pt-4 mb-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground">500</div>
-                  <div className="text-xs text-muted-foreground">credits</div>
+              <div className={cn("mt-6 rounded-2xl border p-4 flex items-center justify-between", isDark ? "border-white/10 bg-white/[0.03]" : "border-border bg-card")}>
+                <div className="flex items-center gap-3">
+                  <Crown className={cn("h-4 w-4", isDark ? "text-amber-300" : "text-amber-600")} />
+                  <div className="text-sm font-semibold">Secure checkout</div>
                 </div>
-              </div>
-              <Button
-                onClick={() => alert("Top-up feature coming soon!")}
-                className="w-full bg-background text-foreground border-2 border-foreground hover:bg-foreground hover:text-background transition-colors font-mono text-sm"
-              >
-                $ buy_now
-              </Button>
-            </div>
-
-            {/* $10 Pack */}
-            <div className="border-2 border-foreground p-6 hover:shadow-lg transition-all bg-foreground text-background">
-              <div className="text-center mb-4">
-                <div className="text-3xl font-bold mb-2">$10</div>
-                <div className="text-sm text-background/60">₹750</div>
-              </div>
-              <div className="border-t border-background pt-4 mb-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold">1,200</div>
-                  <div className="text-xs text-background/60">credits</div>
-                  <div className="text-xs text-green-400 mt-1">+20% bonus</div>
-                </div>
-              </div>
-              <Button
-                onClick={() => alert("Top-up feature coming soon!")}
-                className="w-full bg-background text-foreground border-2 border-background hover:bg-background/90 transition-colors font-mono text-sm"
-              >
-                $ buy_now
-              </Button>
-            </div>
-
-            {/* $20 Pack */}
-            <div className="border-2 border-border p-6 hover:shadow-lg transition-all">
-              <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-foreground mb-2">$20</div>
-                <div className="text-sm text-muted-foreground">₹1,500</div>
-              </div>
-              <div className="border-t border-border pt-4 mb-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground">3,000</div>
-                  <div className="text-xs text-muted-foreground">credits</div>
-                  <div className="text-xs text-green-600 mt-1">+50% bonus</div>
+                <div className={cn("text-xs", isDark ? "text-white/60" : "text-muted-foreground")}>
+                  Payments handled by Razorpay
                 </div>
               </div>
-              <Button
-                onClick={() => alert("Top-up feature coming soon!")}
-                className="w-full bg-background text-foreground border-2 border-foreground hover:bg-foreground hover:text-background transition-colors font-mono text-sm"
-              >
-                $ buy_now
-              </Button>
-            </div>
-          </div>
-        </div>
 
-        {/* Credit Costs Information */}
-        <div className="mt-16 border-t border-border pt-12">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-2">$ credit_costs</h2>
-            <p className="text-sm text-muted-foreground">How your credits are consumed</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Image Generation */}
-            <div className="border-2 border-border p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Palette className="w-5 h-5 shrink-0" />
-                Image Generation
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Standard (koye2dv1)</span>
-                  <span className="font-bold">5 credits</span>
+              <div className={cn("mt-6 rounded-2xl border p-5", isDark ? "border-white/10 bg-white/[0.03]" : "border-border bg-card")}>
+                <div className="text-sm font-semibold">FAQ</div>
+                <div className={cn("mt-1 text-xs", isDark ? "text-white/60" : "text-muted-foreground")}>
+                  Quick answers about billing, credits, and plan changes.
                 </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">HQ (koye2dv1.5)</span>
-                  <span className="font-bold">10 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Ultra (koye2dv2)</span>
-                  <span className="font-bold">15 credits</span>
+                <div className="mt-4 space-y-2">
+                  {[
+                    {
+                      q: "What does “credits” mean?",
+                      a: "Credits are used for generation features (chat, images, 3D, video, audio). Your monthly credits refresh based on your plan.",
+                    },
+                    {
+                      q: "Can I cancel anytime?",
+                      a: "Yes. You can cancel your subscription and keep access until your current billing period ends.",
+                    },
+                    {
+                      q: "How does Annual billing work?",
+                      a: "Annual billing pre-pays 12 months and applies a 10% discount compared to paying monthly.",
+                    },
+                    {
+                      q: "Can I upgrade or downgrade later?",
+                      a: "Yes. You can switch plans any time. Changes typically apply immediately or at the next renewal depending on the plan.",
+                    },
+                    {
+                      q: "Is payment secure?",
+                      a: "Yes. Payments are processed by Razorpay. KOYE AI does not store your card details.",
+                    },
+                  ].map((item) => (
+                    <details
+                      key={item.q}
+                      className={cn("group rounded-xl border px-4 py-3", isDark ? "border-white/10 bg-black/10" : "border-border bg-background")}
+                    >
+                      <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
+                        <div className="text-sm font-semibold">{item.q}</div>
+                        <div className={cn("text-xs font-black px-2 py-1 rounded-full", isDark ? "bg-white/10 text-white/70" : "bg-muted text-muted-foreground")}>
+                          +
+                        </div>
+                      </summary>
+                      <div className={cn("mt-2 text-sm leading-relaxed", isDark ? "text-white/70" : "text-muted-foreground")}>
+                        {item.a}
+                      </div>
+                    </details>
+                  ))}
                 </div>
               </div>
             </div>
-
-            {/* 3D Models */}
-            <div className="border-2 border-border p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Box className="w-5 h-5 shrink-0" />
-                3D Models (koye 3d v1)
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Basic (512)</span>
-                  <span className="font-bold">20 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Standard (1024)</span>
-                  <span className="font-bold">50 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">High-Res (1536)</span>
-                  <span className="font-bold">70 credits</span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">+5/10/20 credits for textures</p>
-              </div>
-            </div>
-
-            {/* Rigging & Animation */}
-            <div className="border-2 border-border p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Activity className="w-5 h-5 shrink-0" />
-                Rigging & Animation
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Auto-Rig</span>
-                  <span className="font-bold">10 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Animation</span>
-                  <span className="font-bold">30 credits/animation</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Audio & Video */}
-            <div className="border-2 border-border p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Video className="w-5 h-5 shrink-0" />
-                Audio & Video
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Audio (per sec)</span>
-                  <span className="font-bold">5 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Video 720p (per sec)</span>
-                  <span className="font-bold">10 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Video 1080p (per sec)</span>
-                  <span className="font-bold">25 credits</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Game Generation */}
-            <div className="border-2 border-border p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Gamepad2 className="w-5 h-5 shrink-0" />
-                Game Generation (AI builder)
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">2D Prototype</span>
-                  <span className="font-bold">100 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">3D Prototype</span>
-                  <span className="font-bold">250 credits</span>
-                </div>
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Full Small Game</span>
-                  <span className="font-bold">500 credits</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Chat */}
-            <div className="border-2 border-border p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 shrink-0" />
-                AI Chat
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-foreground">
-                  <span className="font-mono">Chat Messages</span>
-                  <span className="font-bold">100 credits/M tokens</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Note */}
-        <div className="mt-12 text-center">
-          <p className="text-xs text-muted-foreground font-mono">
-            $ all_plans_include_community_support
-          </p>
-          <p className="text-xs text-muted-foreground font-mono mt-2">
-            $ custom_enterprise_solutions_available
-          </p>
-        </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
-
-

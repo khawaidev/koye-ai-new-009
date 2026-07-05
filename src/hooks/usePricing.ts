@@ -14,8 +14,9 @@ import {
 } from "../services/pricingService"
 import { useAuth } from "./useAuth"
 
-export function usePricing() {
+export function usePricing(options?: { includeUsage?: boolean }) {
   const { user, isAuthenticated } = useAuth()
+  const includeUsage = options?.includeUsage ?? true
   const [plans, setPlans] = useState<PricingPlan[]>([])
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [usage, setUsage] = useState<UsageCount[]>([])
@@ -47,11 +48,12 @@ export function usePricing() {
               console.warn("Failed to fetch subscription (user may not have one yet):", err)
               return null
             }),
-            getUserUsageSummary(user.id).catch((err) => {
-              // If usage fetch fails, return empty array
-              console.warn("Failed to fetch usage:", err)
-              return []
-            }),
+            includeUsage
+              ? getUserUsageSummary(user.id).catch((err) => {
+                console.warn("Failed to fetch usage:", err)
+                return []
+              })
+              : Promise.resolve([] as UsageCount[]),
           ])
 
           setSubscription(subscriptionData)
@@ -146,4 +148,3 @@ export function usePricing() {
     refresh: loadPricingData,
   }
 }
-

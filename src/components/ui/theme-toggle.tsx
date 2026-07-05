@@ -9,9 +9,8 @@ export function ThemeToggle({ className }: { className?: string }) {
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className={cn(
-                "relative h-10 w-10 flex items-center justify-center border-2 border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200",
-                // Terminal style: square corners, maybe a slight shadow
-                "rounded-none shadow-[2px_2px_0px_0px_var(--primary)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none",
+                "relative h-10 w-10 flex items-center justify-center border border-border/50 bg-background text-foreground hover:bg-muted transition-all duration-200",
+                "rounded-full shadow-sm",
                 className
             )}
             title="Toggle Theme"

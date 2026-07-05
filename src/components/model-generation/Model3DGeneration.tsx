@@ -6,11 +6,11 @@ import { useAuth } from "../../hooks/useAuth"
 import { usePricing } from "../../hooks/usePricing"
 import { cn } from "../../lib/utils"
 import { uuidv4 } from "../../lib/uuid"
-import { create3DModelTask, queryTaskStatus, type GenerationMode, type GenerationType, type ModelFormat, type ModelResolution } from "../../services/hitem3d"
+import { queryTaskStatus, type GenerationMode, type GenerationType, type ModelFormat, type ModelResolution } from "../../services/hitem3d"
 import { type RiggingTask } from "../../services/tripo"
 import { saveModel } from "../../services/multiDbDataService"
 import { saveSingleProjectFile } from "../../services/projectFiles"
-import { createRiggingTask, getRiggingTask, createTextTo3DTask, getTripoTaskResult, type TripoModelVersion } from "../../services/tripo"
+import { createRiggingTask, getRiggingTask, createTextTo3DTask, createImageTo3DTask, createMultiviewTo3DTask, getTripoTaskResult, type TripoModelVersion } from "../../services/tripo"
 import { useAppStore } from "../../store/useAppStore"
 import { useTaskStore } from "../../store/useTaskStore"
 import { checkRateLimit, recordRequest, getRateLimitMessage } from "../../services/rateLimiter"
@@ -117,6 +117,9 @@ export function Model3DGeneration() {
   const [topology, setTopology] = useState<"quad" | "triangle">("triangle")
   const [enableTexture, setEnableTexture] = useState<boolean>(true)
   const [enablePbr, setEnablePbr] = useState<boolean>(true)
+  const [textureQuality, setTextureQuality] = useState<"standard" | "detailed" | "extreme">("standard")
+  const [geometryQuality, setGeometryQuality] = useState<"standard" | "detailed">("standard")
+  const [smartLowPoly, setSmartLowPoly] = useState<boolean>(false)
 
   // Common state
   const [isGenerating, setIsGenerating] = useState(false)
@@ -138,6 +141,8 @@ export function Model3DGeneration() {
   const [showTextModelSelect, setShowTextModelSelect] = useState(false)
   const [showTopologySelect, setShowTopologySelect] = useState(false)
   const [showTextTextureSelect, setShowTextTextureSelect] = useState(false)
+  const [showTextureQualitySelect, setShowTextureQualitySelect] = useState(false)
+  const [showGeometryQualitySelect, setShowGeometryQualitySelect] = useState(false)
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -152,6 +157,8 @@ export function Model3DGeneration() {
         setShowTextModelSelect(false)
         setShowTextTextureSelect(false)
         setShowTopologySelect(false)
+        setShowTextureQualitySelect(false)
+        setShowGeometryQualitySelect(false)
       }
     }
     document.addEventListener("mousedown", handleClick)
@@ -540,11 +547,19 @@ export function Model3DGeneration() {
       recordRequest("model3d-generation" as any)
 
       try {
+        const isP1 = textModelVersion.startsWith("P1");
+        const isH3 = textModelVersion.startsWith("v3");
+        
         const taskId = await createTextTo3DTask(textPrompt, {
           model_version: textModelVersion,
-          quad: topology === "quad",
-          pbr: enablePbr,
           texture: enableTexture,
+          texture_quality: textureQuality,
+          ...(isP1 ? {} : {
+            quad: topology === "quad",
+            pbr: enablePbr,
+            smart_low_poly: smartLowPoly,
+            ...(isH3 ? { geometry_quality: geometryQuality } : {})
+          })
         })
 
         const newModel: GeneratedModel = {
@@ -609,26 +624,49 @@ export function Model3DGeneration() {
     setIsGenerating(true)
     recordRequest("model3d-generation" as any)
 
-    try {
-      const images: File[] = generationMode === "single"
-        ? [singleImage!]
-        : [fourImages.front!, fourImages.back!, fourImages.left!, fourImages.right!]
+    const getBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = error => reject(error)
+    })
 
-      // Create task for selected format
-      const taskId = await create3DModelTask({
-        mode: generationMode,
-        type: generationType,
-        resolution,
-        format,
-        images,
-      })
+    try {
+      let taskId = "";
+      const isP1 = textModelVersion.startsWith("P1");
+      const isH3 = textModelVersion.startsWith("v3");
+      const taskOptions = {
+        model_version: textModelVersion,
+        texture: enableTexture,
+        texture_quality: textureQuality,
+        ...(isP1 ? {} : {
+          quad: topology === "quad",
+          pbr: enablePbr,
+          smart_low_poly: smartLowPoly,
+          ...(isH3 ? { geometry_quality: geometryQuality } : {})
+        })
+      };
+
+      if (generationMode === "single") {
+        const base64Img = await getBase64(singleImage!)
+        taskId = await createImageTo3DTask(base64Img, taskOptions)
+      } else {
+        const front = await getBase64(fourImages.front!)
+        const back = await getBase64(fourImages.back!)
+        const left = await getBase64(fourImages.left!)
+        const right = await getBase64(fourImages.right!)
+        
+        // Multiview to model expects front, right, back, left as per order conventionally?
+        taskId = await createMultiviewTo3DTask([front, right, back, left], taskOptions)
+      }
 
       const newModel: GeneratedModel = {
-        id: `${Date.now()}-${format}`,
+        id: `${Date.now()}-glb`,
         taskId,
-        format,
+        format: "glb",
         url: "",
         status: "pending",
+        isTripoTask: true,
       }
 
       setGeneratedModels(prev => [newModel, ...prev])
@@ -1121,48 +1159,10 @@ export function Model3DGeneration() {
                         )}
                       </div>
 
-                      {/* Model */}
-                      <div className="relative media-dropdown-element">
-                        <button
-                          onClick={() => { setShowModelSelect(!showModelSelect); setShowModeSelect(false); setShowFormatSelect(false); setShowResolutionSelect(false); setShowTextureSelect(false) }}
-                          className="flex items-center gap-2 bg-background border border-border text-foreground text-xs px-3 py-1 rounded-full hover:bg-muted transition-colors"
-                        >
-                          <span>{model}</span>
-                          <ChevronRight className={cn("w-3 h-3 text-muted-foreground transition-transform", showModelSelect ? "-rotate-90" : "rotate-90")} />
-                        </button>
-                        {showModelSelect && (
-                          <div className="absolute bottom-[calc(100%+8px)] left-0 min-w-[130px] bg-background border border-border rounded-xl shadow-xl overflow-hidden py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-                            <button onClick={() => { setModel("koye-3dv1"); setShowModelSelect(false) }}
-                              className={cn("w-full text-left px-3 py-2 text-xs transition-colors", model === "koye-3dv1" ? "bg-muted text-foreground font-medium" : "text-muted-foreground hover:bg-muted hover:text-foreground")}
-                            >koye-3dv1</button>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Export Format */}
-                      <div className="relative media-dropdown-element">
-                        <button
-                          onClick={() => { setShowFormatSelect(!showFormatSelect); setShowModeSelect(false); setShowModelSelect(false); setShowResolutionSelect(false); setShowTextureSelect(false) }}
-                          className="flex items-center gap-2 bg-background border border-border text-foreground text-xs px-3 py-1 rounded-full hover:bg-muted transition-colors"
-                        >
-                          <span>.{format}</span>
-                          <ChevronRight className={cn("w-3 h-3 text-muted-foreground transition-transform", showFormatSelect ? "-rotate-90" : "rotate-90")} />
-                        </button>
-                        {showFormatSelect && (
-                          <div className="absolute bottom-[calc(100%+8px)] left-0 min-w-[90px] bg-background border border-border rounded-xl shadow-xl overflow-hidden py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-                            {["glb", "obj", "stl", "fbx"].map(f => (
-                              <button key={f} onClick={() => { setFormat(f as ModelFormat); setShowFormatSelect(false) }}
-                                className={cn("w-full text-left px-3 py-2 text-xs transition-colors", format === f ? "bg-muted text-foreground font-medium" : "text-muted-foreground hover:bg-muted hover:text-foreground")}
-                              >.{f}</button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
                     </>
                   )}
 
-                  {sourceMode === "text" && (
-                    <>
+                  <>
                       {/* Text Model Version */}
                       <div className="relative media-dropdown-element">
                         <button
@@ -1231,55 +1231,10 @@ export function Model3DGeneration() {
                         )}
                       >PBR Maps</button>
                     </>
-                  )}
                 </div>
 
                 {/* Right side controls */}
                 <div className="flex items-center gap-2">
-                  {sourceMode === "image" && (
-                    <>
-                      {/* Texture */}
-                      <div className="relative media-dropdown-element">
-                        <button
-                          onClick={() => { setShowTextureSelect(!showTextureSelect); setShowModeSelect(false); setShowModelSelect(false); setShowFormatSelect(false); setShowResolutionSelect(false) }}
-                          className="flex items-center gap-2 bg-background border border-border text-foreground text-xs px-3 py-1 rounded-full hover:bg-muted transition-colors"
-                        >
-                          <span>{generationType === "both" ? "With Texture" : generationType === "mesh" ? "No Texture" : "Texture Only"}</span>
-                          <ChevronRight className={cn("w-3 h-3 text-muted-foreground transition-transform", showTextureSelect ? "-rotate-90" : "rotate-90")} />
-                        </button>
-                        {showTextureSelect && (
-                          <div className="absolute bottom-[calc(100%+8px)] right-0 min-w-[130px] bg-background border border-border rounded-xl shadow-xl overflow-hidden py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-                            {[{ v: "both", l: "With Texture" }, { v: "mesh", l: "No Texture" }, { v: "texture", l: "Texture Only" }].map(o => (
-                              <button key={o.v} onClick={() => { setGenerationType(o.v as GenerationType); setShowTextureSelect(false) }}
-                                className={cn("w-full text-left px-3 py-2 text-xs transition-colors", generationType === o.v ? "bg-muted text-foreground font-medium" : "text-muted-foreground hover:bg-muted hover:text-foreground")}
-                              >{o.l}</button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Resolution */}
-                      <div className="relative media-dropdown-element">
-                        <button
-                          onClick={() => { setShowResolutionSelect(!showResolutionSelect); setShowModeSelect(false); setShowModelSelect(false); setShowFormatSelect(false); setShowTextureSelect(false) }}
-                          className="flex items-center gap-2 bg-background border border-border text-foreground text-xs px-3 py-1 rounded-full hover:bg-muted transition-colors"
-                        >
-                          <span>{resolution}³</span>
-                          <ChevronRight className={cn("w-3 h-3 text-muted-foreground transition-transform", showResolutionSelect ? "-rotate-90" : "rotate-90")} />
-                        </button>
-                        {showResolutionSelect && (
-                          <div className="absolute bottom-[calc(100%+8px)] right-0 min-w-[130px] bg-background border border-border rounded-xl shadow-xl overflow-hidden py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-                            {[{ v: "512", l: "512³" }, { v: "1024", l: "1024³" }, { v: "1536", l: "1536³" }, { v: "1536Pro", l: "1536³ Pro" }].map(o => (
-                              <button key={o.v} onClick={() => { setResolution(o.v as ModelResolution); setShowResolutionSelect(false) }}
-                                className={cn("w-full text-left px-3 py-2 text-xs transition-colors", resolution === o.v ? "bg-muted text-foreground font-medium" : "text-muted-foreground hover:bg-muted hover:text-foreground")}
-                              >{o.l}</button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-
                   {/* Generate Button */}
                   <button
                     onClick={handleGenerate}

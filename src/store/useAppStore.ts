@@ -64,6 +64,7 @@ interface AppState {
   isImageEditMode: boolean // When true, builder shows image edit form instead of viewer
   stage: string
   isSidebarOpen: boolean
+  isUpgradeModalOpen: boolean
   
   // Generation History
   generatedVideos: Array<{
@@ -120,6 +121,7 @@ interface AppState {
   // 3D Model specific state for Inspector
   modelGeometry: { vertices: number; faces: number } | null
   setModelGeometry: (geometry: { vertices: number; faces: number } | null) => void
+  setIsUpgradeModalOpen: (isOpen: boolean) => void
   setIsSidebarOpen: (isOpen: boolean) => void
   setGeneratedVideos: (videos: AppState["generatedVideos"]) => void
   addGeneratedVideo: (video: AppState["generatedVideos"][0]) => void
@@ -293,7 +295,7 @@ export const useAppStore = create<AppState>((set, get) => {
     generatingText: null,
     selectedEnvironment: "day",
     selectedBackground: "city",
-    selectedModelMode: "auto",
+    selectedModelMode: "fast",
     selectedModelId: "gemini-3.1-flash",
 
     // Builder Mode State
@@ -310,6 +312,7 @@ export const useAppStore = create<AppState>((set, get) => {
     modelGeometry: null,
     stage: localStorage.getItem("koye_current_stage") || "chat",
     isSidebarOpen: false,
+    isUpgradeModalOpen: false,
     generatedVideos: [],
     generatedAudio: [],
 
@@ -628,6 +631,7 @@ export const useAppStore = create<AppState>((set, get) => {
     setSelectedAsset: (selectedAsset) => set({ selectedAsset }),
     setIsImageEditMode: (isImageEditMode) => set({ isImageEditMode }),
     setModelGeometry: (modelGeometry) => set({ modelGeometry }),
+    setIsUpgradeModalOpen: (isUpgradeModalOpen) => set({ isUpgradeModalOpen }),
     setIsSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
     setGeneratedVideos: (generatedVideos) => set({ generatedVideos }),
     addGeneratedVideo: (video) => set((state) => ({ 

@@ -1,4 +1,4 @@
-import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from "@babylonjs/core"
+import { ArcRotateCamera, DirectionalLight, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from "@babylonjs/core"
 import "@babylonjs/loaders"
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
@@ -237,7 +237,22 @@ export function ProjectEngineRender() {
 
                 // Create light
                 const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene)
-                light.intensity = 1.0
+                light.intensity = 0.65
+                light.diffuse.set(1.0, 0.72, 0.55)
+                light.groundColor.set(0.22, 0.18, 0.24)
+                light.specular.set(0.08, 0.08, 0.08)
+
+                const envLight = new HemisphericLight("envLight", new Vector3(0, 1, 0), scene)
+                envLight.intensity = 0.22
+                envLight.diffuse.set(0.45, 0.5, 0.62)
+                envLight.groundColor.set(0.14, 0.12, 0.18)
+                envLight.specular.set(0.0, 0.0, 0.0)
+
+                const keyLight = new DirectionalLight("keyLight", new Vector3(-1, -2, -1), scene)
+                keyLight.position = new Vector3(8, 12, 8)
+                keyLight.intensity = 0.9
+                keyLight.diffuse.set(1.0, 0.76, 0.58)
+                keyLight.specular.set(0.08, 0.08, 0.08)
 
                 // Bind script runner
                 gameScriptRunner.bind(scene, engine)

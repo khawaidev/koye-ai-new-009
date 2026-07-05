@@ -31,7 +31,7 @@ import { VideoGenerationLoader } from "../ui/VideoGenerationLoader"
 import { Dashboard } from "../../pages/Dashboard"
 import { AnimationsLibrary } from "../../pages/AnimationsLibrary"
 import { TasksPage } from "../tasks/TasksPage"
-import { WorkflowStepIndicator, type WorkflowStage as IndicatorStage } from "./WorkflowStepIndicator"
+
 
 type WorkflowStage = "chat" | "images" | "model" | "texture" | "rig" | "animate" | "audio" | "export" | "build" | "imageGeneration" | "videoGeneration" | "mediaGeneration" | "audioGeneration" | "model3DGeneration" | "sprites" | "dashboard" | "animations" | "tasks"
 type GameType = "3d" | "2d" | null
@@ -2242,21 +2242,7 @@ export function WorkflowManager() {
             )}
           </div>
 
-          {/* Right Sidebar - Step Indicator */}
-          {stage !== "model3DGeneration" && stage !== "build" && stage !== "dashboard" && stage !== "mediaGeneration" && stage !== "audioGeneration" && stage !== "animations" && stage !== "tasks" && (
-            <div className="shrink-0 w-32 mt-12 overflow-y-auto overflow-x-hidden scrollbar-thin">
-              <WorkflowStepIndicator
-                currentStage={stage === "imageGeneration" ? "chat" : (stage as IndicatorStage)}
-                completedStages={new Set(Array.from(completedStages).filter(s => s !== "imageGeneration" && s !== "model3DGeneration" && s !== "animations") as Array<IndicatorStage>)}
-                isAuthenticated={isAuthenticated}
-                isGameDevActive={isGameDevActive}
-                gameDevStep={gameDevStep}
-                gameType={gameDevType}
-                isGeneratingImages={isGeneratingImages}
-                hasGeneratedImages={images.length > 0 && images.every(img => img.url && img.url !== "" && img.url !== "error")}
-              />
-            </div>
-          )}
+          {/* Right Sidebar - Step Indicator removed as per user request */}
         </div>
 
         {/* Image Generation Loader - Removed as per user request */}

@@ -1,0 +1,7370 @@
+[
+  {
+    "id": 21,
+    "Game-name": "Sonic Mania"
+  },
+  {
+    "id": 24,
+    "Game-name": "Uncharted 4"
+  },
+  {
+    "id": 25,
+    "Game-name": "Dark Souls"
+  },
+  {
+    "id": 26,
+    "Game-name": "Super Mario 3D World"
+  },
+  {
+    "id": 27,
+    "Game-name": "Super Mario Maker 2"
+  },
+  {
+    "id": 28,
+    "Game-name": "Final Fantasy XII: The Zodiac Age"
+  },
+  {
+    "id": 29,
+    "Game-name": "Final Fantasy VII Remake"
+  },
+  {
+    "id": 30,
+    "Game-name": "Pokémon Sword and Shield"
+  },
+  {
+    "id": 31,
+    "Game-name": "The Last Of Us"
+  },
+  {
+    "id": 32,
+    "Game-name": "Sonic Forces"
+  },
+  {
+    "id": 33,
+    "Game-name": "Bloodborne"
+  },
+  {
+    "id": 34,
+    "Game-name": "Red Dead Redemption 2"
+  },
+  {
+    "id": 35,
+    "Game-name": "The Legend of Zelda: Breath of the Wild"
+  },
+  {
+    "id": 36,
+    "Game-name": "Super Mario Odyssey"
+  },
+  {
+    "id": 37,
+    "Game-name": "Doom (2016)"
+  },
+  {
+    "id": 38,
+    "Game-name": "Frostpunk (PC)"
+  },
+  {
+    "id": 39,
+    "Game-name": "Sekiro: Shadows Die Twice"
+  },
+  {
+    "id": 40,
+    "Game-name": "Dark Souls III"
+  },
+  {
+    "id": 42,
+    "Game-name": "Wolfenstein: The New Order"
+  },
+  {
+    "id": 43,
+    "Game-name": "Prey (2017)"
+  },
+  {
+    "id": 45,
+    "Game-name": "Yooka Laylee"
+  },
+  {
+    "id": 46,
+    "Game-name": "Hitman (2016)"
+  },
+  {
+    "id": 47,
+    "Game-name": "Watchdogs 2"
+  },
+  {
+    "id": 48,
+    "Game-name": "The Binding of Isaac: Rebirth"
+  },
+  {
+    "id": 49,
+    "Game-name": "South Park: The Fractured But Whole"
+  },
+  {
+    "id": 52,
+    "Game-name": "Shadow of the Colossus (2018)"
+  },
+  {
+    "id": 53,
+    "Game-name": "Celeste"
+  },
+  {
+    "id": 54,
+    "Game-name": "Pix the Cat"
+  },
+  {
+    "id": 55,
+    "Game-name": "Peggle 2"
+  },
+  {
+    "id": 56,
+    "Game-name": "Rayman Legends"
+  },
+  {
+    "id": 57,
+    "Game-name": "WipEout: Omega Collection"
+  },
+  {
+    "id": 58,
+    "Game-name": "Trials Fusion"
+  },
+  {
+    "id": 60,
+    "Game-name": "God of War (2018)"
+  },
+  {
+    "id": 61,
+    "Game-name": "Driveclub"
+  },
+  {
+    "id": 62,
+    "Game-name": "Wonder Boy: The Dragons Trap"
+  },
+  {
+    "id": 63,
+    "Game-name": "Counterspy"
+  },
+  {
+    "id": 64,
+    "Game-name": "Ratchet & Clank (2016)"
+  },
+  {
+    "id": 65,
+    "Game-name": "Hell Yeah"
+  },
+  {
+    "id": 66,
+    "Game-name": "Spyro: Reignited Trilogy"
+  },
+  {
+    "id": 67,
+    "Game-name": "Team Sonic Racing"
+  },
+  {
+    "id": 68,
+    "Game-name": "Tembo the Badass Elephant"
+  },
+  {
+    "id": 69,
+    "Game-name": "Little Nightmares"
+  },
+  {
+    "id": 70,
+    "Game-name": "Hotline Miami 2"
+  },
+  {
+    "id": 71,
+    "Game-name": "Hellblade Senuas Sacrifice"
+  },
+  {
+    "id": 72,
+    "Game-name": "Persona 5"
+  },
+  {
+    "id": 73,
+    "Game-name": "Poly Bridge"
+  },
+  {
+    "id": 74,
+    "Game-name": "Remember Me"
+  },
+  {
+    "id": 75,
+    "Game-name": "A Hat in Time"
+  },
+  {
+    "id": 76,
+    "Game-name": "Uncharted: The Nathan Drake Collection"
+  },
+  {
+    "id": 77,
+    "Game-name": "Yoshis Woolly World"
+  },
+  {
+    "id": 78,
+    "Game-name": "Donkey Kong Tropical Freeze"
+  },
+  {
+    "id": 79,
+    "Game-name": "New Super Mario Bros U"
+  },
+  {
+    "id": 80,
+    "Game-name": "Assassin's Creed IV Black Flag"
+  },
+  {
+    "id": 81,
+    "Game-name": "The Legend of Zelda: Links Awakening (2019)"
+  },
+  {
+    "id": 82,
+    "Game-name": "Splatoon 2"
+  },
+  {
+    "id": 83,
+    "Game-name": "Mario Kart 8 Deluxe"
+  },
+  {
+    "id": 84,
+    "Game-name": "Mario + Rabbids Kingdom Battle"
+  },
+  {
+    "id": 85,
+    "Game-name": "Nintendo Switch OS"
+  },
+  {
+    "id": 86,
+    "Game-name": "Jurassic World Evolution"
+  },
+  {
+    "id": 87,
+    "Game-name": "Resident Evil 2 (2019)"
+  },
+  {
+    "id": 88,
+    "Game-name": "Guacamelee 2"
+  },
+  {
+    "id": 89,
+    "Game-name": "Super Smash Bros Ultimate"
+  },
+  {
+    "id": 90,
+    "Game-name": "Puyo Puyo Tetris"
+  },
+  {
+    "id": 91,
+    "Game-name": "Yoku's Island Express"
+  },
+  {
+    "id": 92,
+    "Game-name": "Ori and the Blind Forest"
+  },
+  {
+    "id": 93,
+    "Game-name": "Hyrule Warriors Definitive Edition"
+  },
+  {
+    "id": 96,
+    "Game-name": "Pokémon: Lets Go, Pikachu and Eevee!"
+  },
+  {
+    "id": 97,
+    "Game-name": "Blasphemous"
+  },
+  {
+    "id": 98,
+    "Game-name": "Metal Gear Solid V: The Phantom Pain"
+  },
+  {
+    "id": 99,
+    "Game-name": "Two Point Hospital (PC)"
+  },
+  {
+    "id": 100,
+    "Game-name": "Velocity 2X"
+  },
+  {
+    "id": 101,
+    "Game-name": "Ultimate Marvel vs Capcom 3"
+  },
+  {
+    "id": 102,
+    "Game-name": "Sound Shapes"
+  },
+  {
+    "id": 103,
+    "Game-name": "Gravity Rush Remastered"
+  },
+  {
+    "id": 104,
+    "Game-name": "Super Meat Boy"
+  },
+  {
+    "id": 105,
+    "Game-name": "Transformers: Devastation"
+  },
+  {
+    "id": 106,
+    "Game-name": "TrackMania Turbo"
+  },
+  {
+    "id": 107,
+    "Game-name": "Tearaway Unfolded"
+  },
+  {
+    "id": 108,
+    "Game-name": "Knack"
+  },
+  {
+    "id": 109,
+    "Game-name": "Horizon Chase Turbo"
+  },
+  {
+    "id": 110,
+    "Game-name": "Darksiders II"
+  },
+  {
+    "id": 111,
+    "Game-name": "Sundered"
+  },
+  {
+    "id": 112,
+    "Game-name": "Red Faction Guerrilla"
+  },
+  {
+    "id": 113,
+    "Game-name": "Hollow Knight"
+  },
+  {
+    "id": 115,
+    "Game-name": "Grand Theft Auto V"
+  },
+  {
+    "id": 116,
+    "Game-name": "Stealth Inc 2: A Game of Clones"
+  },
+  {
+    "id": 117,
+    "Game-name": "Dragon Ball FighterZ"
+  },
+  {
+    "id": 118,
+    "Game-name": "Ni no Kuni II: Revenant Kingdom"
+  },
+  {
+    "id": 119,
+    "Game-name": "Soulcalibur VI"
+  },
+  {
+    "id": 122,
+    "Game-name": "Puss!"
+  },
+  {
+    "id": 123,
+    "Game-name": "Final Fantasy XV"
+  },
+  {
+    "id": 124,
+    "Game-name": "Katamari Damacy Reroll"
+  },
+  {
+    "id": 125,
+    "Game-name": "Tony Hawks Pro Skater HD"
+  },
+  {
+    "id": 126,
+    "Game-name": "Stacking"
+  },
+  {
+    "id": 127,
+    "Game-name": "My Friend Pedro"
+  },
+  {
+    "id": 128,
+    "Game-name": "Donut County"
+  },
+  {
+    "id": 129,
+    "Game-name": "Cuphead"
+  },
+  {
+    "id": 130,
+    "Game-name": "Children of Zodiarcs"
+  },
+  {
+    "id": 132,
+    "Game-name": "Unrailed!"
+  },
+  {
+    "id": 133,
+    "Game-name": "Rogue Legacy"
+  },
+  {
+    "id": 134,
+    "Game-name": "Rocket League"
+  },
+  {
+    "id": 135,
+    "Game-name": "Road Not Taken"
+  },
+  {
+    "id": 136,
+    "Game-name": "Friday the 13th: The Game"
+  },
+  {
+    "id": 137,
+    "Game-name": "Child of Light"
+  },
+  {
+    "id": 138,
+    "Game-name": "Atelier Ryza: Ever Darkness & the Secret Hideout"
+  },
+  {
+    "id": 139,
+    "Game-name": "Danganronpa V3: Killing Harmony"
+  },
+  {
+    "id": 140,
+    "Game-name": "Our World Is Ended"
+  },
+  {
+    "id": 141,
+    "Game-name": "World End Syndrome"
+  },
+  {
+    "id": 142,
+    "Game-name": "Disaster Report 4: Summer Memories"
+  },
+  {
+    "id": 143,
+    "Game-name": "Persona 5: Dancing in Starlight"
+  },
+  {
+    "id": 144,
+    "Game-name": "Rad"
+  },
+  {
+    "id": 145,
+    "Game-name": "Rayman Mini"
+  },
+  {
+    "id": 146,
+    "Game-name": "The Elder Scrolls: Legends"
+  },
+  {
+    "id": 147,
+    "Game-name": "Candy Crush Saga"
+  },
+  {
+    "id": 149,
+    "Game-name": "Until Dawn"
+  },
+  {
+    "id": 150,
+    "Game-name": "Nier: Automata"
+  },
+  {
+    "id": 151,
+    "Game-name": "Distance"
+  },
+  {
+    "id": 152,
+    "Game-name": "Invisible, Inc"
+  },
+  {
+    "id": 153,
+    "Game-name": "Knighthood"
+  },
+  {
+    "id": 154,
+    "Game-name": "Void Tyrant"
+  },
+  {
+    "id": 155,
+    "Game-name": "Burrito Bison: Launcha Libre"
+  },
+  {
+    "id": 156,
+    "Game-name": "Dragalia Lost (Tablet)"
+  },
+  {
+    "id": 157,
+    "Game-name": "Property Brothers Home Design"
+  },
+  {
+    "id": 158,
+    "Game-name": "Mario Kart Tour"
+  },
+  {
+    "id": 159,
+    "Game-name": "Best Fiends"
+  },
+  {
+    "id": 160,
+    "Game-name": "SpongeBob: Patty Pursuit"
+  },
+  {
+    "id": 161,
+    "Game-name": "Brawlout"
+  },
+  {
+    "id": 162,
+    "Game-name": "Pac-Man 256"
+  },
+  {
+    "id": 164,
+    "Game-name": "The Shrouded Isle"
+  },
+  {
+    "id": 165,
+    "Game-name": "Borderlands 2"
+  },
+  {
+    "id": 166,
+    "Game-name": "Aztez"
+  },
+  {
+    "id": 167,
+    "Game-name": "Ace Combat 7: Skies Unknown"
+  },
+  {
+    "id": 168,
+    "Game-name": "Elite Dangerous"
+  },
+  {
+    "id": 169,
+    "Game-name": "Tennis Manager 2019"
+  },
+  {
+    "id": 170,
+    "Game-name": "Dreams"
+  },
+  {
+    "id": 172,
+    "Game-name": "AVICII Invector"
+  },
+  {
+    "id": 173,
+    "Game-name": "Marvel Spider-Man"
+  },
+  {
+    "id": 174,
+    "Game-name": "Infamous Second Son"
+  },
+  {
+    "id": 175,
+    "Game-name": "Destiny 2"
+  },
+  {
+    "id": 176,
+    "Game-name": "LittleBigPlanet 3"
+  },
+  {
+    "id": 177,
+    "Game-name": "Apex Legends"
+  },
+  {
+    "id": 178,
+    "Game-name": "FIFA 20"
+  },
+  {
+    "id": 179,
+    "Game-name": "Super Mario Run"
+  },
+  {
+    "id": 180,
+    "Game-name": "Hexonia"
+  },
+  {
+    "id": 181,
+    "Game-name": "Mirror's Edge Catalyst"
+  },
+  {
+    "id": 182,
+    "Game-name": "Plants vs. Zombies: Battle for Neighborville"
+  },
+  {
+    "id": 183,
+    "Game-name": "Burnout Paradise Remastered"
+  },
+  {
+    "id": 184,
+    "Game-name": "Assassin's Creed: Origins"
+  },
+  {
+    "id": 185,
+    "Game-name": "Yooka-Laylee and the Impossible Lair"
+  },
+  {
+    "id": 186,
+    "Game-name": "51 Worldwide Games"
+  },
+  {
+    "id": 187,
+    "Game-name": "Batman: Arkham Knight"
+  },
+  {
+    "id": 188,
+    "Game-name": "Gotham City Impostors"
+  },
+  {
+    "id": 189,
+    "Game-name": "Sonic & All-Stars Racing Transformed"
+  },
+  {
+    "id": 190,
+    "Game-name": "Dying Light"
+  },
+  {
+    "id": 191,
+    "Game-name": "Dishonored"
+  },
+  {
+    "id": 192,
+    "Game-name": "Warframe"
+  },
+  {
+    "id": 193,
+    "Game-name": "Batman: Arkham Origins"
+  },
+  {
+    "id": 194,
+    "Game-name": "Sunset Overdrive"
+  },
+  {
+    "id": 195,
+    "Game-name": "The Sims Mobile"
+  },
+  {
+    "id": 196,
+    "Game-name": "DOOM Eternal"
+  },
+  {
+    "id": 197,
+    "Game-name": "Don't Starve"
+  },
+  {
+    "id": 198,
+    "Game-name": "The Sims 4 (Console Edition)"
+  },
+  {
+    "id": 199,
+    "Game-name": "Tetris Effect"
+  },
+  {
+    "id": 200,
+    "Game-name": "Power Rangers: Battle for the Grid"
+  },
+  {
+    "id": 201,
+    "Game-name": "Void Bastards"
+  },
+  {
+    "id": 202,
+    "Game-name": "Bloodstained: Ritual of the Night"
+  },
+  {
+    "id": 203,
+    "Game-name": "Ori and the Will of the Wisps"
+  },
+  {
+    "id": 204,
+    "Game-name": "RAGE 2"
+  },
+  {
+    "id": 205,
+    "Game-name": "Moonlighter"
+  },
+  {
+    "id": 206,
+    "Game-name": "Creature in the Well"
+  },
+  {
+    "id": 207,
+    "Game-name": "Streets of Rage 4"
+  },
+  {
+    "id": 208,
+    "Game-name": "Minecraft Dungeons"
+  },
+  {
+    "id": 209,
+    "Game-name": "Star Wars Battlefront II"
+  },
+  {
+    "id": 210,
+    "Game-name": "Rise of the Tomb Raider"
+  },
+  {
+    "id": 211,
+    "Game-name": "Bayonetta"
+  },
+  {
+    "id": 212,
+    "Game-name": "Black Book: Prologue"
+  },
+  {
+    "id": 213,
+    "Game-name": "Ape Out"
+  },
+  {
+    "id": 215,
+    "Game-name": "Bayonetta 2"
+  },
+  {
+    "id": 216,
+    "Game-name": "Gears Tactics"
+  },
+  {
+    "id": 218,
+    "Game-name": "Metro Exodus"
+  },
+  {
+    "id": 220,
+    "Game-name": "Need for Speed Heat"
+  },
+  {
+    "id": 221,
+    "Game-name": "Sleeping Dogs"
+  },
+  {
+    "id": 222,
+    "Game-name": "Mini Motorways"
+  },
+  {
+    "id": 224,
+    "Game-name": "Darksiders III"
+  },
+  {
+    "id": 225,
+    "Game-name": "Middle-Earth: Shadow of Mordor"
+  },
+  {
+    "id": 226,
+    "Game-name": "Super Smash Bros for Wii U"
+  },
+  {
+    "id": 227,
+    "Game-name": "Bad North"
+  },
+  {
+    "id": 228,
+    "Game-name": "The Flame in the Flood"
+  },
+  {
+    "id": 229,
+    "Game-name": "Bridge Constructor Portal"
+  },
+  {
+    "id": 230,
+    "Game-name": "The End Is Nigh"
+  },
+  {
+    "id": 231,
+    "Game-name": "Gris"
+  },
+  {
+    "id": 232,
+    "Game-name": "Gods Trigger"
+  },
+  {
+    "id": 233,
+    "Game-name": "Ultra Street Fighter IV"
+  },
+  {
+    "id": 234,
+    "Game-name": "Loco Roco"
+  },
+  {
+    "id": 235,
+    "Game-name": "Overcooked 2"
+  },
+  {
+    "id": 236,
+    "Game-name": "Felix The Reaper"
+  },
+  {
+    "id": 237,
+    "Game-name": "Rise of Industry"
+  },
+  {
+    "id": 238,
+    "Game-name": "Firewatch"
+  },
+  {
+    "id": 240,
+    "Game-name": "BlazBlue: Chrono Phantasma Extend"
+  },
+  {
+    "id": 241,
+    "Game-name": "Saints Row IV"
+  },
+  {
+    "id": 242,
+    "Game-name": "Exist Archive: The Other Side of the Sky"
+  },
+  {
+    "id": 243,
+    "Game-name": "A Short Hike"
+  },
+  {
+    "id": 244,
+    "Game-name": "Armello"
+  },
+  {
+    "id": 245,
+    "Game-name": "Mythgard"
+  },
+  {
+    "id": 246,
+    "Game-name": "Eternal"
+  },
+  {
+    "id": 247,
+    "Game-name": "HoPiKo"
+  },
+  {
+    "id": 248,
+    "Game-name": "SpeedRunners"
+  },
+  {
+    "id": 249,
+    "Game-name": "Tom Clancys The Division 2"
+  },
+  {
+    "id": 250,
+    "Game-name": "LUMINES REMASTERED"
+  },
+  {
+    "id": 251,
+    "Game-name": "F1 Race Stars"
+  },
+  {
+    "id": 252,
+    "Game-name": "INSIDE"
+  },
+  {
+    "id": 253,
+    "Game-name": "Crash Bandicoot N Sane Trilogy"
+  },
+  {
+    "id": 254,
+    "Game-name": "Hidden Folks"
+  },
+  {
+    "id": 255,
+    "Game-name": "Call of Duty: WWII"
+  },
+  {
+    "id": 256,
+    "Game-name": "Horizon Zero Dawn"
+  },
+  {
+    "id": 257,
+    "Game-name": "Rare Replay"
+  },
+  {
+    "id": 258,
+    "Game-name": "Untitled Goose Game"
+  },
+  {
+    "id": 259,
+    "Game-name": "Ms Splosion Man"
+  },
+  {
+    "id": 260,
+    "Game-name": "Forza Horizon 4"
+  },
+  {
+    "id": 261,
+    "Game-name": "Far Cry 4"
+  },
+  {
+    "id": 262,
+    "Game-name": "For Honor"
+  },
+  {
+    "id": 263,
+    "Game-name": "Dead by Daylight"
+  },
+  {
+    "id": 264,
+    "Game-name": "Tom Clancys Rainbow Six Siege"
+  },
+  {
+    "id": 265,
+    "Game-name": "Control"
+  },
+  {
+    "id": 266,
+    "Game-name": "Dark Souls II: Scholar of the First Sin"
+  },
+  {
+    "id": 267,
+    "Game-name": "Shovel Knight"
+  },
+  {
+    "id": 268,
+    "Game-name": "Starlink: Battle for Atlas"
+  },
+  {
+    "id": 269,
+    "Game-name": "Dragon Quest XI"
+  },
+  {
+    "id": 270,
+    "Game-name": "Killer Instinct"
+  },
+  {
+    "id": 271,
+    "Game-name": "Crackdown 3"
+  },
+  {
+    "id": 272,
+    "Game-name": "Outer Wilds"
+  },
+  {
+    "id": 273,
+    "Game-name": "West of Dead"
+  },
+  {
+    "id": 274,
+    "Game-name": "Mutant Year Zero: Road to Eden (Console)"
+  },
+  {
+    "id": 275,
+    "Game-name": "Days Gone"
+  },
+  {
+    "id": 276,
+    "Game-name": "Sigma Theory: Global Cold War"
+  },
+  {
+    "id": 277,
+    "Game-name": "South Park: The Stick of Truth"
+  },
+  {
+    "id": 278,
+    "Game-name": "Star Wars Jedi: Fallen Order"
+  },
+  {
+    "id": 279,
+    "Game-name": "Call of Duty: Warzone"
+  },
+  {
+    "id": 281,
+    "Game-name": "Kona"
+  },
+  {
+    "id": 282,
+    "Game-name": "Owlboy"
+  },
+  {
+    "id": 283,
+    "Game-name": "Deus Ex: Human Revolution"
+  },
+  {
+    "id": 284,
+    "Game-name": "Rock of Ages 2: Bigger and Boulder"
+  },
+  {
+    "id": 285,
+    "Game-name": "Devil May Cry 5"
+  },
+  {
+    "id": 286,
+    "Game-name": "Darksiders"
+  },
+  {
+    "id": 287,
+    "Game-name": "The Elder Scrolls V: Skyrim"
+  },
+  {
+    "id": 288,
+    "Game-name": "The Outer Worlds"
+  },
+  {
+    "id": 289,
+    "Game-name": "PixelJunk Shooter Ultimate"
+  },
+  {
+    "id": 290,
+    "Game-name": "The Witcher 3: Wild Hunt"
+  },
+  {
+    "id": 291,
+    "Game-name": "Monster Hunter: World"
+  },
+  {
+    "id": 292,
+    "Game-name": "Ghost of Tsushima"
+  },
+  {
+    "id": 293,
+    "Game-name": "No Man's Sky"
+  },
+  {
+    "id": 294,
+    "Game-name": "Gears 5"
+  },
+  {
+    "id": 295,
+    "Game-name": "Donuts N Justice"
+  },
+  {
+    "id": 296,
+    "Game-name": "Taiko no Tatsujin: Drum 'n' Fun!"
+  },
+  {
+    "id": 297,
+    "Game-name": "Yoshi's Crafted World"
+  },
+  {
+    "id": 298,
+    "Game-name": "Assemble with Care"
+  },
+  {
+    "id": 299,
+    "Game-name": "Toy Story Drop!"
+  },
+  {
+    "id": 300,
+    "Game-name": "Tetris (Mobile)"
+  },
+  {
+    "id": 301,
+    "Game-name": "The Elder Scrolls: Blades"
+  },
+  {
+    "id": 302,
+    "Game-name": "Ashen"
+  },
+  {
+    "id": 303,
+    "Game-name": "Pokkén Tournament DX"
+  },
+  {
+    "id": 304,
+    "Game-name": "The Alto Collection"
+  },
+  {
+    "id": 305,
+    "Game-name": "Fall Guys: Ultimate Knockout"
+  },
+  {
+    "id": 306,
+    "Game-name": "Gravity Rush 2"
+  },
+  {
+    "id": 307,
+    "Game-name": "Rogue Legacy 2"
+  },
+  {
+    "id": 308,
+    "Game-name": "Tropico (Mobile)"
+  },
+  {
+    "id": 309,
+    "Game-name": "Stellaris: Galaxy Command"
+  },
+  {
+    "id": 311,
+    "Game-name": "Over the Alps"
+  },
+  {
+    "id": 312,
+    "Game-name": "The_Otherside"
+  },
+  {
+    "id": 313,
+    "Game-name": "Card of Darkness"
+  },
+  {
+    "id": 314,
+    "Game-name": "Grindstone"
+  },
+  {
+    "id": 315,
+    "Game-name": "Chu Chu Rocket! Universe"
+  },
+  {
+    "id": 316,
+    "Game-name": "Stormbound"
+  },
+  {
+    "id": 317,
+    "Game-name": "Identity V"
+  },
+  {
+    "id": 318,
+    "Game-name": "Tropico 5"
+  },
+  {
+    "id": 319,
+    "Game-name": "Call of Duty: Modern Warfare 2 Remastered"
+  },
+  {
+    "id": 320,
+    "Game-name": "Escape Plan"
+  },
+  {
+    "id": 321,
+    "Game-name": "Broken Age"
+  },
+  {
+    "id": 322,
+    "Game-name": "Captain Toad: Treasure Tracker"
+  },
+  {
+    "id": 323,
+    "Game-name": "Grow Home"
+  },
+  {
+    "id": 324,
+    "Game-name": "Guacamelee! Super Turbo Championship Edition"
+  },
+  {
+    "id": 325,
+    "Game-name": "Paper Mario: Color Splash"
+  },
+  {
+    "id": 326,
+    "Game-name": "Shadow of the Beast"
+  },
+  {
+    "id": 327,
+    "Game-name": "Saints Row: Gat out of Hell"
+  },
+  {
+    "id": 328,
+    "Game-name": "Kirby and the Rainbow Paintbrush"
+  },
+  {
+    "id": 329,
+    "Game-name": "Devil May Cry 4: Special Edition"
+  },
+  {
+    "id": 330,
+    "Game-name": "Cities: Skylines - Playstation 4 Edition"
+  },
+  {
+    "id": 331,
+    "Game-name": "Nioh"
+  },
+  {
+    "id": 332,
+    "Game-name": "SSX"
+  },
+  {
+    "id": 333,
+    "Game-name": "Dante's Inferno"
+  },
+  {
+    "id": 334,
+    "Game-name": "wipEout HD Fury"
+  },
+  {
+    "id": 335,
+    "Game-name": "Super Stardust HD"
+  },
+  {
+    "id": 336,
+    "Game-name": "Ratchet & Clank: Into the Nexus"
+  },
+  {
+    "id": 337,
+    "Game-name": "Ni no Kuni: Wrath of the White Witch"
+  },
+  {
+    "id": 338,
+    "Game-name": "BioShock Infinite"
+  },
+  {
+    "id": 339,
+    "Game-name": "Tomb Raider"
+  },
+  {
+    "id": 340,
+    "Game-name": "Anarchy Reigns"
+  },
+  {
+    "id": 341,
+    "Game-name": "Metal Gear Rising: Revengeance"
+  },
+  {
+    "id": 342,
+    "Game-name": "Saints Row: The Third"
+  },
+  {
+    "id": 343,
+    "Game-name": "Batman: Arkham City"
+  },
+  {
+    "id": 344,
+    "Game-name": "Split Second"
+  },
+  {
+    "id": 345,
+    "Game-name": "Mad Riders"
+  },
+  {
+    "id": 346,
+    "Game-name": "MotorStorm: Apocalypse"
+  },
+  {
+    "id": 347,
+    "Game-name": "Persona 4 Arena Ultimax"
+  },
+  {
+    "id": 348,
+    "Game-name": "Sly Cooper: Thieves in Time"
+  },
+  {
+    "id": 349,
+    "Game-name": "Twisted Metal"
+  },
+  {
+    "id": 350,
+    "Game-name": "Eat Them!"
+  },
+  {
+    "id": 351,
+    "Game-name": "Call of Juarez: Gunslinger"
+  },
+  {
+    "id": 352,
+    "Game-name": "Double Dragon Neon"
+  },
+  {
+    "id": 353,
+    "Game-name": "Soulcalibur II HD Online"
+  },
+  {
+    "id": 356,
+    "Game-name": "Siren: Blood Curse"
+  },
+  {
+    "id": 357,
+    "Game-name": "Catherine"
+  },
+  {
+    "id": 358,
+    "Game-name": "Castlevania: Lords of Shadow – Mirror of Fate"
+  },
+  {
+    "id": 359,
+    "Game-name": "Alien Rage"
+  },
+  {
+    "id": 360,
+    "Game-name": "Red Dead Redemption"
+  },
+  {
+    "id": 361,
+    "Game-name": "The Order: 1886"
+  },
+  {
+    "id": 362,
+    "Game-name": "Star Wars Battlefront"
+  },
+  {
+    "id": 363,
+    "Game-name": "Red Dead Redemption: Undead Nightmare"
+  },
+  {
+    "id": 364,
+    "Game-name": "Star Wars: Squadrons"
+  },
+  {
+    "id": 366,
+    "Game-name": "Neon Abyss"
+  },
+  {
+    "id": 367,
+    "Game-name": "Underhero"
+  },
+  {
+    "id": 368,
+    "Game-name": "Astro's Playroom"
+  },
+  {
+    "id": 369,
+    "Game-name": "Wandersong"
+  },
+  {
+    "id": 370,
+    "Game-name": "Battletoads"
+  },
+  {
+    "id": 371,
+    "Game-name": "Death Stranding"
+  },
+  {
+    "id": 372,
+    "Game-name": "The Messenger"
+  },
+  {
+    "id": 373,
+    "Game-name": "Detroit: Become Human"
+  },
+  {
+    "id": 374,
+    "Game-name": "Disco Elysium"
+  },
+  {
+    "id": 375,
+    "Game-name": "Valkyria Chronicles 4"
+  },
+  {
+    "id": 376,
+    "Game-name": "Broforce"
+  },
+  {
+    "id": 377,
+    "Game-name": "Smile For Me"
+  },
+  {
+    "id": 379,
+    "Game-name": "Dauntless"
+  },
+  {
+    "id": 380,
+    "Game-name": "Marvel Spider-Man: Miles Morales"
+  },
+  {
+    "id": 381,
+    "Game-name": "Alien: Isolation"
+  },
+  {
+    "id": 382,
+    "Game-name": "Amnesia: Rebirth"
+  },
+  {
+    "id": 383,
+    "Game-name": "Party Hard 2"
+  },
+  {
+    "id": 384,
+    "Game-name": "Life is Strange 2"
+  },
+  {
+    "id": 385,
+    "Game-name": "The Evil Within 2"
+  },
+  {
+    "id": 386,
+    "Game-name": "Super Monkey Ball: Banana Blitz HD"
+  },
+  {
+    "id": 387,
+    "Game-name": "Runner2"
+  },
+  {
+    "id": 388,
+    "Game-name": "This War of Mine"
+  },
+  {
+    "id": 389,
+    "Game-name": "The Bureau: XCOM Declassified"
+  },
+  {
+    "id": 390,
+    "Game-name": "Mafia: Definitive Edition"
+  },
+  {
+    "id": 391,
+    "Game-name": "Strange Brigade"
+  },
+  {
+    "id": 392,
+    "Game-name": "Mortal Kombat XL"
+  },
+  {
+    "id": 393,
+    "Game-name": "Scribblenauts Unlimited"
+  },
+  {
+    "id": 394,
+    "Game-name": "Sword Art Online: Fatal Bullet"
+  },
+  {
+    "id": 395,
+    "Game-name": "Resident Evil 7"
+  },
+  {
+    "id": 396,
+    "Game-name": "Card Crawl"
+  },
+  {
+    "id": 397,
+    "Game-name": "Observation"
+  },
+  {
+    "id": 398,
+    "Game-name": "Achtung! Cthulhu Tactics (Console)"
+  },
+  {
+    "id": 399,
+    "Game-name": "One Piece: Pirate Warriors 3"
+  },
+  {
+    "id": 400,
+    "Game-name": "Deep Rock Galactic"
+  },
+  {
+    "id": 401,
+    "Game-name": "Breathedge"
+  },
+  {
+    "id": 402,
+    "Game-name": "Crossing Souls"
+  },
+  {
+    "id": 403,
+    "Game-name": "Dragon Ball Z: Kakarot"
+  },
+  {
+    "id": 404,
+    "Game-name": "Miracle Merchant"
+  },
+  {
+    "id": 405,
+    "Game-name": "Age of Wonders: Planetfall"
+  },
+  {
+    "id": 406,
+    "Game-name": "Ys VIII: Lacrimosa of Dana"
+  },
+  {
+    "id": 407,
+    "Game-name": "Darksburg"
+  },
+  {
+    "id": 408,
+    "Game-name": "Tropico 6"
+  },
+  {
+    "id": 409,
+    "Game-name": "Crying Suns"
+  },
+  {
+    "id": 410,
+    "Game-name": "Okami HD"
+  },
+  {
+    "id": 411,
+    "Game-name": "The Long Dark"
+  },
+  {
+    "id": 413,
+    "Game-name": "Looney Tunes World of Mayhem"
+  },
+  {
+    "id": 414,
+    "Game-name": "South Park: Phone Destroyer"
+  },
+  {
+    "id": 415,
+    "Game-name": "Fruit Ninja 2"
+  },
+  {
+    "id": 416,
+    "Game-name": "Cat Quest II"
+  },
+  {
+    "id": 417,
+    "Game-name": "The Last Campfire"
+  },
+  {
+    "id": 418,
+    "Game-name": "Ninjala"
+  },
+  {
+    "id": 419,
+    "Game-name": "Fire Emblem: Three Houses"
+  },
+  {
+    "id": 420,
+    "Game-name": "Super Mario Bros 35"
+  },
+  {
+    "id": 421,
+    "Game-name": "Super Mario Sunshine"
+  },
+  {
+    "id": 422,
+    "Game-name": "Super Mario Galaxy"
+  },
+  {
+    "id": 423,
+    "Game-name": "Super Bomberman R"
+  },
+  {
+    "id": 424,
+    "Game-name": "Sonic Racing"
+  },
+  {
+    "id": 425,
+    "Game-name": "Super Kirby Clash"
+  },
+  {
+    "id": 426,
+    "Game-name": "PAC-MAN Party Royale"
+  },
+  {
+    "id": 427,
+    "Game-name": "Frogger in Toy Town"
+  },
+  {
+    "id": 428,
+    "Game-name": "Zombie Rollerz: Pinball Heroes"
+  },
+  {
+    "id": 429,
+    "Game-name": "LEGO Brawls"
+  },
+  {
+    "id": 430,
+    "Game-name": "Outlanders"
+  },
+  {
+    "id": 431,
+    "Game-name": "Crossy Road Castle"
+  },
+  {
+    "id": 432,
+    "Game-name": "The Pathless"
+  },
+  {
+    "id": 433,
+    "Game-name": "Candy Crush Friends Saga"
+  },
+  {
+    "id": 434,
+    "Game-name": "Candy Crush Soda Saga"
+  },
+  {
+    "id": 435,
+    "Game-name": "Bubble Witch 3 Saga"
+  },
+  {
+    "id": 436,
+    "Game-name": "Diamond Digger Saga"
+  },
+  {
+    "id": 437,
+    "Game-name": "Dragon Ball Legends"
+  },
+  {
+    "id": 439,
+    "Game-name": "Cyberpunk 2077"
+  },
+  {
+    "id": 440,
+    "Game-name": "River City Girls"
+  },
+  {
+    "id": 441,
+    "Game-name": "Wolfenstein II: The New Colossus"
+  },
+  {
+    "id": 442,
+    "Game-name": "All of You"
+  },
+  {
+    "id": 443,
+    "Game-name": "Animal Crossing: Pocket Camp"
+  },
+  {
+    "id": 444,
+    "Game-name": "Board Kings"
+  },
+  {
+    "id": 445,
+    "Game-name": "Dr Mario World"
+  },
+  {
+    "id": 446,
+    "Game-name": "Pokémon Café Mix"
+  },
+  {
+    "id": 447,
+    "Game-name": "What the Golf?"
+  },
+  {
+    "id": 448,
+    "Game-name": "Subnautica"
+  },
+  {
+    "id": 449,
+    "Game-name": "Rayman Adventures"
+  },
+  {
+    "id": 450,
+    "Game-name": "Warp Drive"
+  },
+  {
+    "id": 451,
+    "Game-name": "Rebel Racing"
+  },
+  {
+    "id": 452,
+    "Game-name": "Jumanji: Epic Run"
+  },
+  {
+    "id": 453,
+    "Game-name": "Worms Rumble"
+  },
+  {
+    "id": 454,
+    "Game-name": "Bugsnax"
+  },
+  {
+    "id": 455,
+    "Game-name": "Demons Souls (2020)"
+  },
+  {
+    "id": 456,
+    "Game-name": "Bulletstorm: Full Clip Edition"
+  },
+  {
+    "id": 457,
+    "Game-name": "Street Fighter V Champion Edition"
+  },
+  {
+    "id": 458,
+    "Game-name": "Zombi"
+  },
+  {
+    "id": 459,
+    "Game-name": "Super Meat Boy Forever"
+  },
+  {
+    "id": 460,
+    "Game-name": "Struggling"
+  },
+  {
+    "id": 461,
+    "Game-name": "Heroes of Rings: Dragons War"
+  },
+  {
+    "id": 462,
+    "Game-name": "Animation Throwdown: The Quest For Cards"
+  },
+  {
+    "id": 463,
+    "Game-name": "Bleach: Immortal Soul"
+  },
+  {
+    "id": 464,
+    "Game-name": "Pokémon Masters EX"
+  },
+  {
+    "id": 465,
+    "Game-name": "Brawl Stars"
+  },
+  {
+    "id": 466,
+    "Game-name": "Idle Theme Park Tycoon"
+  },
+  {
+    "id": 467,
+    "Game-name": "KartRider Rush+"
+  },
+  {
+    "id": 468,
+    "Game-name": "The Seven Deadly Sins: Grand Cross"
+  },
+  {
+    "id": 469,
+    "Game-name": "Book of Demons"
+  },
+  {
+    "id": 470,
+    "Game-name": "Genshin Impact (Console)"
+  },
+  {
+    "id": 471,
+    "Game-name": "Moving Out"
+  },
+  {
+    "id": 472,
+    "Game-name": "Portal Knights"
+  },
+  {
+    "id": 473,
+    "Game-name": "Orwell"
+  },
+  {
+    "id": 474,
+    "Game-name": "Final Fantasy X"
+  },
+  {
+    "id": 476,
+    "Game-name": "Sonic at the Olympic Games"
+  },
+  {
+    "id": 477,
+    "Game-name": "Asphalt 9: Legends"
+  },
+  {
+    "id": 478,
+    "Game-name": "Arknights"
+  },
+  {
+    "id": 479,
+    "Game-name": "Call of Duty: Mobile"
+  },
+  {
+    "id": 480,
+    "Game-name": "Match Land"
+  },
+  {
+    "id": 481,
+    "Game-name": "Meteorfall: Krumit's Tale"
+  },
+  {
+    "id": 482,
+    "Game-name": "My Time At Portia"
+  },
+  {
+    "id": 483,
+    "Game-name": "Into the Breach"
+  },
+  {
+    "id": 484,
+    "Game-name": "Where the Water Tastes Like Wine"
+  },
+  {
+    "id": 485,
+    "Game-name": "The Sexy Brutale"
+  },
+  {
+    "id": 486,
+    "Game-name": "Laytons Mystery Journey: Katrielle and the Millionaires Conspiracy"
+  },
+  {
+    "id": 487,
+    "Game-name": "Pikmin 3"
+  },
+  {
+    "id": 488,
+    "Game-name": "The Adventure Pals"
+  },
+  {
+    "id": 489,
+    "Game-name": "Super Mario Party"
+  },
+  {
+    "id": 490,
+    "Game-name": "Röki"
+  },
+  {
+    "id": 491,
+    "Game-name": "Call of the Sea"
+  },
+  {
+    "id": 492,
+    "Game-name": "Crash Team Racing Nitro-Fueled"
+  },
+  {
+    "id": 494,
+    "Game-name": "Joggernauts"
+  },
+  {
+    "id": 495,
+    "Game-name": "PictoQuest"
+  },
+  {
+    "id": 496,
+    "Game-name": "Overcooked"
+  },
+  {
+    "id": 497,
+    "Game-name": "Hyper Light Drifter"
+  },
+  {
+    "id": 498,
+    "Game-name": "Mutazione"
+  },
+  {
+    "id": 499,
+    "Game-name": "Enter the Gungeon"
+  },
+  {
+    "id": 500,
+    "Game-name": "Solitairica"
+  },
+  {
+    "id": 501,
+    "Game-name": "Wheels of Aurelia"
+  },
+  {
+    "id": 502,
+    "Game-name": "Night in the Woods"
+  },
+  {
+    "id": 503,
+    "Game-name": "The Swords of Ditto"
+  },
+  {
+    "id": 505,
+    "Game-name": "Dream Daddy"
+  },
+  {
+    "id": 506,
+    "Game-name": "Battle Chef Brigade"
+  },
+  {
+    "id": 507,
+    "Game-name": "Spelunky"
+  },
+  {
+    "id": 508,
+    "Game-name": "Guild of Dungeoneering"
+  },
+  {
+    "id": 509,
+    "Game-name": "Resident Evil 3 (2020)"
+  },
+  {
+    "id": 510,
+    "Game-name": "Sackboy: A Big Adventure"
+  },
+  {
+    "id": 511,
+    "Game-name": "Bad Piggies"
+  },
+  {
+    "id": 512,
+    "Game-name": "Dan the Man"
+  },
+  {
+    "id": 513,
+    "Game-name": "Dungeon, Inc"
+  },
+  {
+    "id": 514,
+    "Game-name": "Missile Command: Recharged"
+  },
+  {
+    "id": 515,
+    "Game-name": "The Academy: The First Riddle"
+  },
+  {
+    "id": 516,
+    "Game-name": "Gnomitaire"
+  },
+  {
+    "id": 517,
+    "Game-name": "Oceanhorn 2: Knights of the Lost Realm"
+  },
+  {
+    "id": 518,
+    "Game-name": "Batman: Arkham Asylum"
+  },
+  {
+    "id": 519,
+    "Game-name": "LittleBigPlanet"
+  },
+  {
+    "id": 520,
+    "Game-name": "MotorStorm: Pacific Rift"
+  },
+  {
+    "id": 521,
+    "Game-name": "Assassin's Creed II"
+  },
+  {
+    "id": 522,
+    "Game-name": "Rayman Origins"
+  },
+  {
+    "id": 523,
+    "Game-name": "L.A. Noire"
+  },
+  {
+    "id": 525,
+    "Game-name": "Crash Bandicoot 4: Its About Time"
+  },
+  {
+    "id": 526,
+    "Game-name": "Cities: Skylines (PC)"
+  },
+  {
+    "id": 527,
+    "Game-name": "Planet Coaster (PC)"
+  },
+  {
+    "id": 528,
+    "Game-name": "The Sims 4 (PC Edition)"
+  },
+  {
+    "id": 529,
+    "Game-name": "WWE 2K Battlegrounds"
+  },
+  {
+    "id": 530,
+    "Game-name": "Metal Gear Solid: Peace Walker HD"
+  },
+  {
+    "id": 531,
+    "Game-name": "Gears of War Judgement"
+  },
+  {
+    "id": 532,
+    "Game-name": "Frostpunk: Console Edition"
+  },
+  {
+    "id": 533,
+    "Game-name": "Planet Coaster: Console Edition"
+  },
+  {
+    "id": 534,
+    "Game-name": "Hades"
+  },
+  {
+    "id": 535,
+    "Game-name": "ONE PIECE BON! BON! JOURNEY!!"
+  },
+  {
+    "id": 536,
+    "Game-name": "Assassin's Creed Odyssey"
+  },
+  {
+    "id": 537,
+    "Game-name": "Funko Pop! Blitz"
+  },
+  {
+    "id": 538,
+    "Game-name": "Wind Runner"
+  },
+  {
+    "id": 539,
+    "Game-name": "Crawl"
+  },
+  {
+    "id": 540,
+    "Game-name": "Sea of Thieves"
+  },
+  {
+    "id": 541,
+    "Game-name": "Theatrhythm Final Fantasy: Curtain Call"
+  },
+  {
+    "id": 542,
+    "Game-name": "The Legend of Zelda: A Link Between Worlds"
+  },
+  {
+    "id": 545,
+    "Game-name": "Pokémon X and Y"
+  },
+  {
+    "id": 546,
+    "Game-name": "The Legend of Bum-bo"
+  },
+  {
+    "id": 547,
+    "Game-name": "Maneater"
+  },
+  {
+    "id": 548,
+    "Game-name": "LINE: Disney Tsum Tsum"
+  },
+  {
+    "id": 549,
+    "Game-name": "Sonic Forces: Speed Battle"
+  },
+  {
+    "id": 550,
+    "Game-name": "Dota Underlords (Mobile)"
+  },
+  {
+    "id": 551,
+    "Game-name": "Cat Game"
+  },
+  {
+    "id": 552,
+    "Game-name": "State of Decay 2"
+  },
+  {
+    "id": 553,
+    "Game-name": "Pokémon Mystery Dungeon: Rescue Team DX"
+  },
+  {
+    "id": 555,
+    "Game-name": "Helltaker"
+  },
+  {
+    "id": 556,
+    "Game-name": "Mad Rat Dead"
+  },
+  {
+    "id": 557,
+    "Game-name": "Puyo Puyo Tetris 2"
+  },
+  {
+    "id": 558,
+    "Game-name": "Mr Driller Drill Land"
+  },
+  {
+    "id": 559,
+    "Game-name": "Tangle Tower (iPhone)"
+  },
+  {
+    "id": 560,
+    "Game-name": "Taiko no Tatsujin: Rhythmic Adventure Pack"
+  },
+  {
+    "id": 561,
+    "Game-name": "Cadence of Hyrule: Crypt of the NecroDancer"
+  },
+  {
+    "id": 562,
+    "Game-name": "Xenoblade Chronicles 2"
+  },
+  {
+    "id": 563,
+    "Game-name": "Monster Prom"
+  },
+  {
+    "id": 564,
+    "Game-name": "SuperMash"
+  },
+  {
+    "id": 565,
+    "Game-name": "Oninaki"
+  },
+  {
+    "id": 566,
+    "Game-name": "Northgard"
+  },
+  {
+    "id": 567,
+    "Game-name": "John Wick Hex"
+  },
+  {
+    "id": 568,
+    "Game-name": "Piffle: A Cat Puzzle Adventure"
+  },
+  {
+    "id": 569,
+    "Game-name": "Dread Nautical"
+  },
+  {
+    "id": 572,
+    "Game-name": "Langrisser I & II"
+  },
+  {
+    "id": 573,
+    "Game-name": "Fire Emblem Warriors"
+  },
+  {
+    "id": 574,
+    "Game-name": "Wargroove"
+  },
+  {
+    "id": 575,
+    "Game-name": "Transistor"
+  },
+  {
+    "id": 576,
+    "Game-name": "Xenoblade Chronicles: Definitive Edition"
+  },
+  {
+    "id": 577,
+    "Game-name": "Valkyria Chronicles"
+  },
+  {
+    "id": 578,
+    "Game-name": "Dragon Quest Builders 2"
+  },
+  {
+    "id": 579,
+    "Game-name": "Disgaea 5 Complete"
+  },
+  {
+    "id": 580,
+    "Game-name": "Daemon X Machina"
+  },
+  {
+    "id": 581,
+    "Game-name": "Dead Space"
+  },
+  {
+    "id": 582,
+    "Game-name": "One Piece: Burning Blood"
+  },
+  {
+    "id": 583,
+    "Game-name": "Groove Coaster: Wai Wai Party!!!!"
+  },
+  {
+    "id": 584,
+    "Game-name": "Greedfall"
+  },
+  {
+    "id": 585,
+    "Game-name": "Destruction AllStars"
+  },
+  {
+    "id": 586,
+    "Game-name": "Far Cry 5"
+  },
+  {
+    "id": 587,
+    "Game-name": "The Crew 2"
+  },
+  {
+    "id": 588,
+    "Game-name": "Mario & Sonic at the Olympic Games Tokyo 2020"
+  },
+  {
+    "id": 589,
+    "Game-name": "Immortals Fenyx Rising"
+  },
+  {
+    "id": 590,
+    "Game-name": "Wolfenstein: Youngblood"
+  },
+  {
+    "id": 591,
+    "Game-name": "Wasteland 3"
+  },
+  {
+    "id": 592,
+    "Game-name": "New Super Luckys Tale"
+  },
+  {
+    "id": 593,
+    "Game-name": "F1 2019"
+  },
+  {
+    "id": 594,
+    "Game-name": "Hyrule Warriors: Age of Calamity"
+  },
+  {
+    "id": 595,
+    "Game-name": "Persona 4"
+  },
+  {
+    "id": 596,
+    "Game-name": "Kingdom Hearts III"
+  },
+  {
+    "id": 597,
+    "Game-name": "Kingdom Hearts: Melody of Memory"
+  },
+  {
+    "id": 598,
+    "Game-name": "Werewolf: The Apocalypse – Earthblood"
+  },
+  {
+    "id": 599,
+    "Game-name": "MediEvil"
+  },
+  {
+    "id": 600,
+    "Game-name": "Yakuza: Like a Dragon"
+  },
+  {
+    "id": 601,
+    "Game-name": "Theatrhythm Final Fantasy: All-Star Carnival"
+  },
+  {
+    "id": 602,
+    "Game-name": "Kingdom Hearts: Dream Drop Distance HD"
+  },
+  {
+    "id": 603,
+    "Game-name": "Prison Architect: Console Edition"
+  },
+  {
+    "id": 604,
+    "Game-name": "Dragon's Dogma: Dark Arisen"
+  },
+  {
+    "id": 606,
+    "Game-name": "Animal Crossing: New Horizons"
+  },
+  {
+    "id": 608,
+    "Game-name": "Monkey Barrels"
+  },
+  {
+    "id": 609,
+    "Game-name": "Absolute Drift"
+  },
+  {
+    "id": 610,
+    "Game-name": "Werewolf: The Apocalypse – Heart of the Forest"
+  },
+  {
+    "id": 611,
+    "Game-name": "Boomerang Fu"
+  },
+  {
+    "id": 612,
+    "Game-name": "Iris and the Giant"
+  },
+  {
+    "id": 613,
+    "Game-name": "Going Under"
+  },
+  {
+    "id": 614,
+    "Game-name": "Sonic Generations"
+  },
+  {
+    "id": 615,
+    "Game-name": "Blacksad: Under the Skin"
+  },
+  {
+    "id": 616,
+    "Game-name": "Neo Cab"
+  },
+  {
+    "id": 617,
+    "Game-name": "Endless Space 2"
+  },
+  {
+    "id": 618,
+    "Game-name": "Persona 5 Royal"
+  },
+  {
+    "id": 619,
+    "Game-name": "Persona 5 Strikers"
+  },
+  {
+    "id": 620,
+    "Game-name": "Shadow of the Tomb Raider"
+  },
+  {
+    "id": 621,
+    "Game-name": "Faeria"
+  },
+  {
+    "id": 622,
+    "Game-name": "Civilization V"
+  },
+  {
+    "id": 623,
+    "Game-name": "Guilty Gear -Strive-"
+  },
+  {
+    "id": 624,
+    "Game-name": "Granblue Fantasy Versus"
+  },
+  {
+    "id": 625,
+    "Game-name": "The Witcher 2: Assassins of Kings"
+  },
+  {
+    "id": 626,
+    "Game-name": "Dirt 5"
+  },
+  {
+    "id": 627,
+    "Game-name": "RemiLore Lost Girl in the Lands of Lore"
+  },
+  {
+    "id": 628,
+    "Game-name": "Hearthstone"
+  },
+  {
+    "id": 629,
+    "Game-name": "Mad Max"
+  },
+  {
+    "id": 630,
+    "Game-name": "Strider"
+  },
+  {
+    "id": 631,
+    "Game-name": "Rocket Arena"
+  },
+  {
+    "id": 632,
+    "Game-name": "Knights and Bikes"
+  },
+  {
+    "id": 633,
+    "Game-name": "Fallout 4"
+  },
+  {
+    "id": 634,
+    "Game-name": "Laser Disco Defenders"
+  },
+  {
+    "id": 637,
+    "Game-name": "Outriders"
+  },
+  {
+    "id": 638,
+    "Game-name": "The Room"
+  },
+  {
+    "id": 639,
+    "Game-name": "Civilization VI"
+  },
+  {
+    "id": 640,
+    "Game-name": "Concrete Genie"
+  },
+  {
+    "id": 641,
+    "Game-name": "Infamous First Light"
+  },
+  {
+    "id": 642,
+    "Game-name": "Battlefield 1"
+  },
+  {
+    "id": 643,
+    "Game-name": "Just Cause 3"
+  },
+  {
+    "id": 644,
+    "Game-name": "Wolfenstein: The Old Blood"
+  },
+  {
+    "id": 645,
+    "Game-name": "Battlefield 4"
+  },
+  {
+    "id": 646,
+    "Game-name": "The Banner Saga"
+  },
+  {
+    "id": 647,
+    "Game-name": "Kingdom Hearts Birth by Sleep"
+  },
+  {
+    "id": 648,
+    "Game-name": "Keep Talking and Nobody Explodes"
+  },
+  {
+    "id": 649,
+    "Game-name": "Astral Chain"
+  },
+  {
+    "id": 650,
+    "Game-name": "Pyre"
+  },
+  {
+    "id": 652,
+    "Game-name": "The Legend of Heroes: Trails of Cold Steel III"
+  },
+  {
+    "id": 653,
+    "Game-name": "Radiata Stories"
+  },
+  {
+    "id": 654,
+    "Game-name": "The Alliance Alive: HD Remastered"
+  },
+  {
+    "id": 655,
+    "Game-name": "Shadowrun: Hong Kong"
+  },
+  {
+    "id": 657,
+    "Game-name": "Shining Resonance Refrain"
+  },
+  {
+    "id": 660,
+    "Game-name": "Killzone Shadow Fall"
+  },
+  {
+    "id": 661,
+    "Game-name": "Bricky Boy"
+  },
+  {
+    "id": 662,
+    "Game-name": "Steven Universe: Unleash the Light"
+  },
+  {
+    "id": 663,
+    "Game-name": "Deck Em"
+  },
+  {
+    "id": 664,
+    "Game-name": "The Last of Us Part II"
+  },
+  {
+    "id": 665,
+    "Game-name": "Mercenary Kings"
+  },
+  {
+    "id": 666,
+    "Game-name": "Stick It to the Man!"
+  },
+  {
+    "id": 667,
+    "Game-name": "Super Time Force Ultra"
+  },
+  {
+    "id": 668,
+    "Game-name": "Super Exploding Zoo"
+  },
+  {
+    "id": 669,
+    "Game-name": "Skulls of the Shogun"
+  },
+  {
+    "id": 670,
+    "Game-name": "Flame Over"
+  },
+  {
+    "id": 671,
+    "Game-name": "Dead Star"
+  },
+  {
+    "id": 672,
+    "Game-name": "Life Is Strange"
+  },
+  {
+    "id": 673,
+    "Game-name": "Bombing Busters"
+  },
+  {
+    "id": 674,
+    "Game-name": "Downwell"
+  },
+  {
+    "id": 675,
+    "Game-name": "Kingdom Hearts II"
+  },
+  {
+    "id": 676,
+    "Game-name": "Kingdom Hearts"
+  },
+  {
+    "id": 677,
+    "Game-name": "Crash Bandicoot: On the Run!"
+  },
+  {
+    "id": 678,
+    "Game-name": "Pine"
+  },
+  {
+    "id": 679,
+    "Game-name": "Spyder"
+  },
+  {
+    "id": 680,
+    "Game-name": "Slash Quest"
+  },
+  {
+    "id": 681,
+    "Game-name": "Apotheon"
+  },
+  {
+    "id": 682,
+    "Game-name": "Lovers in a Dangerous Spacetime"
+  },
+  {
+    "id": 683,
+    "Game-name": "Lara Croft and the Temple of Osiris"
+  },
+  {
+    "id": 684,
+    "Game-name": "TowerFall Ascension"
+  },
+  {
+    "id": 685,
+    "Game-name": "Neon Chrome"
+  },
+  {
+    "id": 686,
+    "Game-name": "Darts of Fury"
+  },
+  {
+    "id": 687,
+    "Game-name": "Galak-Z: The Dimensional"
+  },
+  {
+    "id": 688,
+    "Game-name": "Hitman 3"
+  },
+  {
+    "id": 692,
+    "Game-name": "Empire of Sin"
+  },
+  {
+    "id": 693,
+    "Game-name": "Cut the Rope Remastered"
+  },
+  {
+    "id": 694,
+    "Game-name": "Murder in the Alps"
+  },
+  {
+    "id": 695,
+    "Game-name": "Junes Journey"
+  },
+  {
+    "id": 696,
+    "Game-name": "One Punch Man: A Hero Nobody Knows"
+  },
+  {
+    "id": 697,
+    "Game-name": "Cyanide & Happiness - Freakpocalypse"
+  },
+  {
+    "id": 699,
+    "Game-name": "Two Point Hospital: Console Edition"
+  },
+  {
+    "id": 700,
+    "Game-name": "Simons Cat- Story Time"
+  },
+  {
+    "id": 701,
+    "Game-name": "Monument Valley"
+  },
+  {
+    "id": 702,
+    "Game-name": "Taiko no Tatsujin: Pop Tap Beat"
+  },
+  {
+    "id": 703,
+    "Game-name": "Monomals"
+  },
+  {
+    "id": 704,
+    "Game-name": "Mini Metro"
+  },
+  {
+    "id": 705,
+    "Game-name": "Exit the Gungeon"
+  },
+  {
+    "id": 706,
+    "Game-name": "Dorfromantik"
+  },
+  {
+    "id": 707,
+    "Game-name": "Wonderbox: The Adventure Maker (iPad)"
+  },
+  {
+    "id": 708,
+    "Game-name": "Fantasian"
+  },
+  {
+    "id": 709,
+    "Game-name": "Luigis Mansion 3"
+  },
+  {
+    "id": 710,
+    "Game-name": "Evil Genius 2: World Domination"
+  },
+  {
+    "id": 711,
+    "Game-name": "Human: Fall Flat"
+  },
+  {
+    "id": 712,
+    "Game-name": "Little Inferno"
+  },
+  {
+    "id": 713,
+    "Game-name": "Brutal Legend"
+  },
+  {
+    "id": 714,
+    "Game-name": "Carto"
+  },
+  {
+    "id": 715,
+    "Game-name": "CrossCode"
+  },
+  {
+    "id": 716,
+    "Game-name": "Cyber Shadow"
+  },
+  {
+    "id": 717,
+    "Game-name": "Darksiders Genesis"
+  },
+  {
+    "id": 718,
+    "Game-name": "GONNER2"
+  },
+  {
+    "id": 719,
+    "Game-name": "Rain on Your Parade"
+  },
+  {
+    "id": 720,
+    "Game-name": "Monster Boy and the Cursed Kingdom"
+  },
+  {
+    "id": 722,
+    "Game-name": "Age of Empires II: Definitive Edition"
+  },
+  {
+    "id": 724,
+    "Game-name": "Battlefield V"
+  },
+  {
+    "id": 725,
+    "Game-name": "Besiege"
+  },
+  {
+    "id": 726,
+    "Game-name": "Chivalry: Medieval Warfare"
+  },
+  {
+    "id": 727,
+    "Game-name": "Clustertruck"
+  },
+  {
+    "id": 729,
+    "Game-name": "Curse of the Dead Gods"
+  },
+  {
+    "id": 730,
+    "Game-name": "Blair Witch"
+  },
+  {
+    "id": 731,
+    "Game-name": "SteamWorld Dig 2"
+  },
+  {
+    "id": 732,
+    "Game-name": "Dead In Vinland"
+  },
+  {
+    "id": 733,
+    "Game-name": "Serial Cleaner"
+  },
+  {
+    "id": 734,
+    "Game-name": "10 Second Ninja X"
+  },
+  {
+    "id": 735,
+    "Game-name": "Yono and the Celestial Elephants"
+  },
+  {
+    "id": 736,
+    "Game-name": "Levelhead"
+  },
+  {
+    "id": 738,
+    "Game-name": "World of Demons"
+  },
+  {
+    "id": 739,
+    "Game-name": "DJMAX RESPECT V"
+  },
+  {
+    "id": 740,
+    "Game-name": "NieR Replicant"
+  },
+  {
+    "id": 741,
+    "Game-name": "OCTOPATH TRAVELER"
+  },
+  {
+    "id": 742,
+    "Game-name": "Lego Star Wars: The Force Awakens"
+  },
+  {
+    "id": 744,
+    "Game-name": "Snake Pass"
+  },
+  {
+    "id": 745,
+    "Game-name": "Hitman: Absolution"
+  },
+  {
+    "id": 746,
+    "Game-name": "Ruiner"
+  },
+  {
+    "id": 747,
+    "Game-name": "Hotshot Racing"
+  },
+  {
+    "id": 748,
+    "Game-name": "Theatrhythm Final Fantasy"
+  },
+  {
+    "id": 749,
+    "Game-name": "Ultimate NES Remix"
+  },
+  {
+    "id": 750,
+    "Game-name": "Sonic Generations (3DS)"
+  },
+  {
+    "id": 751,
+    "Game-name": "Pokémon Omega Ruby and Alpha Sapphire"
+  },
+  {
+    "id": 752,
+    "Game-name": "Chibi-Robo! Zip Lash"
+  },
+  {
+    "id": 753,
+    "Game-name": "Bravely Default (3DS Version)"
+  },
+  {
+    "id": 754,
+    "Game-name": "Mario Kart 7"
+  },
+  {
+    "id": 755,
+    "Game-name": "Puzzle and Dragons Super Mario Bros. Edition"
+  },
+  {
+    "id": 756,
+    "Game-name": "Super Mario 3D Land"
+  },
+  {
+    "id": 757,
+    "Game-name": "Pilotwings Resort"
+  },
+  {
+    "id": 758,
+    "Game-name": "Sonic Lost World (3DS)"
+  },
+  {
+    "id": 759,
+    "Game-name": "The Legend of Zelda: Ocarina of Time 3D"
+  },
+  {
+    "id": 761,
+    "Game-name": "Paper Mario: Sticker Star"
+  },
+  {
+    "id": 762,
+    "Game-name": "Pokémon Sun and Moon"
+  },
+  {
+    "id": 763,
+    "Game-name": "Kirby: Triple Deluxe"
+  },
+  {
+    "id": 764,
+    "Game-name": "Luigis Mansion 2"
+  },
+  {
+    "id": 765,
+    "Game-name": "Watch Dogs: Legion"
+  },
+  {
+    "id": 766,
+    "Game-name": "Super Smash Bros for 3DS"
+  },
+  {
+    "id": 768,
+    "Game-name": "Professor Layton and the Miracle Mask"
+  },
+  {
+    "id": 769,
+    "Game-name": "New Pokémon Snap"
+  },
+  {
+    "id": 770,
+    "Game-name": "Bowser's Fury"
+  },
+  {
+    "id": 771,
+    "Game-name": "Zhed"
+  },
+  {
+    "id": 773,
+    "Game-name": "Kirby's Epic Yarn"
+  },
+  {
+    "id": 774,
+    "Game-name": "Fire Emblem Fates"
+  },
+  {
+    "id": 775,
+    "Game-name": "Adorable Home"
+  },
+  {
+    "id": 776,
+    "Game-name": "The Legend of Zelda: Majora's Mask 3D"
+  },
+  {
+    "id": 777,
+    "Game-name": "Kid Icarus: Uprising"
+  },
+  {
+    "id": 778,
+    "Game-name": "New Super Mario Bros. 2"
+  },
+  {
+    "id": 780,
+    "Game-name": "Resident Evil Village"
+  },
+  {
+    "id": 781,
+    "Game-name": "HarmoKnight"
+  },
+  {
+    "id": 783,
+    "Game-name": "Resident Evil: Revelations"
+  },
+  {
+    "id": 784,
+    "Game-name": "Yoshi's New Island"
+  },
+  {
+    "id": 785,
+    "Game-name": "Super Monkey Ball 3D"
+  },
+  {
+    "id": 786,
+    "Game-name": "Resident Evil 4"
+  },
+  {
+    "id": 787,
+    "Game-name": "Returnal"
+  },
+  {
+    "id": 788,
+    "Game-name": "Oddworld: Soulstorm"
+  },
+  {
+    "id": 789,
+    "Game-name": "SUPERHOT"
+  },
+  {
+    "id": 791,
+    "Game-name": "Dead Rising 2: Off the Record"
+  },
+  {
+    "id": 792,
+    "Game-name": "MotorStorm: RC"
+  },
+  {
+    "id": 793,
+    "Game-name": "The Cave"
+  },
+  {
+    "id": 794,
+    "Game-name": "Soulcalibur V"
+  },
+  {
+    "id": 795,
+    "Game-name": "Resident Evil: The Darkside Chronicles"
+  },
+  {
+    "id": 796,
+    "Game-name": "Final Fantasy XIII"
+  },
+  {
+    "id": 797,
+    "Game-name": "LittleBigPlanet 2"
+  },
+  {
+    "id": 798,
+    "Game-name": "Assassin's Creed: Brotherhood"
+  },
+  {
+    "id": 799,
+    "Game-name": "Far Cry 3"
+  },
+  {
+    "id": 800,
+    "Game-name": "The House of the Dead: Overkill"
+  },
+  {
+    "id": 801,
+    "Game-name": "Infamous 2"
+  },
+  {
+    "id": 802,
+    "Game-name": "Ratchet & Clank: A Crack in Time"
+  },
+  {
+    "id": 803,
+    "Game-name": "Diablo"
+  },
+  {
+    "id": 804,
+    "Game-name": "Diablo II"
+  },
+  {
+    "id": 806,
+    "Game-name": "Warcraft II Battle.net Edition"
+  },
+  {
+    "id": 811,
+    "Game-name": "Reky"
+  },
+  {
+    "id": 813,
+    "Game-name": "Batman: Arkham Origins Blackgate"
+  },
+  {
+    "id": 814,
+    "Game-name": "Ratchet & Clank: Quest for Booty"
+  },
+  {
+    "id": 815,
+    "Game-name": "Mirror's Edge"
+  },
+  {
+    "id": 816,
+    "Game-name": "LittleBigPlanet Karting"
+  },
+  {
+    "id": 817,
+    "Game-name": "Infamous: Festival of Blood"
+  },
+  {
+    "id": 818,
+    "Game-name": "Far Cry 3: Blood Dragon"
+  },
+  {
+    "id": 819,
+    "Game-name": "DmC: Devil May Cry"
+  },
+  {
+    "id": 820,
+    "Game-name": "I Am Monster: Idle Destruction"
+  },
+  {
+    "id": 821,
+    "Game-name": "Agent Intercept"
+  },
+  {
+    "id": 823,
+    "Game-name": "Assassin's Creed Valhalla"
+  },
+  {
+    "id": 824,
+    "Game-name": "Mario Tennis Open"
+  },
+  {
+    "id": 825,
+    "Game-name": "Pokémon Art Academy"
+  },
+  {
+    "id": 827,
+    "Game-name": "Vambrace: Cold Soul"
+  },
+  {
+    "id": 828,
+    "Game-name": "Knockout City"
+  },
+  {
+    "id": 829,
+    "Game-name": "Aragami"
+  },
+  {
+    "id": 830,
+    "Game-name": "Sinner: Sacrifice for Redemption"
+  },
+  {
+    "id": 831,
+    "Game-name": "Persona Q: Shadow of the Labyrinth"
+  },
+  {
+    "id": 833,
+    "Game-name": "Biomutant"
+  },
+  {
+    "id": 834,
+    "Game-name": "DRAGON QUEST TACT"
+  },
+  {
+    "id": 835,
+    "Game-name": "Dropmix"
+  },
+  {
+    "id": 836,
+    "Game-name": "Fortnite (2020)"
+  },
+  {
+    "id": 837,
+    "Game-name": "Fast RMX"
+  },
+  {
+    "id": 839,
+    "Game-name": "Mighty Gunvolt Burst"
+  },
+  {
+    "id": 840,
+    "Game-name": "Alt-Frequencies"
+  },
+  {
+    "id": 841,
+    "Game-name": "Oxenfree"
+  },
+  {
+    "id": 842,
+    "Game-name": "Oh...Sir! The Hollywood Roast"
+  },
+  {
+    "id": 843,
+    "Game-name": "A Case of Distrust"
+  },
+  {
+    "id": 844,
+    "Game-name": "Super Phantom Cat 2"
+  },
+  {
+    "id": 845,
+    "Game-name": "CATS: Crash Arena Turbo Stars"
+  },
+  {
+    "id": 846,
+    "Game-name": "Alice Legends"
+  },
+  {
+    "id": 848,
+    "Game-name": "Score! Hero 2"
+  },
+  {
+    "id": 849,
+    "Game-name": "For The King"
+  },
+  {
+    "id": 850,
+    "Game-name": "ELEX"
+  },
+  {
+    "id": 851,
+    "Game-name": "Revenge of the Titans"
+  },
+  {
+    "id": 852,
+    "Game-name": "This Is the Police 2"
+  },
+  {
+    "id": 853,
+    "Game-name": "The Forest"
+  },
+  {
+    "id": 854,
+    "Game-name": "Generation Zero"
+  },
+  {
+    "id": 855,
+    "Game-name": "Trials Rising"
+  },
+  {
+    "id": 856,
+    "Game-name": "Dead Rising 3"
+  },
+  {
+    "id": 857,
+    "Game-name": "Dirt 3"
+  },
+  {
+    "id": 858,
+    "Game-name": "Dead Rising 4"
+  },
+  {
+    "id": 859,
+    "Game-name": "Castle of Illusion Starring Mickey Mouse"
+  },
+  {
+    "id": 860,
+    "Game-name": "Borderlands"
+  },
+  {
+    "id": 861,
+    "Game-name": "The Evil Within"
+  },
+  {
+    "id": 862,
+    "Game-name": "Street Fighter X Tekken"
+  },
+  {
+    "id": 863,
+    "Game-name": "The King of Fighters XIII"
+  },
+  {
+    "id": 864,
+    "Game-name": "The King of Fighters XIV"
+  },
+  {
+    "id": 865,
+    "Game-name": "God Eater 2: Rage Burst"
+  },
+  {
+    "id": 866,
+    "Game-name": "Mr. Shifty"
+  },
+  {
+    "id": 867,
+    "Game-name": "Ancestors: The Humankind Odyssey"
+  },
+  {
+    "id": 868,
+    "Game-name": "Boreal Blade"
+  },
+  {
+    "id": 1021,
+    "Game-name": "Ratchet & Clank: Rift Apart"
+  },
+  {
+    "id": 1022,
+    "Game-name": "Chivalry 2"
+  },
+  {
+    "id": 1023,
+    "Game-name": "Disney Heroes: Battle Mode"
+  },
+  {
+    "id": 1024,
+    "Game-name": "Shinsekai: Into the Depths (Mobile)"
+  },
+  {
+    "id": 1025,
+    "Game-name": "Planet Zoo"
+  },
+  {
+    "id": 1026,
+    "Game-name": "Clap Hanz Golf"
+  },
+  {
+    "id": 1027,
+    "Game-name": "Frenzic: Overtime"
+  },
+  {
+    "id": 1028,
+    "Game-name": "Virtua Fighter 5 Ultimate Showdown"
+  },
+  {
+    "id": 1029,
+    "Game-name": "Cards Up! Merge Puzzle"
+  },
+  {
+    "id": 1030,
+    "Game-name": "#DRIVE"
+  },
+  {
+    "id": 1031,
+    "Game-name": "Merge Mayor - Idle Village"
+  },
+  {
+    "id": 1032,
+    "Game-name": "Golf Clash"
+  },
+  {
+    "id": 1033,
+    "Game-name": "Magic Golf"
+  },
+  {
+    "id": 1034,
+    "Game-name": "Mini Golf King"
+  },
+  {
+    "id": 1036,
+    "Game-name": "The Enchanted World"
+  },
+  {
+    "id": 1037,
+    "Game-name": "Disney Emoji Blitz"
+  },
+  {
+    "id": 1040,
+    "Game-name": "Just Cause 4"
+  },
+  {
+    "id": 1041,
+    "Game-name": "Alex Kidd in Miracle World DX"
+  },
+  {
+    "id": 1042,
+    "Game-name": "Borderlands: The Pre-Sequel"
+  },
+  {
+    "id": 1043,
+    "Game-name": "Valorant"
+  },
+  {
+    "id": 1044,
+    "Game-name": "Agents of Mayhem"
+  },
+  {
+    "id": 1045,
+    "Game-name": "Call of Duty: Black Ops III"
+  },
+  {
+    "id": 1046,
+    "Game-name": "Gwent: The Witcher Card Game"
+  },
+  {
+    "id": 1047,
+    "Game-name": "Gumslinger"
+  },
+  {
+    "id": 1048,
+    "Game-name": "Shadow Fight Arena"
+  },
+  {
+    "id": 1049,
+    "Game-name": "Pokémon Home"
+  },
+  {
+    "id": 1050,
+    "Game-name": "Guildlings"
+  },
+  {
+    "id": 1052,
+    "Game-name": "UNBEATABLE [white label]"
+  },
+  {
+    "id": 1053,
+    "Game-name": "Scarlet Nexus"
+  },
+  {
+    "id": 1055,
+    "Game-name": "Backbone"
+  },
+  {
+    "id": 1056,
+    "Game-name": "Marvel Vs Capcom Infinite"
+  },
+  {
+    "id": 1058,
+    "Game-name": "Free Fire"
+  },
+  {
+    "id": 1059,
+    "Game-name": "Smash Legends"
+  },
+  {
+    "id": 1060,
+    "Game-name": "Otter Ocean"
+  },
+  {
+    "id": 1061,
+    "Game-name": "Royal Match"
+  },
+  {
+    "id": 1062,
+    "Game-name": "Unmaze"
+  },
+  {
+    "id": 1063,
+    "Game-name": "Tales of Memo"
+  },
+  {
+    "id": 1064,
+    "Game-name": "Marble Knights"
+  },
+  {
+    "id": 1065,
+    "Game-name": "Various Daylife"
+  },
+  {
+    "id": 1066,
+    "Game-name": "Om Nom: Merge"
+  },
+  {
+    "id": 1067,
+    "Game-name": "Horizon Chase - World Tour"
+  },
+  {
+    "id": 1068,
+    "Game-name": "Wonka's World of Candy"
+  },
+  {
+    "id": 1069,
+    "Game-name": "Fledgling Heroes"
+  },
+  {
+    "id": 1070,
+    "Game-name": "Hellrider 3"
+  },
+  {
+    "id": 1071,
+    "Game-name": "Angry Birds 2"
+  },
+  {
+    "id": 1072,
+    "Game-name": "Wreckfest"
+  },
+  {
+    "id": 1073,
+    "Game-name": "Monster Hunter Stories 2: Wings of Ruin"
+  },
+  {
+    "id": 1074,
+    "Game-name": "The Legend of Zelda: Skyward Sword HD"
+  },
+  {
+    "id": 1075,
+    "Game-name": "Game Builder Garage"
+  },
+  {
+    "id": 1076,
+    "Game-name": "Pack Master"
+  },
+  {
+    "id": 1077,
+    "Game-name": "Broken Reality"
+  },
+  {
+    "id": 1078,
+    "Game-name": "Bug Fables: The Everlasting Sapling"
+  },
+  {
+    "id": 1080,
+    "Game-name": "Virgo Versus the Zodiac"
+  },
+  {
+    "id": 1081,
+    "Game-name": "Ys IX: Monstrum Nox"
+  },
+  {
+    "id": 1082,
+    "Game-name": "LEFT ALIVE"
+  },
+  {
+    "id": 1083,
+    "Game-name": "Quantum Break"
+  },
+  {
+    "id": 1084,
+    "Game-name": "Mafia III"
+  },
+  {
+    "id": 1085,
+    "Game-name": "Death's Door (PC)"
+  },
+  {
+    "id": 1086,
+    "Game-name": "Bridge Constructor: The Walking Dead"
+  },
+  {
+    "id": 1088,
+    "Game-name": "Afterparty"
+  },
+  {
+    "id": 1089,
+    "Game-name": "Halo: The Master Chief Collection"
+  },
+  {
+    "id": 1090,
+    "Game-name": "Halo 5: Guardians"
+  },
+  {
+    "id": 1091,
+    "Game-name": "Halo Wars"
+  },
+  {
+    "id": 1092,
+    "Game-name": "Halo Wars 2"
+  },
+  {
+    "id": 1093,
+    "Game-name": "Halo: Spartan Assault"
+  },
+  {
+    "id": 1094,
+    "Game-name": "Halo: Spartan Strike"
+  },
+  {
+    "id": 1096,
+    "Game-name": "Crackdown 2"
+  },
+  {
+    "id": 1097,
+    "Game-name": "Warhammer 40,000: Space Marine"
+  },
+  {
+    "id": 1098,
+    "Game-name": "Fallout 3"
+  },
+  {
+    "id": 1099,
+    "Game-name": "Fallout: New Vegas"
+  },
+  {
+    "id": 1101,
+    "Game-name": "Atelier Ryza 2: Lost Legends and the Secret Fairy"
+  },
+  {
+    "id": 1102,
+    "Game-name": "Cozy Grove"
+  },
+  {
+    "id": 1103,
+    "Game-name": "Neo: The World Ends with You"
+  },
+  {
+    "id": 1104,
+    "Game-name": "Odin Sphere Leifthrasir"
+  },
+  {
+    "id": 1106,
+    "Game-name": "Kirby's Return to Dream Land"
+  },
+  {
+    "id": 1108,
+    "Game-name": "GoldenEye 007 (2010)"
+  },
+  {
+    "id": 1109,
+    "Game-name": "Tatsunoko vs. Capcom: Ultimate All-Stars"
+  },
+  {
+    "id": 1110,
+    "Game-name": "Halo Infinite (Technical Preview)"
+  },
+  {
+    "id": 1113,
+    "Game-name": "Orcs Must Die! 3"
+  },
+  {
+    "id": 1114,
+    "Game-name": "13 Sentinels: Aegis Rim"
+  },
+  {
+    "id": 1115,
+    "Game-name": "Lemmings - The Official Game"
+  },
+  {
+    "id": 1116,
+    "Game-name": "Angry Birds POP!"
+  },
+  {
+    "id": 1118,
+    "Game-name": "Anno 1800"
+  },
+  {
+    "id": 1119,
+    "Game-name": "Dissidia Final Fantasy NT"
+  },
+  {
+    "id": 1121,
+    "Game-name": "Conan Exiles"
+  },
+  {
+    "id": 1122,
+    "Game-name": "Resident Evil: Revelations 2"
+  },
+  {
+    "id": 1123,
+    "Game-name": "Dodgeball Academia"
+  },
+  {
+    "id": 1125,
+    "Game-name": "The Great Ace Attorney Chronicles"
+  },
+  {
+    "id": 1127,
+    "Game-name": "Dead Space 2"
+  },
+  {
+    "id": 1128,
+    "Game-name": "Runner3"
+  },
+  {
+    "id": 1129,
+    "Game-name": "Kirby & the Amazing Mirror"
+  },
+  {
+    "id": 1130,
+    "Game-name": "Kirby: Nightmare in Dream Land"
+  },
+  {
+    "id": 1131,
+    "Game-name": "Kingdom Hearts: Chain of Memories"
+  },
+  {
+    "id": 1132,
+    "Game-name": "Mario Kart: Super Circuit"
+  },
+  {
+    "id": 1133,
+    "Game-name": "Pokémon Pinball: Ruby and Sapphire"
+  },
+  {
+    "id": 1135,
+    "Game-name": "Pokémon Conquest"
+  },
+  {
+    "id": 1138,
+    "Game-name": "Kingdom Hearts Re:Coded"
+  },
+  {
+    "id": 1139,
+    "Game-name": "Hotel Dusk: Room 215"
+  },
+  {
+    "id": 1140,
+    "Game-name": "Professor Layton and the Curious Village"
+  },
+  {
+    "id": 1147,
+    "Game-name": "Remnant: From the Ashes"
+  },
+  {
+    "id": 1148,
+    "Game-name": "Hunters Arena: Legends"
+  },
+  {
+    "id": 1149,
+    "Game-name": "Picross S"
+  },
+  {
+    "id": 1150,
+    "Game-name": "Achtung! Cthulhu Tactics (PC)"
+  },
+  {
+    "id": 1151,
+    "Game-name": "The Ascent"
+  },
+  {
+    "id": 1152,
+    "Game-name": "Zombie Army 4: Dead War"
+  },
+  {
+    "id": 1153,
+    "Game-name": "Kingdom Hearts 0.2: Birth by Sleep – A Fragmentary Passage"
+  },
+  {
+    "id": 1154,
+    "Game-name": "Humankind"
+  },
+  {
+    "id": 1156,
+    "Game-name": "Tennis World Tour 2"
+  },
+  {
+    "id": 1157,
+    "Game-name": "Watch Dogs"
+  },
+  {
+    "id": 1158,
+    "Game-name": "Sniper Elite 4"
+  },
+  {
+    "id": 1161,
+    "Game-name": "We Happy Few"
+  },
+  {
+    "id": 1162,
+    "Game-name": "Metal Gear Survive"
+  },
+  {
+    "id": 1163,
+    "Game-name": "Signs of the Sojourner"
+  },
+  {
+    "id": 1164,
+    "Game-name": "Star Renegades"
+  },
+  {
+    "id": 1165,
+    "Game-name": "Drake Hollow"
+  },
+  {
+    "id": 1166,
+    "Game-name": "Forza Motorsport 7"
+  },
+  {
+    "id": 1167,
+    "Game-name": "Aliens: Fireteam Elite"
+  },
+  {
+    "id": 1168,
+    "Game-name": "The Surge"
+  },
+  {
+    "id": 1169,
+    "Game-name": "Sniper Ghost Warrior Contracts"
+  },
+  {
+    "id": 1170,
+    "Game-name": "Sniper Elite III"
+  },
+  {
+    "id": 1171,
+    "Game-name": "BioShock"
+  },
+  {
+    "id": 1172,
+    "Game-name": "Resident Evil Resistance"
+  },
+  {
+    "id": 1173,
+    "Game-name": "Dead Rising"
+  },
+  {
+    "id": 1174,
+    "Game-name": "Anthem"
+  },
+  {
+    "id": 1175,
+    "Game-name": "Rock of Ages 3: Make and Break"
+  },
+  {
+    "id": 1176,
+    "Game-name": "Vanquish"
+  },
+  {
+    "id": 1177,
+    "Game-name": "Lethal League Blaze"
+  },
+  {
+    "id": 1178,
+    "Game-name": "Deathloop"
+  },
+  {
+    "id": 1180,
+    "Game-name": "I Am Fish"
+  },
+  {
+    "id": 1181,
+    "Game-name": "Aragami 2"
+  },
+  {
+    "id": 1183,
+    "Game-name": "Sable"
+  },
+  {
+    "id": 1184,
+    "Game-name": "Subnautica: Below Zero"
+  },
+  {
+    "id": 1185,
+    "Game-name": "Mass Effect"
+  },
+  {
+    "id": 1186,
+    "Game-name": "Super Monkey Ball Banana Mania"
+  },
+  {
+    "id": 1187,
+    "Game-name": "The Legend of Korra"
+  },
+  {
+    "id": 1188,
+    "Game-name": "Overcooked! All You Can Eat"
+  },
+  {
+    "id": 1189,
+    "Game-name": "Mass Effect 2"
+  },
+  {
+    "id": 1191,
+    "Game-name": "Metroid Dread"
+  },
+  {
+    "id": 1192,
+    "Game-name": "Back 4 Blood"
+  },
+  {
+    "id": 1193,
+    "Game-name": "Ender Lilies: Quietus of the Knights"
+  },
+  {
+    "id": 1194,
+    "Game-name": "F.I.S.T.: Forged In Shadow Torch"
+  },
+  {
+    "id": 1195,
+    "Game-name": "Tales of Arise"
+  },
+  {
+    "id": 1196,
+    "Game-name": "Voice of Cards: The Isle Dragon Roars"
+  },
+  {
+    "id": 1198,
+    "Game-name": "The Artful Escape"
+  },
+  {
+    "id": 1199,
+    "Game-name": "Road 96"
+  },
+  {
+    "id": 1200,
+    "Game-name": "Kena: Bridge of Spirits"
+  },
+  {
+    "id": 1201,
+    "Game-name": "Far Cry 6"
+  },
+  {
+    "id": 1202,
+    "Game-name": "Lara Croft Go"
+  },
+  {
+    "id": 1203,
+    "Game-name": "Hot Wheels Unleashed"
+  },
+  {
+    "id": 1204,
+    "Game-name": "Crysis 2"
+  },
+  {
+    "id": 1205,
+    "Game-name": "Moonglow Bay"
+  },
+  {
+    "id": 1206,
+    "Game-name": "Tales of Symphonia (HD)"
+  },
+  {
+    "id": 1207,
+    "Game-name": "Tales of Vesperia: Definitive Edition"
+  },
+  {
+    "id": 1210,
+    "Game-name": "Marvel's Guardians of the Galaxy"
+  },
+  {
+    "id": 1211,
+    "Game-name": "Marvel Avengers"
+  },
+  {
+    "id": 1212,
+    "Game-name": "DC Super Hero Girls Blitz"
+  },
+  {
+    "id": 1213,
+    "Game-name": "Zookeeper World"
+  },
+  {
+    "id": 1214,
+    "Game-name": "Freedom Planet"
+  },
+  {
+    "id": 1216,
+    "Game-name": "Monster Hunter Stories"
+  },
+  {
+    "id": 1217,
+    "Game-name": "Call of Duty: Black Ops 4"
+  },
+  {
+    "id": 1218,
+    "Game-name": "Helldivers"
+  },
+  {
+    "id": 1219,
+    "Game-name": "Unpacking"
+  },
+  {
+    "id": 1220,
+    "Game-name": "Valkyrie Connect"
+  },
+  {
+    "id": 1221,
+    "Game-name": "The Legend of Tianding"
+  },
+  {
+    "id": 1222,
+    "Game-name": "Nier Reincarnation"
+  },
+  {
+    "id": 1225,
+    "Game-name": "Forza Horizon 5"
+  },
+  {
+    "id": 1226,
+    "Game-name": "Thumb Drift"
+  },
+  {
+    "id": 1227,
+    "Game-name": "VIKINGS 2 - Wolf Archers Progenies"
+  },
+  {
+    "id": 1228,
+    "Game-name": "Bubble Witch 2 Saga"
+  },
+  {
+    "id": 1229,
+    "Game-name": "Galaga Wars"
+  },
+  {
+    "id": 1230,
+    "Game-name": "Angry Birds Reloaded"
+  },
+  {
+    "id": 1231,
+    "Game-name": "Shin Megami Tensei V"
+  },
+  {
+    "id": 1232,
+    "Game-name": "Age of Empires IV"
+  },
+  {
+    "id": 1234,
+    "Game-name": "A Total War Saga: Troy"
+  },
+  {
+    "id": 1235,
+    "Game-name": "Super Hit Baseball"
+  },
+  {
+    "id": 1236,
+    "Game-name": "Farm Heroes Super Saga"
+  },
+  {
+    "id": 1237,
+    "Game-name": "Cube Rush Adventure"
+  },
+  {
+    "id": 1238,
+    "Game-name": "Spiritfarer"
+  },
+  {
+    "id": 1239,
+    "Game-name": "Little Orpheus"
+  },
+  {
+    "id": 1240,
+    "Game-name": "Nonstop Knight 2"
+  },
+  {
+    "id": 1241,
+    "Game-name": "Mighty Quest"
+  },
+  {
+    "id": 1242,
+    "Game-name": "Talking Tom Hero Dash"
+  },
+  {
+    "id": 1244,
+    "Game-name": "LEGO Star Wars Battles"
+  },
+  {
+    "id": 1245,
+    "Game-name": "Grand Theft Auto IV"
+  },
+  {
+    "id": 1246,
+    "Game-name": "Grand Theft Auto: The Ballad of Gay Tony"
+  },
+  {
+    "id": 1247,
+    "Game-name": "Sonic Dash"
+  },
+  {
+    "id": 1248,
+    "Game-name": "Asphalt 8: Airborne"
+  },
+  {
+    "id": 1249,
+    "Game-name": "Funky Restaurant"
+  },
+  {
+    "id": 1250,
+    "Game-name": "Angry Birds Match"
+  },
+  {
+    "id": 1251,
+    "Game-name": "The Silent Age"
+  },
+  {
+    "id": 1252,
+    "Game-name": "Little Dragons Cafe"
+  },
+  {
+    "id": 1253,
+    "Game-name": "Ruined King: A League of Legends Story"
+  },
+  {
+    "id": 1254,
+    "Game-name": "Battlefield 2042"
+  },
+  {
+    "id": 1256,
+    "Game-name": "Blood will be Spilled"
+  },
+  {
+    "id": 1257,
+    "Game-name": "Towaga: Among Shadows"
+  },
+  {
+    "id": 1258,
+    "Game-name": "Shinsekai: Into the Depths (Console)"
+  },
+  {
+    "id": 1259,
+    "Game-name": "Rubber Bandits"
+  },
+  {
+    "id": 1260,
+    "Game-name": "Fury Unleashed"
+  },
+  {
+    "id": 1261,
+    "Game-name": "Fallback"
+  },
+  {
+    "id": 1262,
+    "Game-name": "Halo Infinite"
+  },
+  {
+    "id": 1264,
+    "Game-name": "Kirby Star Allies"
+  },
+  {
+    "id": 1265,
+    "Game-name": "Sayonara Wild Hearts"
+  },
+  {
+    "id": 1266,
+    "Game-name": "Pato Box"
+  },
+  {
+    "id": 1267,
+    "Game-name": "MY HERO ONE'S JUSTICE"
+  },
+  {
+    "id": 1270,
+    "Game-name": "Final Fantasy VII: The First Soldier"
+  },
+  {
+    "id": 1271,
+    "Game-name": "Alien: Isolation (Mobile)"
+  },
+  {
+    "id": 1272,
+    "Game-name": "Wild Bullets"
+  },
+  {
+    "id": 1273,
+    "Game-name": "Westland Survival"
+  },
+  {
+    "id": 1274,
+    "Game-name": "Mutant Year Zero: Road to Eden (PC)"
+  },
+  {
+    "id": 1275,
+    "Game-name": "Disney Melee Mania"
+  },
+  {
+    "id": 1278,
+    "Game-name": "OkunoKa"
+  },
+  {
+    "id": 1279,
+    "Game-name": "Mosaic"
+  },
+  {
+    "id": 1284,
+    "Game-name": "Oddmar"
+  },
+  {
+    "id": 1285,
+    "Game-name": "Super Brawl Universe"
+  },
+  {
+    "id": 1286,
+    "Game-name": "Rescue Wings"
+  },
+  {
+    "id": 1287,
+    "Game-name": "Wonderbox: The Adventure Maker (iPhone)"
+  },
+  {
+    "id": 1289,
+    "Game-name": "Disney Wonderful Worlds"
+  },
+  {
+    "id": 1292,
+    "Game-name": "ENYO"
+  },
+  {
+    "id": 1293,
+    "Game-name": "Me is King"
+  },
+  {
+    "id": 1294,
+    "Game-name": "Knight's Edge"
+  },
+  {
+    "id": 1295,
+    "Game-name": "F1 Mobile Racing"
+  },
+  {
+    "id": 1296,
+    "Game-name": "Botworld Adventure"
+  },
+  {
+    "id": 1297,
+    "Game-name": "Bomb Club"
+  },
+  {
+    "id": 1298,
+    "Game-name": "Clash of Clans"
+  },
+  {
+    "id": 1299,
+    "Game-name": "Clash Royale"
+  },
+  {
+    "id": 1301,
+    "Game-name": "Stranger Things: Puzzle Tales"
+  },
+  {
+    "id": 1302,
+    "Game-name": "Seabeard"
+  },
+  {
+    "id": 1303,
+    "Game-name": "Deponia Doomsday"
+  },
+  {
+    "id": 1304,
+    "Game-name": "Monkey Island 2: LeChucks Revenge (Special Edition)"
+  },
+  {
+    "id": 1306,
+    "Game-name": "Arcaea"
+  },
+  {
+    "id": 1307,
+    "Game-name": "Lumino City"
+  },
+  {
+    "id": 1308,
+    "Game-name": "Machinarium"
+  },
+  {
+    "id": 1311,
+    "Game-name": "Subway Surfers"
+  },
+  {
+    "id": 1312,
+    "Game-name": "Fruit Ninja"
+  },
+  {
+    "id": 1313,
+    "Game-name": "PowerWash Simulator"
+  },
+  {
+    "id": 1315,
+    "Game-name": "Merge Mansion"
+  },
+  {
+    "id": 1316,
+    "Game-name": "AFK Arena"
+  },
+  {
+    "id": 1317,
+    "Game-name": "Pokémon GO"
+  },
+  {
+    "id": 1318,
+    "Game-name": "The Curse of Monkey Island"
+  },
+  {
+    "id": 1320,
+    "Game-name": "Fortnite (2022 Update)"
+  },
+  {
+    "id": 1321,
+    "Game-name": "Thimbleweed Park"
+  },
+  {
+    "id": 1323,
+    "Game-name": "Beyond a Steel Sky"
+  },
+  {
+    "id": 1329,
+    "Game-name": "Spelunky 2"
+  },
+  {
+    "id": 1330,
+    "Game-name": "Fishdom"
+  },
+  {
+    "id": 1332,
+    "Game-name": "Angry Birds Journey"
+  },
+  {
+    "id": 1333,
+    "Game-name": "Cytus"
+  },
+  {
+    "id": 1334,
+    "Game-name": "Arms"
+  },
+  {
+    "id": 1335,
+    "Game-name": "Mario Tennis Aces"
+  },
+  {
+    "id": 1336,
+    "Game-name": "Artifact: Foundry"
+  },
+  {
+    "id": 1337,
+    "Game-name": "Artifact: Classic"
+  },
+  {
+    "id": 1338,
+    "Game-name": "Heroes of the Storm"
+  },
+  {
+    "id": 1341,
+    "Game-name": "Overwatch"
+  },
+  {
+    "id": 1344,
+    "Game-name": "Sam and Max Save the World (PC)"
+  },
+  {
+    "id": 1345,
+    "Game-name": "Sam and Max Save the World (Console)"
+  },
+  {
+    "id": 1346,
+    "Game-name": "Tales of Monkey Island"
+  },
+  {
+    "id": 1347,
+    "Game-name": "Halo: Combat Evolved Anniversary"
+  },
+  {
+    "id": 1348,
+    "Game-name": "Halo 2: Anniversary"
+  },
+  {
+    "id": 1349,
+    "Game-name": "Halo 3 (Master Chief Collection)"
+  },
+  {
+    "id": 1350,
+    "Game-name": "Halo 4"
+  },
+  {
+    "id": 1351,
+    "Game-name": "Halo 3: ODST (Master Chief Collection)"
+  },
+  {
+    "id": 1352,
+    "Game-name": "Halo: Reach (Master Chief Collection)"
+  },
+  {
+    "id": 1353,
+    "Game-name": "Death's Door (Gamepad)"
+  },
+  {
+    "id": 1354,
+    "Game-name": "Angry Birds VR: Isle of Pigs"
+  },
+  {
+    "id": 1355,
+    "Game-name": "Assassin's Creed: Rebellion"
+  },
+  {
+    "id": 1357,
+    "Game-name": "The Office: Somehow We Manage"
+  },
+  {
+    "id": 1358,
+    "Game-name": "Nobody Saves the World"
+  },
+  {
+    "id": 1359,
+    "Game-name": "Downhill Smash"
+  },
+  {
+    "id": 1360,
+    "Game-name": "Captain Tsubasa: Rise of New Champions"
+  },
+  {
+    "id": 1361,
+    "Game-name": "Mario Golf: Super Rush"
+  },
+  {
+    "id": 1362,
+    "Game-name": "BlazBlue: Cross Tag Battle"
+  },
+  {
+    "id": 1363,
+    "Game-name": "Olli Olli World"
+  },
+  {
+    "id": 1364,
+    "Game-name": "Godfall"
+  },
+  {
+    "id": 1365,
+    "Game-name": "Hell Let Loose"
+  },
+  {
+    "id": 1366,
+    "Game-name": "Riders Republic"
+  },
+  {
+    "id": 1367,
+    "Game-name": "Pet Rescue Saga"
+  },
+  {
+    "id": 1368,
+    "Game-name": "Spellbreak"
+  },
+  {
+    "id": 1370,
+    "Game-name": "Propnight"
+  },
+  {
+    "id": 1371,
+    "Game-name": "Elden Ring"
+  },
+  {
+    "id": 1372,
+    "Game-name": "Pokémon Legends: Arceus"
+  },
+  {
+    "id": 1373,
+    "Game-name": "Flash Party"
+  },
+  {
+    "id": 1374,
+    "Game-name": "Pocket Love"
+  },
+  {
+    "id": 1375,
+    "Game-name": "Flick Kick Football Kickoff"
+  },
+  {
+    "id": 1377,
+    "Game-name": "Pokémon Unite"
+  },
+  {
+    "id": 1378,
+    "Game-name": "Undertale"
+  },
+  {
+    "id": 1379,
+    "Game-name": "Monster Hunter Generations Ultimate"
+  },
+  {
+    "id": 1380,
+    "Game-name": "Final Fantasy XV : Pocket Edition"
+  },
+  {
+    "id": 1382,
+    "Game-name": "Hungry Shark World"
+  },
+  {
+    "id": 1384,
+    "Game-name": "My Universe: Interior Designer"
+  },
+  {
+    "id": 1385,
+    "Game-name": "Tunic"
+  },
+  {
+    "id": 1389,
+    "Game-name": "Day of the Tentacle Remastered"
+  },
+  {
+    "id": 1390,
+    "Game-name": "Kirby and the Forgotten Land"
+  },
+  {
+    "id": 1391,
+    "Game-name": "Videoball"
+  },
+  {
+    "id": 1392,
+    "Game-name": "Grid Legends"
+  },
+  {
+    "id": 1394,
+    "Game-name": "Weird West"
+  },
+  {
+    "id": 1395,
+    "Game-name": "Stranger of Paradise: Final Fantasy Origin"
+  },
+  {
+    "id": 1399,
+    "Game-name": "LEGO Star Wars: The Skywalker Saga"
+  },
+  {
+    "id": 1400,
+    "Game-name": "Nickelodeon Extreme Tennis"
+  },
+  {
+    "id": 1401,
+    "Game-name": "Big Hunter"
+  },
+  {
+    "id": 1403,
+    "Game-name": "Temple Run: Puzzle Adventure"
+  },
+  {
+    "id": 1404,
+    "Game-name": "Tearaway"
+  },
+  {
+    "id": 1405,
+    "Game-name": "Muramasa Rebirth"
+  },
+  {
+    "id": 1406,
+    "Game-name": "wipEout 2048"
+  },
+  {
+    "id": 1407,
+    "Game-name": "Thomas Was Alone"
+  },
+  {
+    "id": 1408,
+    "Game-name": "Soul Sacrifice Delta"
+  },
+  {
+    "id": 1409,
+    "Game-name": "Fez"
+  },
+  {
+    "id": 1410,
+    "Game-name": "Killzone: Mercenary"
+  },
+  {
+    "id": 1411,
+    "Game-name": "Persona 4: Dancing All Night"
+  },
+  {
+    "id": 1412,
+    "Game-name": "Super Monkey Ball: Banana Splitz"
+  },
+  {
+    "id": 1413,
+    "Game-name": "Touch My Katamari"
+  },
+  {
+    "id": 1414,
+    "Game-name": "Taiko Drum Master V Version"
+  },
+  {
+    "id": 1416,
+    "Game-name": "LittleBigPlanet PS Vita"
+  },
+  {
+    "id": 1417,
+    "Game-name": "Sine Mora"
+  },
+  {
+    "id": 1418,
+    "Game-name": "wipEout Merge"
+  },
+  {
+    "id": 1420,
+    "Game-name": "Severed"
+  },
+  {
+    "id": 1421,
+    "Game-name": "Nintendo Switch Sports"
+  },
+  {
+    "id": 1422,
+    "Game-name": "Shovel Knight Pocket Dungeon"
+  },
+  {
+    "id": 1423,
+    "Game-name": "PUBG Mobile"
+  },
+  {
+    "id": 1428,
+    "Game-name": "Beat Saber"
+  },
+  {
+    "id": 1429,
+    "Game-name": "Roller Champions"
+  },
+  {
+    "id": 1430,
+    "Game-name": "Phoenix Point"
+  },
+  {
+    "id": 1431,
+    "Game-name": "Valkyria Revolution"
+  },
+  {
+    "id": 1432,
+    "Game-name": "Warped Kart Racers"
+  },
+  {
+    "id": 1433,
+    "Game-name": "Ara Fell: Enhanced Edition"
+  },
+  {
+    "id": 1434,
+    "Game-name": "Wonder Boy - Asha in Monster World"
+  },
+  {
+    "id": 1435,
+    "Game-name": "Spirit Arena"
+  },
+  {
+    "id": 1436,
+    "Game-name": "Balan Wonderworld"
+  },
+  {
+    "id": 1437,
+    "Game-name": "Monomals (Switch)"
+  },
+  {
+    "id": 1438,
+    "Game-name": "Chocobo GP"
+  },
+  {
+    "id": 1439,
+    "Game-name": "Lego Star Wars: The Force Awakens (Vita)"
+  },
+  {
+    "id": 1440,
+    "Game-name": "Zombie Army Trilogy"
+  },
+  {
+    "id": 1441,
+    "Game-name": "Nintendo Labo"
+  },
+  {
+    "id": 1442,
+    "Game-name": "Drawn to Life: Two Realms"
+  },
+  {
+    "id": 1443,
+    "Game-name": "Snipperclips"
+  },
+  {
+    "id": 1444,
+    "Game-name": "BlazBlue: Central Fiction"
+  },
+  {
+    "id": 1445,
+    "Game-name": "Big Brain Academy: Brain vs. Brain"
+  },
+  {
+    "id": 1447,
+    "Game-name": "Half-Life: Alyx"
+  },
+  {
+    "id": 1448,
+    "Game-name": "Sprint Vector"
+  },
+  {
+    "id": 1449,
+    "Game-name": "House Flipper VR"
+  },
+  {
+    "id": 1450,
+    "Game-name": "OhShape"
+  },
+  {
+    "id": 1452,
+    "Game-name": "Wolfenstein: Cyberpilot"
+  },
+  {
+    "id": 1453,
+    "Game-name": "Racket: Nx"
+  },
+  {
+    "id": 1457,
+    "Game-name": "Melbits World"
+  },
+  {
+    "id": 1458,
+    "Game-name": "Mario Strikers: Battle League"
+  },
+  {
+    "id": 1459,
+    "Game-name": "Lapis x Labyrinth"
+  },
+  {
+    "id": 1460,
+    "Game-name": "Return of the Obra Dinn"
+  },
+  {
+    "id": 1461,
+    "Game-name": "Sonic Origins"
+  },
+  {
+    "id": 1462,
+    "Game-name": "Citizen Sleeper"
+  },
+  {
+    "id": 1464,
+    "Game-name": "Famicom Detective Club"
+  },
+  {
+    "id": 1465,
+    "Game-name": "Teenage Mutant Ninja Turtles: Shredder's Revenge"
+  },
+  {
+    "id": 1466,
+    "Game-name": "Disney Mirrorverse"
+  },
+  {
+    "id": 1467,
+    "Game-name": "Stray"
+  },
+  {
+    "id": 1469,
+    "Game-name": "MultiVersus"
+  },
+  {
+    "id": 1470,
+    "Game-name": "Monster Hunter Rise: Sunbreak"
+  },
+  {
+    "id": 1471,
+    "Game-name": "Fire Emblem Warriors: Three Hopes"
+  },
+  {
+    "id": 1473,
+    "Game-name": "Mega Man 11"
+  },
+  {
+    "id": 1474,
+    "Game-name": "Redout 2"
+  },
+  {
+    "id": 1475,
+    "Game-name": "Klonoa Phantasy Reverie Series"
+  },
+  {
+    "id": 1476,
+    "Game-name": "Capcom Arcade 2nd Stadium"
+  },
+  {
+    "id": 1477,
+    "Game-name": "Neon White"
+  },
+  {
+    "id": 1478,
+    "Game-name": "SUPER UFO FIGHTER"
+  },
+  {
+    "id": 1479,
+    "Game-name": "Digimon Survive"
+  },
+  {
+    "id": 1480,
+    "Game-name": "Hitman 2"
+  },
+  {
+    "id": 1482,
+    "Game-name": "My Friend Peppa Pig"
+  },
+  {
+    "id": 1483,
+    "Game-name": "Taiko no Tatsujin: The Drum Master"
+  },
+  {
+    "id": 1484,
+    "Game-name": "New Super Mario Bros. U Deluxe"
+  },
+  {
+    "id": 1485,
+    "Game-name": "Disney Tsum Tsum Festival"
+  },
+  {
+    "id": 1486,
+    "Game-name": "Mini Motorways (Switch)"
+  },
+  {
+    "id": 1488,
+    "Game-name": "Don't Starve Together"
+  },
+  {
+    "id": 1489,
+    "Game-name": "Trials of the Blood Dragon"
+  },
+  {
+    "id": 1490,
+    "Game-name": "SpongeBob SquarePants: Battle for Bikini Bottom - Rehydrated"
+  },
+  {
+    "id": 1492,
+    "Game-name": "Rollerdrome"
+  },
+  {
+    "id": 1494,
+    "Game-name": "Tony Hawk's Pro Skater 1 + 2"
+  },
+  {
+    "id": 1495,
+    "Game-name": "Ghostrunner"
+  },
+  {
+    "id": 1496,
+    "Game-name": "Tiny Tina's Wonderlands"
+  },
+  {
+    "id": 1498,
+    "Game-name": "Naruto to Boruto: Shinobi Striker"
+  },
+  {
+    "id": 1499,
+    "Game-name": "Fall Guys: Ultimate Knockout (2022)"
+  },
+  {
+    "id": 1500,
+    "Game-name": "Xenoblade Chronicles 3"
+  },
+  {
+    "id": 1501,
+    "Game-name": "DNF Duel"
+  },
+  {
+    "id": 1502,
+    "Game-name": "Kirby's Dream Buffet"
+  },
+  {
+    "id": 1503,
+    "Game-name": "Shin chan: Me and the Professor on Summer Vacation"
+  },
+  {
+    "id": 1504,
+    "Game-name": "PAC-MAN WORLD Re-PAC"
+  },
+  {
+    "id": 1505,
+    "Game-name": "Lost in Play"
+  },
+  {
+    "id": 1506,
+    "Game-name": "OK K.O.! Let's Play Heroes"
+  },
+  {
+    "id": 1507,
+    "Game-name": "Aviary Attorney"
+  },
+  {
+    "id": 1508,
+    "Game-name": "Two Point Campus (Gamepad)"
+  },
+  {
+    "id": 1510,
+    "Game-name": "Kane & Lynch 2: Dog Days"
+  },
+  {
+    "id": 1511,
+    "Game-name": "Child of Eden"
+  },
+  {
+    "id": 1512,
+    "Game-name": "Splatoon 3"
+  },
+  {
+    "id": 1513,
+    "Game-name": "Just Dance 2022"
+  },
+  {
+    "id": 1514,
+    "Game-name": "Rabbids: Party of Legends"
+  },
+  {
+    "id": 1515,
+    "Game-name": "Sonic the Hedgehog 4: Episode I"
+  },
+  {
+    "id": 1516,
+    "Game-name": "Sonic the Hedgehog 4: Episode II"
+  },
+  {
+    "id": 1517,
+    "Game-name": "Sonic Adventure DX"
+  },
+  {
+    "id": 1518,
+    "Game-name": "Sonic Adventure 2 DX"
+  },
+  {
+    "id": 1519,
+    "Game-name": "Sonic the Hedgehog 2 (Mobile)"
+  },
+  {
+    "id": 1520,
+    "Game-name": "Horizon Chase 2"
+  },
+  {
+    "id": 1522,
+    "Game-name": "Sonic Lost World"
+  },
+  {
+    "id": 1523,
+    "Game-name": "Animal Crossing: City Folk"
+  },
+  {
+    "id": 1524,
+    "Game-name": "Destiny"
+  },
+  {
+    "id": 1525,
+    "Game-name": "Return to Monkey Island"
+  },
+  {
+    "id": 1526,
+    "Game-name": "Slime Rancher 2 (Early Access)"
+  },
+  {
+    "id": 1529,
+    "Game-name": "Tinykin"
+  },
+  {
+    "id": 1530,
+    "Game-name": "The Surge 2"
+  },
+  {
+    "id": 1531,
+    "Game-name": "Sniper Elite 5"
+  },
+  {
+    "id": 1532,
+    "Game-name": "Metal: Hellsinger"
+  },
+  {
+    "id": 1533,
+    "Game-name": "Octopath Traveler: Champions of the Continent"
+  },
+  {
+    "id": 1534,
+    "Game-name": "XIII"
+  },
+  {
+    "id": 1535,
+    "Game-name": "The DioField Chronicle"
+  },
+  {
+    "id": 1536,
+    "Game-name": "Various Daylife (Switch)"
+  },
+  {
+    "id": 1537,
+    "Game-name": "Dorfromantik (Console)"
+  },
+  {
+    "id": 1539,
+    "Game-name": "Triangle Strategy"
+  },
+  {
+    "id": 1541,
+    "Game-name": "Night Call"
+  },
+  {
+    "id": 1542,
+    "Game-name": "Sonic Advance"
+  },
+  {
+    "id": 1543,
+    "Game-name": "Metroid Prime Remastered"
+  },
+  {
+    "id": 1544,
+    "Game-name": "Super Smash Bros. Melee"
+  },
+  {
+    "id": 1545,
+    "Game-name": "Star Wars Rogue Squadron II: Rogue Leader"
+  },
+  {
+    "id": 1546,
+    "Game-name": "Prodeus"
+  },
+  {
+    "id": 1548,
+    "Game-name": "Hell is Other Demons"
+  },
+  {
+    "id": 1549,
+    "Game-name": "Cult of the Lamb"
+  },
+  {
+    "id": 1550,
+    "Game-name": "Picross S8"
+  },
+  {
+    "id": 1554,
+    "Game-name": "You Suck at Parking"
+  },
+  {
+    "id": 1555,
+    "Game-name": "Scorn"
+  },
+  {
+    "id": 1557,
+    "Game-name": "Project Wingman"
+  },
+  {
+    "id": 1559,
+    "Game-name": "Skies of Chaos"
+  },
+  {
+    "id": 1561,
+    "Game-name": "Soulstice"
+  },
+  {
+    "id": 1562,
+    "Game-name": "ABZU"
+  },
+  {
+    "id": 1563,
+    "Game-name": "Grim Fandango Remastered"
+  },
+  {
+    "id": 1564,
+    "Game-name": "Bayonetta 3"
+  },
+  {
+    "id": 1565,
+    "Game-name": "Sonic Frontiers"
+  },
+  {
+    "id": 1566,
+    "Game-name": "Sonic Advance 2"
+  },
+  {
+    "id": 1567,
+    "Game-name": "Marvel vs. Capcom 2: New Age of Heroes"
+  },
+  {
+    "id": 1568,
+    "Game-name": "WarioWare, Inc.: Mega Microgames!"
+  },
+  {
+    "id": 1569,
+    "Game-name": "Wario Land 4"
+  },
+  {
+    "id": 1570,
+    "Game-name": "Star Fox: Assault"
+  },
+  {
+    "id": 1571,
+    "Game-name": "Dune: Spice Wars"
+  },
+  {
+    "id": 1573,
+    "Game-name": "A Plague Tale: Requiem"
+  },
+  {
+    "id": 1574,
+    "Game-name": "Pentiment"
+  },
+  {
+    "id": 1575,
+    "Game-name": "Tactics Ogre: Reborn"
+  },
+  {
+    "id": 1576,
+    "Game-name": "Alba: A Wildlife Adventure"
+  },
+  {
+    "id": 1577,
+    "Game-name": "Bright Paw"
+  },
+  {
+    "id": 1578,
+    "Game-name": "Mario + Rabbids Sparks of Hope"
+  },
+  {
+    "id": 1579,
+    "Game-name": "Pokémon Scarlet and Violet"
+  },
+  {
+    "id": 1581,
+    "Game-name": "Skullgirls Mobile"
+  },
+  {
+    "id": 1585,
+    "Game-name": "Injustice 2 (Mobile)"
+  },
+  {
+    "id": 1586,
+    "Game-name": "Need for Speed Unbound"
+  },
+  {
+    "id": 1587,
+    "Game-name": "Google Doodle: Jerry Lawson"
+  },
+  {
+    "id": 1588,
+    "Game-name": "All Hallows: The Land of Lost Dreams"
+  },
+  {
+    "id": 1590,
+    "Game-name": "Among Us VR"
+  },
+  {
+    "id": 1594,
+    "Game-name": "Red Matter 2"
+  },
+  {
+    "id": 1596,
+    "Game-name": "The Curious Tale of the Stolen Pets"
+  },
+  {
+    "id": 1597,
+    "Game-name": "The Secret of Retropolis"
+  },
+  {
+    "id": 1601,
+    "Game-name": "MisBits"
+  },
+  {
+    "id": 1604,
+    "Game-name": "Down the Rabbit Hole"
+  },
+  {
+    "id": 1606,
+    "Game-name": "FitXR"
+  },
+  {
+    "id": 1607,
+    "Game-name": "Garden of the Sea"
+  },
+  {
+    "id": 1614,
+    "Game-name": "SUPERHOT VR"
+  },
+  {
+    "id": 1616,
+    "Game-name": "The Room VR: A Dark Matter"
+  },
+  {
+    "id": 1618,
+    "Game-name": "Wander"
+  },
+  {
+    "id": 1619,
+    "Game-name": "Anachronox"
+  },
+  {
+    "id": 1620,
+    "Game-name": "Arx Fatalis"
+  },
+  {
+    "id": 1624,
+    "Game-name": "Clive Barkers Undying"
+  },
+  {
+    "id": 1625,
+    "Game-name": "Deus Ex"
+  },
+  {
+    "id": 1626,
+    "Game-name": "Drakan: Order of the Flame"
+  },
+  {
+    "id": 1627,
+    "Game-name": "Koudelka"
+  },
+  {
+    "id": 1629,
+    "Game-name": "Star Wars: Dark Forces"
+  },
+  {
+    "id": 1630,
+    "Game-name": "Still Life"
+  },
+  {
+    "id": 1631,
+    "Game-name": "The Terminator: Future Shock"
+  },
+  {
+    "id": 1632,
+    "Game-name": "Alone in the Dark Trilogy"
+  },
+  {
+    "id": 1633,
+    "Game-name": "Blood"
+  },
+  {
+    "id": 1634,
+    "Game-name": "Covert Ops: Nuclear Dawn (Chase the Express)"
+  },
+  {
+    "id": 1636,
+    "Game-name": "DreamWeb"
+  },
+  {
+    "id": 1637,
+    "Game-name": "Quake"
+  },
+  {
+    "id": 1639,
+    "Game-name": "Shadow Tower"
+  },
+  {
+    "id": 1642,
+    "Game-name": "The Wheel of Time"
+  },
+  {
+    "id": 1643,
+    "Game-name": "Thief: The Dark Project"
+  },
+  {
+    "id": 1644,
+    "Game-name": "Thief II"
+  },
+  {
+    "id": 1645,
+    "Game-name": "Ultima Underworld: The Stygian Abyss"
+  },
+  {
+    "id": 1646,
+    "Game-name": "Ultima Underworld II: Labyrinth of Worlds"
+  },
+  {
+    "id": 1647,
+    "Game-name": "Railbound"
+  },
+  {
+    "id": 1648,
+    "Game-name": "Warp Drive (Switch)"
+  },
+  {
+    "id": 1649,
+    "Game-name": "LEGO Brick Tales"
+  },
+  {
+    "id": 1651,
+    "Game-name": "Harvestella"
+  },
+  {
+    "id": 1652,
+    "Game-name": "Unpacking (Switch)"
+  },
+  {
+    "id": 1655,
+    "Game-name": "Pinball FX2 VR"
+  },
+  {
+    "id": 1656,
+    "Game-name": "Far Cry Primal"
+  },
+  {
+    "id": 1657,
+    "Game-name": "Disc Room"
+  },
+  {
+    "id": 1658,
+    "Game-name": "Rhythm Sprout"
+  },
+  {
+    "id": 1659,
+    "Game-name": "Ghostwire: Tokyo"
+  },
+  {
+    "id": 1660,
+    "Game-name": "Miitopia"
+  },
+  {
+    "id": 1661,
+    "Game-name": "River City Girls 2"
+  },
+  {
+    "id": 1663,
+    "Game-name": "Babylon's Fall"
+  },
+  {
+    "id": 1664,
+    "Game-name": "Pupperazzi"
+  },
+  {
+    "id": 1665,
+    "Game-name": "Until You Fall"
+  },
+  {
+    "id": 1666,
+    "Game-name": "SteamVR"
+  },
+  {
+    "id": 1667,
+    "Game-name": "Hitman GO: VR Edition"
+  },
+  {
+    "id": 1668,
+    "Game-name": "Robo Recall"
+  },
+  {
+    "id": 1669,
+    "Game-name": "Full Throttle Remastered"
+  },
+  {
+    "id": 1670,
+    "Game-name": "Operation Flashpoint: Dragon Rising"
+  },
+  {
+    "id": 1671,
+    "Game-name": "Creed: Rise to Glory"
+  },
+  {
+    "id": 1672,
+    "Game-name": "Star Trek: Bridge Crew"
+  },
+  {
+    "id": 1673,
+    "Game-name": "Job Simulator"
+  },
+  {
+    "id": 1674,
+    "Game-name": "I Expect You To Die 2"
+  },
+  {
+    "id": 1677,
+    "Game-name": "Dakar Desert Rally"
+  },
+  {
+    "id": 1678,
+    "Game-name": "Hi-Fi RUSH"
+  },
+  {
+    "id": 1679,
+    "Game-name": "Dead Space (2023)"
+  },
+  {
+    "id": 1680,
+    "Game-name": "Raji: An Ancient Epic"
+  },
+  {
+    "id": 1682,
+    "Game-name": "Haiku the Robot"
+  },
+  {
+    "id": 1683,
+    "Game-name": "Dadish 2"
+  },
+  {
+    "id": 1685,
+    "Game-name": "Tom Clancys Ghost Recon Wildlands"
+  },
+  {
+    "id": 1687,
+    "Game-name": "Chicory: A Colorful Tale"
+  },
+  {
+    "id": 1694,
+    "Game-name": "Serial Cleaners"
+  },
+  {
+    "id": 1695,
+    "Game-name": "Dragon Quest Builders"
+  },
+  {
+    "id": 1696,
+    "Game-name": "Minecraft: Nintendo Switch Edition"
+  },
+  {
+    "id": 1698,
+    "Game-name": "#DRIVE (Switch)"
+  },
+  {
+    "id": 1699,
+    "Game-name": "Super Mario Bros. 3"
+  },
+  {
+    "id": 1700,
+    "Game-name": "Sonic the Hedgehog Pocket Adventure"
+  },
+  {
+    "id": 1701,
+    "Game-name": "Metal Slug: 1st & 2nd Mission"
+  },
+  {
+    "id": 1702,
+    "Game-name": "Super Mario Bros. 2"
+  },
+  {
+    "id": 1703,
+    "Game-name": "Super Mario World"
+  },
+  {
+    "id": 1704,
+    "Game-name": "Super Mario World 2: Yoshis Island"
+  },
+  {
+    "id": 1705,
+    "Game-name": "Star Fox 2"
+  },
+  {
+    "id": 1706,
+    "Game-name": "Metroid: Zero Mission"
+  },
+  {
+    "id": 1707,
+    "Game-name": "American Fugitive"
+  },
+  {
+    "id": 1708,
+    "Game-name": "Pokémon Ruby, Sapphire and Emerald"
+  },
+  {
+    "id": 1709,
+    "Game-name": "Resident Evil 4 (2023)"
+  },
+  {
+    "id": 1712,
+    "Game-name": "The Callisto Protocol"
+  },
+  {
+    "id": 1713,
+    "Game-name": "Tetris Ultimate"
+  },
+  {
+    "id": 1714,
+    "Game-name": "Sonic Colours Ultimate"
+  },
+  {
+    "id": 1715,
+    "Game-name": "Dredge"
+  },
+  {
+    "id": 1717,
+    "Game-name": "Lumines: Electronic Symphony"
+  },
+  {
+    "id": 1719,
+    "Game-name": "Bayonetta (PC)"
+  },
+  {
+    "id": 1720,
+    "Game-name": "Trombone Champ"
+  },
+  {
+    "id": 1721,
+    "Game-name": "Paper Ghost Stories: Third Eye Open"
+  },
+  {
+    "id": 1722,
+    "Game-name": "Ooblets"
+  },
+  {
+    "id": 1723,
+    "Game-name": "Mortal Kombat"
+  },
+  {
+    "id": 1724,
+    "Game-name": "SpongeBob SquarePants: The Cosmic Shake"
+  },
+  {
+    "id": 1726,
+    "Game-name": "What the Car?"
+  },
+  {
+    "id": 1727,
+    "Game-name": "Joe Danger 2: The Movie"
+  },
+  {
+    "id": 1728,
+    "Game-name": "Saints Row"
+  },
+  {
+    "id": 1731,
+    "Game-name": "TOEM"
+  },
+  {
+    "id": 1732,
+    "Game-name": "Lego 2K Drive"
+  },
+  {
+    "id": 1734,
+    "Game-name": "Tyranny"
+  },
+  {
+    "id": 1747,
+    "Game-name": "Baldur's Gate"
+  },
+  {
+    "id": 1748,
+    "Game-name": "Baldur's Gate II"
+  },
+  {
+    "id": 1750,
+    "Game-name": "Deus Ex - Invisible War"
+  },
+  {
+    "id": 1751,
+    "Game-name": "Echo Night"
+  },
+  {
+    "id": 1753,
+    "Game-name": "Half-Life: Blue Shift"
+  },
+  {
+    "id": 1754,
+    "Game-name": "Half-Life: Opposing Force"
+  },
+  {
+    "id": 1755,
+    "Game-name": "Half-Life"
+  },
+  {
+    "id": 1756,
+    "Game-name": "Hexen II"
+  },
+  {
+    "id": 1760,
+    "Game-name": "The Misadventures of Tron Bonne"
+  },
+  {
+    "id": 1762,
+    "Game-name": "Crisis Core: Final Fantasy VII Reunion"
+  },
+  {
+    "id": 1763,
+    "Game-name": "Valheim"
+  },
+  {
+    "id": 1765,
+    "Game-name": "PHOGS!"
+  },
+  {
+    "id": 1766,
+    "Game-name": "Demon's Souls (2009)"
+  },
+  {
+    "id": 1767,
+    "Game-name": "Echochrome"
+  },
+  {
+    "id": 1768,
+    "Game-name": "The House of the Dead 4"
+  },
+  {
+    "id": 1769,
+    "Game-name": "Goonya Monster"
+  },
+  {
+    "id": 1770,
+    "Game-name": "Final Fantasy Pixel Remaster"
+  },
+  {
+    "id": 1771,
+    "Game-name": "Dead Space: Extraction"
+  },
+  {
+    "id": 1772,
+    "Game-name": "Tokyo Jungle"
+  },
+  {
+    "id": 1773,
+    "Game-name": "Puzzle Bobble Everybubble!"
+  },
+  {
+    "id": 1774,
+    "Game-name": "Super Phantom Cat Remake"
+  },
+  {
+    "id": 1775,
+    "Game-name": "Dadish 3"
+  },
+  {
+    "id": 1776,
+    "Game-name": "Bendy and the Ink Machine"
+  },
+  {
+    "id": 1777,
+    "Game-name": "Taiko no Tatsujin: Rhythm Festival"
+  },
+  {
+    "id": 1778,
+    "Game-name": "Voodoo Detective"
+  },
+  {
+    "id": 1779,
+    "Game-name": "Resident Evil Re:Verse"
+  },
+  {
+    "id": 1780,
+    "Game-name": "Dead Cells"
+  },
+  {
+    "id": 1781,
+    "Game-name": "The Legend of Zelda: Tears of the Kingdom"
+  },
+  {
+    "id": 1782,
+    "Game-name": "Pikmin 2 (HD)"
+  },
+  {
+    "id": 1783,
+    "Game-name": "Diablo IV"
+  },
+  {
+    "id": 1784,
+    "Game-name": "Final Fantasy XVI"
+  },
+  {
+    "id": 1785,
+    "Game-name": "Marvel Snap"
+  },
+  {
+    "id": 1786,
+    "Game-name": "Samurai Jack: Battle Through Time"
+  },
+  {
+    "id": 1790,
+    "Game-name": "Sonic Battle"
+  },
+  {
+    "id": 1791,
+    "Game-name": "Final Fantasy (GBA)"
+  },
+  {
+    "id": 1792,
+    "Game-name": "ChuChu Rocket! (GBA)"
+  },
+  {
+    "id": 1793,
+    "Game-name": "Castlevania: Harmony of Dissonance"
+  },
+  {
+    "id": 1794,
+    "Game-name": "Super Mario Kart"
+  },
+  {
+    "id": 1795,
+    "Game-name": "Super Punch-Out!!"
+  },
+  {
+    "id": 1796,
+    "Game-name": "Wario's Woods (SNES)"
+  },
+  {
+    "id": 1797,
+    "Game-name": "Tetris Attack"
+  },
+  {
+    "id": 1798,
+    "Game-name": "Metroid Prime (2002)"
+  },
+  {
+    "id": 1799,
+    "Game-name": "Donkey Kong Country"
+  },
+  {
+    "id": 1800,
+    "Game-name": "Star Fox"
+  },
+  {
+    "id": 1802,
+    "Game-name": "F-Zero"
+  },
+  {
+    "id": 1803,
+    "Game-name": "Goof Troop"
+  },
+  {
+    "id": 1804,
+    "Game-name": "Kirby's Dream Course"
+  },
+  {
+    "id": 1805,
+    "Game-name": "Killer Instinct"
+  },
+  {
+    "id": 1806,
+    "Game-name": "Street Fighter ALPHA 2"
+  },
+  {
+    "id": 1807,
+    "Game-name": "Sonic the Hedgehog"
+  },
+  {
+    "id": 1808,
+    "Game-name": "Sonic the Hedgehog 2"
+  },
+  {
+    "id": 1809,
+    "Game-name": "Alex Kidd in Miracle World"
+  },
+  {
+    "id": 1810,
+    "Game-name": "Knuckles' Chaotix"
+  },
+  {
+    "id": 1813,
+    "Game-name": "Pokémon Red & Blue"
+  },
+  {
+    "id": 1815,
+    "Game-name": "Addams Family Values"
+  },
+  {
+    "id": 1816,
+    "Game-name": "Animaniacs (Mega Drive)"
+  },
+  {
+    "id": 1817,
+    "Game-name": "Vectorman"
+  },
+  {
+    "id": 1818,
+    "Game-name": "Comix Zone"
+  },
+  {
+    "id": 1819,
+    "Game-name": "Crazy Taxi 2"
+  },
+  {
+    "id": 1820,
+    "Game-name": "The Legend of Zelda: A Link to the Past"
+  },
+  {
+    "id": 1821,
+    "Game-name": "Castlevania: Dracula X"
+  },
+  {
+    "id": 1822,
+    "Game-name": "Donkey Kong Country 2: Diddy's Kong Quest"
+  },
+  {
+    "id": 1823,
+    "Game-name": "Castlevania: Circle of the Moon"
+  },
+  {
+    "id": 1824,
+    "Game-name": "Konami Krazy Racers"
+  },
+  {
+    "id": 1825,
+    "Game-name": "DK: King of Swing"
+  },
+  {
+    "id": 1826,
+    "Game-name": "Armored Core VI: Fires of Rubicon"
+  },
+  {
+    "id": 1827,
+    "Game-name": "Blasphemous 2"
+  },
+  {
+    "id": 1828,
+    "Game-name": "Potionomics"
+  },
+  {
+    "id": 1832,
+    "Game-name": "Lies of P"
+  },
+  {
+    "id": 1834,
+    "Game-name": "Full Throttle"
+  },
+  {
+    "id": 1835,
+    "Game-name": "Monkey Island 2: LeChuck's Revenge"
+  },
+  {
+    "id": 1837,
+    "Game-name": "Pikmin 4"
+  },
+  {
+    "id": 1838,
+    "Game-name": "Super Mario Bros. Wonder"
+  },
+  {
+    "id": 1839,
+    "Game-name": "Sonic Superstars"
+  },
+  {
+    "id": 1841,
+    "Game-name": "Street Fighter 6"
+  },
+  {
+    "id": 1843,
+    "Game-name": "Sam & Max: Beyond Time and Space (Remaster)"
+  },
+  {
+    "id": 1844,
+    "Game-name": "Everybody 1-2-Switch!"
+  },
+  {
+    "id": 1845,
+    "Game-name": "Alien Hominid HD"
+  },
+  {
+    "id": 1846,
+    "Game-name": "World of Goo"
+  },
+  {
+    "id": 1848,
+    "Game-name": "Metroid: Samus Returns"
+  },
+  {
+    "id": 1849,
+    "Game-name": "The Legend of Zelda: Tri Force Heroes"
+  },
+  {
+    "id": 1852,
+    "Game-name": "Hey! Pikmin"
+  },
+  {
+    "id": 1853,
+    "Game-name": "Street Fighter II' Turbo: Hyper Fighting"
+  },
+  {
+    "id": 1854,
+    "Game-name": "Street Racer"
+  },
+  {
+    "id": 1855,
+    "Game-name": "Mega Man 7"
+  },
+  {
+    "id": 1856,
+    "Game-name": "Diddy Kong Racing"
+  },
+  {
+    "id": 1857,
+    "Game-name": "Mario Kart 64"
+  },
+  {
+    "id": 1858,
+    "Game-name": "Banjo-Kazooie"
+  },
+  {
+    "id": 1859,
+    "Game-name": "Super Smash Bros"
+  },
+  {
+    "id": 1860,
+    "Game-name": "Constable Comedy: The Crime Solving Comedian"
+  },
+  {
+    "id": 1861,
+    "Game-name": "Super Mario 64"
+  },
+  {
+    "id": 1862,
+    "Game-name": "Yoshi's Story"
+  },
+  {
+    "id": 1863,
+    "Game-name": "Starfox 64"
+  },
+  {
+    "id": 1864,
+    "Game-name": "Super Mario Bros."
+  },
+  {
+    "id": 1865,
+    "Game-name": "Persona 3 Portable"
+  },
+  {
+    "id": 1867,
+    "Game-name": "Resident Evil (HD)"
+  },
+  {
+    "id": 1868,
+    "Game-name": "God of War III"
+  },
+  {
+    "id": 1869,
+    "Game-name": "The Legend of Zelda"
+  },
+  {
+    "id": 1870,
+    "Game-name": "Final Fantasy"
+  },
+  {
+    "id": 1871,
+    "Game-name": "Marvel Super Heroes"
+  },
+  {
+    "id": 1872,
+    "Game-name": "Street Fighter"
+  },
+  {
+    "id": 1873,
+    "Game-name": "Street Fighter II: Champion Edition"
+  },
+  {
+    "id": 1874,
+    "Game-name": "Fatal Fury 3: Road to the Final Victory"
+  },
+  {
+    "id": 1875,
+    "Game-name": "Rally-X"
+  },
+  {
+    "id": 1876,
+    "Game-name": "Doom"
+  },
+  {
+    "id": 1877,
+    "Game-name": "Mortal Kombat"
+  },
+  {
+    "id": 1878,
+    "Game-name": "Mortal Kombat II"
+  },
+  {
+    "id": 1879,
+    "Game-name": "Mortal Kombat 3"
+  },
+  {
+    "id": 1880,
+    "Game-name": "Starfield"
+  },
+  {
+    "id": 1881,
+    "Game-name": "Star Wars Jedi: Survivor"
+  },
+  {
+    "id": 1883,
+    "Game-name": "Tekken 8"
+  },
+  {
+    "id": 1884,
+    "Game-name": "Persona 3 Reload"
+  },
+  {
+    "id": 1885,
+    "Game-name": "Star Ocean The Second Story R"
+  },
+  {
+    "id": 1887,
+    "Game-name": "Penny's Big Breakaway"
+  },
+  {
+    "id": 1888,
+    "Game-name": "Moving Out 2"
+  },
+  {
+    "id": 1889,
+    "Game-name": "Pacific Drive"
+  },
+  {
+    "id": 1890,
+    "Game-name": "Party Animals"
+  },
+  {
+    "id": 1891,
+    "Game-name": "The Thaumaturge"
+  },
+  {
+    "id": 1892,
+    "Game-name": "Rise of the Rōnin"
+  },
+  {
+    "id": 1894,
+    "Game-name": "Final Fantasy VII"
+  },
+  {
+    "id": 1895,
+    "Game-name": "Final Fantasy IX"
+  },
+  {
+    "id": 1896,
+    "Game-name": "Final Fantasy VIII"
+  },
+  {
+    "id": 1899,
+    "Game-name": "Final Fantasy IV"
+  },
+  {
+    "id": 1901,
+    "Game-name": "Final Fantasy VI"
+  },
+  {
+    "id": 1902,
+    "Game-name": "Star Wars: Rogue Squadron"
+  },
+  {
+    "id": 1903,
+    "Game-name": "GoldenEye 007"
+  },
+  {
+    "id": 1904,
+    "Game-name": "Monument Valley: Panoramic Edition (PC)"
+  },
+  {
+    "id": 1905,
+    "Game-name": "Monument Valley 2: Panoramic Edition (PC)"
+  },
+  {
+    "id": 1906,
+    "Game-name": "Wolfenstein 3D"
+  },
+  {
+    "id": 1907,
+    "Game-name": "Harvest Hunt"
+  },
+  {
+    "id": 1913,
+    "Game-name": "The Legend of Zelda: Twilight Princess HD"
+  },
+  {
+    "id": 1914,
+    "Game-name": "Gigantic: Rampage Edition"
+  },
+  {
+    "id": 1915,
+    "Game-name": "ANIMAL WELL"
+  },
+  {
+    "id": 1916,
+    "Game-name": "Fall Guys (2024 & Create Mode)"
+  },
+  {
+    "id": 1917,
+    "Game-name": "Immortals of Aveum"
+  },
+  {
+    "id": 1918,
+    "Game-name": "Marvel's Midnight Suns"
+  },
+  {
+    "id": 1919,
+    "Game-name": "Tales of Kenzera: Zau"
+  },
+  {
+    "id": 1920,
+    "Game-name": "SteamWorld Dig"
+  },
+  {
+    "id": 1922,
+    "Game-name": "The Beatles: Rock Band"
+  },
+  {
+    "id": 1925,
+    "Game-name": "Rock Band"
+  },
+  {
+    "id": 1930,
+    "Game-name": "WarioWare: Get It Together!"
+  },
+  {
+    "id": 1931,
+    "Game-name": "Kirby's Return to Dream Land Deluxe"
+  },
+  {
+    "id": 1932,
+    "Game-name": "Ultros"
+  },
+  {
+    "id": 1933,
+    "Game-name": "Thank Goodness You're Here!"
+  },
+  {
+    "id": 1934,
+    "Game-name": "Another Code: Recollection"
+  },
+  {
+    "id": 1935,
+    "Game-name": "Balatro"
+  },
+  {
+    "id": 1936,
+    "Game-name": "Paper Trail"
+  },
+  {
+    "id": 1937,
+    "Game-name": "The Outlast Trials"
+  },
+  {
+    "id": 1938,
+    "Game-name": "Another Crab's Treasure"
+  },
+  {
+    "id": 1939,
+    "Game-name": "Phoenix Wright: Ace Attorney Trilogy"
+  },
+  {
+    "id": 1940,
+    "Game-name": "Cat Quest III"
+  },
+  {
+    "id": 1941,
+    "Game-name": "Islands & Trains"
+  },
+  {
+    "id": 1942,
+    "Game-name": "Kingdom Come: Deliverance"
+  },
+  {
+    "id": 1944,
+    "Game-name": "Chants of Sennaar"
+  },
+  {
+    "id": 1946,
+    "Game-name": "Sam & Max: The Devil's Playhouse"
+  },
+  {
+    "id": 1949,
+    "Game-name": "My Friendly Neighborhood"
+  },
+  {
+    "id": 1950,
+    "Game-name": "World of Goo 2"
+  },
+  {
+    "id": 1951,
+    "Game-name": "Pizza Tower"
+  },
+  {
+    "id": 1952,
+    "Game-name": "Wargroove 2"
+  },
+  {
+    "id": 1953,
+    "Game-name": "Super Bomberman R 2"
+  },
+  {
+    "id": 1954,
+    "Game-name": "Little Kitty, Big City"
+  },
+  {
+    "id": 1955,
+    "Game-name": "Mario vs. Donkey Kong"
+  },
+  {
+    "id": 1956,
+    "Game-name": "Dishonored 2 (Gamepad)"
+  },
+  {
+    "id": 1958,
+    "Game-name": "Concord"
+  },
+  {
+    "id": 1960,
+    "Game-name": "Princess Peach: Showtime!"
+  },
+  {
+    "id": 1961,
+    "Game-name": "Paper Mario: The Thousand-Year Door (2024)"
+  },
+  {
+    "id": 1962,
+    "Game-name": "Prince of Persia (2008)"
+  },
+  {
+    "id": 1963,
+    "Game-name": "Amazing Bomberman"
+  },
+  {
+    "id": 1965,
+    "Game-name": "Frostpunk 2"
+  },
+  {
+    "id": 1966,
+    "Game-name": "Prince of Persia: The Lost Crown"
+  },
+  {
+    "id": 1967,
+    "Game-name": "Funko Fusion"
+  },
+  {
+    "id": 1968,
+    "Game-name": "I Am Your Beast"
+  },
+  {
+    "id": 1969,
+    "Game-name": "Blindfire"
+  },
+  {
+    "id": 1970,
+    "Game-name": "Metaphor: ReFantazio"
+  },
+  {
+    "id": 1971,
+    "Game-name": "The Legend of Zelda: Echoes of Wisdom"
+  },
+  {
+    "id": 1972,
+    "Game-name": "Dragon's Crown Pro"
+  },
+  {
+    "id": 1973,
+    "Game-name": "Astro Bot"
+  },
+  {
+    "id": 1974,
+    "Game-name": "C-Smash VRS: New Dimension"
+  },
+  {
+    "id": 1975,
+    "Game-name": "The Crew Motorfest"
+  },
+  {
+    "id": 1976,
+    "Game-name": "Shadow Generations"
+  },
+  {
+    "id": 1977,
+    "Game-name": "Parcel Corps"
+  },
+  {
+    "id": 1978,
+    "Game-name": "Black Myth: Wukong"
+  },
+  {
+    "id": 1980,
+    "Game-name": "Warhammer 40,000: Space Marine 2"
+  },
+  {
+    "id": 1982,
+    "Game-name": "Hot Wheels Unleashed 2: Turbocharged"
+  },
+  {
+    "id": 1984,
+    "Game-name": "Pepper Grinder"
+  },
+  {
+    "id": 1985,
+    "Game-name": "Anger Foot"
+  },
+  {
+    "id": 1986,
+    "Game-name": "SpongeBob SquarePants: The Patrick Star Game"
+  },
+  {
+    "id": 1987,
+    "Game-name": "Children of the Sun"
+  },
+  {
+    "id": 1988,
+    "Game-name": "[REDACTED]"
+  },
+  {
+    "id": 1989,
+    "Game-name": "Silent Hill 2"
+  },
+  {
+    "id": 1990,
+    "Game-name": "Dead Rising Deluxe Remaster"
+  },
+  {
+    "id": 1991,
+    "Game-name": "Tetris Forever"
+  },
+  {
+    "id": 1993,
+    "Game-name": "Crow Country"
+  },
+  {
+    "id": 1994,
+    "Game-name": "Disney Illusion Island"
+  },
+  {
+    "id": 1995,
+    "Game-name": "Samba de Amigo: Party Central"
+  },
+  {
+    "id": 1996,
+    "Game-name": "Tron: Identity"
+  },
+  {
+    "id": 1997,
+    "Game-name": "Dragon Age: The Veilguard"
+  },
+  {
+    "id": 1998,
+    "Game-name": "KILL KNIGHT"
+  },
+  {
+    "id": 1999,
+    "Game-name": "Nine Sols"
+  },
+  {
+    "id": 2000,
+    "Game-name": "Snufkin: Melody of Moominvalley"
+  },
+  {
+    "id": 2001,
+    "Game-name": "Scott Pilgrim vs. the World: The Game"
+  },
+  {
+    "id": 2002,
+    "Game-name": "Wildfrost"
+  },
+  {
+    "id": 2003,
+    "Game-name": "Mario Party Superstars"
+  },
+  {
+    "id": 2005,
+    "Game-name": "Piyokoro"
+  },
+  {
+    "id": 2006,
+    "Game-name": "Go Mecha Ball"
+  },
+  {
+    "id": 2007,
+    "Game-name": "HYPER METEOR"
+  },
+  {
+    "id": 2008,
+    "Game-name": "Pick Pack Pup"
+  },
+  {
+    "id": 2009,
+    "Game-name": "Spellcorked"
+  },
+  {
+    "id": 2010,
+    "Game-name": "Zipper"
+  },
+  {
+    "id": 2011,
+    "Game-name": "Inventory Hero"
+  },
+  {
+    "id": 2012,
+    "Game-name": "Forrest Byrnes: Up in Smoke"
+  },
+  {
+    "id": 2013,
+    "Game-name": "Ratcheteer"
+  },
+  {
+    "id": 2014,
+    "Game-name": "Executive Golf DX"
+  },
+  {
+    "id": 2015,
+    "Game-name": "Battleship Godios"
+  },
+  {
+    "id": 2016,
+    "Game-name": "Echo: The Oracle's Scroll"
+  },
+  {
+    "id": 2017,
+    "Game-name": "Root Bear"
+  },
+  {
+    "id": 2018,
+    "Game-name": "Crankin's Time Travel Adventure"
+  },
+  {
+    "id": 2019,
+    "Game-name": "Direct Drive"
+  },
+  {
+    "id": 2020,
+    "Game-name": "Sasquatchers"
+  },
+  {
+    "id": 2021,
+    "Game-name": "P-Racing"
+  },
+  {
+    "id": 2022,
+    "Game-name": "Propeller Rat"
+  },
+  {
+    "id": 2023,
+    "Game-name": "Rowbot Rally"
+  },
+  {
+    "id": 2025,
+    "Game-name": "Escape the Arcade"
+  },
+  {
+    "id": 2026,
+    "Game-name": "Detective Face"
+  },
+  {
+    "id": 2027,
+    "Game-name": "Faraway Fairway"
+  },
+  {
+    "id": 2028,
+    "Game-name": "To Dust"
+  },
+  {
+    "id": 2029,
+    "Game-name": "Gun Trails"
+  },
+  {
+    "id": 2030,
+    "Game-name": "Post Hero"
+  },
+  {
+    "id": 2031,
+    "Game-name": "Grand Tour Legends"
+  },
+  {
+    "id": 2032,
+    "Game-name": "Star Sled"
+  },
+  {
+    "id": 2033,
+    "Game-name": "NINJA GAIDEN 2 Black"
+  },
+  {
+    "id": 2034,
+    "Game-name": "Jurassic World Evolution 2"
+  },
+  {
+    "id": 2037,
+    "Game-name": "Comic Jumper: The Adventures of Captain Smiley"
+  },
+  {
+    "id": 2038,
+    "Game-name": "God of War Ragnarök"
+  },
+  {
+    "id": 2039,
+    "Game-name": "Stellar Blade"
+  },
+  {
+    "id": 2040,
+    "Game-name": "Suicide Squad: Kill the Justice League"
+  },
+  {
+    "id": 2041,
+    "Game-name": "Dragon's Dogma II"
+  },
+  {
+    "id": 2049,
+    "Game-name": "Avowed"
+  },
+  {
+    "id": 2051,
+    "Game-name": "Donkey Kong Country Returns HD"
+  },
+  {
+    "id": 2052,
+    "Game-name": "Tiny Glade"
+  },
+  {
+    "id": 2053,
+    "Game-name": "Sonic Dream Team (Gamepad)"
+  },
+  {
+    "id": 2054,
+    "Game-name": "Planet Coaster 2 (Mouse/Keyboard)"
+  },
+  {
+    "id": 2055,
+    "Game-name": "Planet Coaster 2 (Gamepad)"
+  },
+  {
+    "id": 2056,
+    "Game-name": "Marvel Snap (PC)"
+  },
+  {
+    "id": 2057,
+    "Game-name": "Venture to the Vile"
+  },
+  {
+    "id": 2058,
+    "Game-name": "Exhausted Man"
+  },
+  {
+    "id": 2060,
+    "Game-name": "Clair Obscur: Expedition 33"
+  },
+  {
+    "id": 2061,
+    "Game-name": "Cobalt Core"
+  },
+  {
+    "id": 2070,
+    "Game-name": "Horizon Forbidden West"
+  },
+  {
+    "id": 2079,
+    "Game-name": "Gotham Knights"
+  },
+  {
+    "id": 2088,
+    "Game-name": "Borderlands 3"
+  },
+  {
+    "id": 2093,
+    "Game-name": "Assassin's Creed Shadows"
+  },
+  {
+    "id": 2097,
+    "Game-name": "Desperados III"
+  },
+  {
+    "id": 2101,
+    "Game-name": "Elden Ring Nightreign"
+  },
+  {
+    "id": 2102,
+    "Game-name": "Lollipop Chainsaw"
+  },
+  {
+    "id": 2104,
+    "Game-name": "Mario Kart World"
+  },
+  {
+    "id": 2106,
+    "Game-name": "Sonic Advance 3"
+  },
+  {
+    "id": 2109,
+    "Game-name": "Donkey Kong Bananza"
+  },
+  {
+    "id": 2110,
+    "Game-name": "Nintendo Switch 2 OS"
+  },
+  {
+    "id": 2111,
+    "Game-name": "Super Mario Party Jamboree"
+  },
+  {
+    "id": 2112,
+    "Game-name": "Fast Fusion"
+  },
+  {
+    "id": 2113,
+    "Game-name": "Tony Hawk's Pro Skater 3 + 4"
+  },
+  {
+    "id": 2115,
+    "Game-name": "Date Everything!"
+  },
+  {
+    "id": 2116,
+    "Game-name": "Donkey Kong 64"
+  },
+  {
+    "id": 2117,
+    "Game-name": "Donkey Kong Country 3"
+  },
+  {
+    "id": 2118,
+    "Game-name": "Super Bomberman 2"
+  },
+  {
+    "id": 2120,
+    "Game-name": "Mario Kart: Double Dash!!"
+  },
+  {
+    "id": 2121,
+    "Game-name": "Kirby Air Ride"
+  },
+  {
+    "id": 2122,
+    "Game-name": "Viewtiful Joe"
+  },
+  {
+    "id": 2123,
+    "Game-name": "Mario Kart Wii"
+  },
+  {
+    "id": 2124,
+    "Game-name": "Descenders Next"
+  },
+  {
+    "id": 2126,
+    "Game-name": "The Legend of Zelda: Four Swords Adventures"
+  },
+  {
+    "id": 2127,
+    "Game-name": "Donkey Kong Jungle Beat"
+  },
+  {
+    "id": 2128,
+    "Game-name": "RoboCop: Rogue City"
+  },
+  {
+    "id": 2130,
+    "Game-name": "Chorus"
+  },
+  {
+    "id": 2131,
+    "Game-name": "Eastward"
+  },
+  {
+    "id": 2132,
+    "Game-name": "Wave Race: Blue Storm"
+  },
+  {
+    "id": 2133,
+    "Game-name": "Star Fox Adventures"
+  },
+  {
+    "id": 2134,
+    "Game-name": "Goat Simulator Remastered"
+  },
+  {
+    "id": 2135,
+    "Game-name": "Atomfall"
+  },
+  {
+    "id": 2136,
+    "Game-name": "Bravely Default Flying Fairy HD Remaster"
+  },
+  {
+    "id": 2137,
+    "Game-name": "Mafia: The Old Country"
+  },
+  {
+    "id": 2138,
+    "Game-name": "The Elder Scrolls IV: Oblivion Remastered"
+  },
+  {
+    "id": 2139,
+    "Game-name": "Slitterhead"
+  },
+  {
+    "id": 2140,
+    "Game-name": "Alan Wake Remastered"
+  },
+  {
+    "id": 2141,
+    "Game-name": "Alone in the Dark (2024)"
+  },
+  {
+    "id": 2142,
+    "Game-name": "Dead Island 2"
+  },
+  {
+    "id": 2143,
+    "Game-name": "Ninja Gaiden: Ragebound"
+  },
+  {
+    "id": 2144,
+    "Game-name": "Fort Solis"
+  },
+  {
+    "id": 2145,
+    "Game-name": "Death Stranding 2: On the Beach"
+  },
+  {
+    "id": 2146,
+    "Game-name": "Tales of the Shire"
+  },
+  {
+    "id": 2148,
+    "Game-name": "Crazy Taxi"
+  },
+  {
+    "id": 2149,
+    "Game-name": "Eternal Darkness"
+  },
+  {
+    "id": 2150,
+    "Game-name": "Worms 3D"
+  },
+  {
+    "id": 2151,
+    "Game-name": "Super Smash Bros. Brawl"
+  },
+  {
+    "id": 2153,
+    "Game-name": "Resident Evil 5"
+  },
+  {
+    "id": 2155,
+    "Game-name": "Metroid Prime 2: Echoes"
+  },
+  {
+    "id": 2156,
+    "Game-name": "Super Monkey Ball"
+  },
+  {
+    "id": 2157,
+    "Game-name": "New Super Mario Bros. Wii"
+  },
+  {
+    "id": 2158,
+    "Game-name": "Crash Bandicoot"
+  },
+  {
+    "id": 2160,
+    "Game-name": "Wipeout Pulse"
+  },
+  {
+    "id": 2162,
+    "Game-name": "Dino Crisis"
+  },
+  {
+    "id": 2163,
+    "Game-name": "Resident Evil 2"
+  },
+  {
+    "id": 2164,
+    "Game-name": "Metroid Fusion"
+  },
+  {
+    "id": 2165,
+    "Game-name": "Star Wars Trilogy: Apprentice of the Force"
+  },
+  {
+    "id": 2166,
+    "Game-name": "P.N.03"
+  },
+  {
+    "id": 2167,
+    "Game-name": "Dune: Awakening"
+  },
+  {
+    "id": 2168,
+    "Game-name": "S.T.A.L.K.E.R. 2: Heart of Chornobyl"
+  },
+  {
+    "id": 2169,
+    "Game-name": "A Quiet Place: The Road Ahead"
+  },
+  {
+    "id": 2170,
+    "Game-name": "Life Is Strange: True Colors"
+  },
+  {
+    "id": 2171,
+    "Game-name": "Until Dawn (2024)"
+  },
+  {
+    "id": 2172,
+    "Game-name": "Rolo to the Rescue"
+  },
+  {
+    "id": 2173,
+    "Game-name": "QuackShot Starring Donald Duck"
+  },
+  {
+    "id": 2174,
+    "Game-name": "Earthworm Jim 2"
+  },
+  {
+    "id": 2176,
+    "Game-name": "Lost Soul Aside"
+  },
+  {
+    "id": 2177,
+    "Game-name": "Wizorb"
+  },
+  {
+    "id": 2178,
+    "Game-name": "Hollow Knight: Silksong"
+  },
+  {
+    "id": 2179,
+    "Game-name": "Resident Evil Director's Cut"
+  },
+  {
+    "id": 2180,
+    "Game-name": "Metal Slug X"
+  },
+  {
+    "id": 2182,
+    "Game-name": "Sonic Dream Team"
+  },
+  {
+    "id": 2183,
+    "Game-name": "Is This Seat Taken?"
+  },
+  {
+    "id": 2185,
+    "Game-name": "Wednesdays"
+  },
+  {
+    "id": 2186,
+    "Game-name": "Rematch"
+  },
+  {
+    "id": 2187,
+    "Game-name": "Ghost of Yōtei"
+  },
+  {
+    "id": 2188,
+    "Game-name": "Silent Hill f"
+  },
+  {
+    "id": 2189,
+    "Game-name": "Gears of War: Reloaded"
+  },
+  {
+    "id": 2190,
+    "Game-name": "Cronos: The New Dawn"
+  },
+  {
+    "id": 2191,
+    "Game-name": "Metal Gear Solid Delta: Snake Eater"
+  },
+  {
+    "id": 2192,
+    "Game-name": "Hades II"
+  },
+  {
+    "id": 2193,
+    "Game-name": "Atomic Heart"
+  },
+  {
+    "id": 2194,
+    "Game-name": "Sons of the Forest"
+  },
+  {
+    "id": 2195,
+    "Game-name": "Atelier Yumia: The Alchemist of Memories & the Envisioned Land"
+  },
+  {
+    "id": 2196,
+    "Game-name": "Sea of Stars"
+  },
+  {
+    "id": 2198,
+    "Game-name": "Warhammer 40000: Boltgun - Words of Vengeance"
+  },
+  {
+    "id": 2199,
+    "Game-name": "Hellboy Web of Wyrd"
+  },
+  {
+    "id": 2200,
+    "Game-name": "UNDER NIGHT IN-BIRTH II Sys:Celes"
+  },
+  {
+    "id": 2201,
+    "Game-name": "The Crush House"
+  },
+  {
+    "id": 2202,
+    "Game-name": "Infinity Strash: DRAGON QUEST The Adventure of Dai"
+  },
+  {
+    "id": 2203,
+    "Game-name": "Ballionaire"
+  },
+  {
+    "id": 2205,
+    "Game-name": "Soul Edge"
+  },
+  {
+    "id": 2206,
+    "Game-name": "Rival Schools: United by Fate"
+  },
+  {
+    "id": 2207,
+    "Game-name": "Aquapazza: Aquaplus Dream Match"
+  },
+  {
+    "id": 2208,
+    "Game-name": "Deliver At All Costs"
+  },
+  {
+    "id": 2209,
+    "Game-name": "Yooka-Replaylee"
+  },
+  {
+    "id": 2211,
+    "Game-name": "Lego Horizon Adventures"
+  },
+  {
+    "id": 2212,
+    "Game-name": "Doom: The Dark Ages"
+  },
+  {
+    "id": 2213,
+    "Game-name": "Resident Evil: Deadly Silence"
+  },
+  {
+    "id": 2215,
+    "Game-name": "Metroid Prime Hunters"
+  },
+  {
+    "id": 2216,
+    "Game-name": "Sonic Colours (DS)"
+  },
+  {
+    "id": 2218,
+    "Game-name": "Puyo Pop Fever"
+  },
+  {
+    "id": 2219,
+    "Game-name": "Tetris DS"
+  },
+  {
+    "id": 2220,
+    "Game-name": "Wario: Master of Disguise"
+  },
+  {
+    "id": 2221,
+    "Game-name": "The Last Faith"
+  },
+  {
+    "id": 2222,
+    "Game-name": "Mario Hoops 3-on-3"
+  },
+  {
+    "id": 2223,
+    "Game-name": "Nicktoons & The Dice of Destiny"
+  },
+  {
+    "id": 2224,
+    "Game-name": "Marvel Tōkon: Fighting Souls (Closed Beta)"
+  },
+  {
+    "id": 2225,
+    "Game-name": "Ninja Gaiden 4"
+  },
+  {
+    "id": 2226,
+    "Game-name": "PowerWash Simulator 2"
+  },
+  {
+    "id": 2227,
+    "Game-name": "Rift of the NecroDancer"
+  },
+  {
+    "id": 2228,
+    "Game-name": "Choo-Choo Charles"
+  },
+  {
+    "id": 2229,
+    "Game-name": "Mouthwashing"
+  },
+  {
+    "id": 2230,
+    "Game-name": "Absolum"
+  },
+  {
+    "id": 2231,
+    "Game-name": "Fire Emblem"
+  },
+  {
+    "id": 2232,
+    "Game-name": "Mario VS Donkey Kong"
+  },
+  {
+    "id": 2233,
+    "Game-name": "Grapple Dog"
+  },
+  {
+    "id": 2234,
+    "Game-name": "Dying Light: The Beast"
+  },
+  {
+    "id": 2235,
+    "Game-name": "Peppa Pig World Adventures"
+  },
+  {
+    "id": 2236,
+    "Game-name": "No, I'm Not a Human"
+  },
+  {
+    "id": 2238,
+    "Game-name": "Silent Hill"
+  },
+  {
+    "id": 2239,
+    "Game-name": "Pandemonium 2"
+  },
+  {
+    "id": 2240,
+    "Game-name": "Dispatch"
+  },
+  {
+    "id": 2241,
+    "Game-name": "Sonic Racing: CrossWorlds"
+  },
+  {
+    "id": 2242,
+    "Game-name": "The First Berserker: Khazan"
+  },
+  {
+    "id": 2243,
+    "Game-name": "Ball x Pit"
+  },
+  {
+    "id": 2244,
+    "Game-name": "Metal Gear Solid"
+  },
+  {
+    "id": 2245,
+    "Game-name": "Call of Duty: Black Ops 7 is littered with AI art slop, because your $70 means nothing anymore - FRVR"
+  },
+  {
+    "id": 2246,
+    "Game-name": "Enotria The Last Song"
+  },
+  {
+    "id": 2247,
+    "Game-name": "FANTASY LIFE i: The Girl Who Steals Time"
+  },
+  {
+    "id": 2248,
+    "Game-name": "Vampire: The Masquerade – Bloodlines 2"
+  },
+  {
+    "id": 2249,
+    "Game-name": "CloverPit"
+  },
+  {
+    "id": 2250,
+    "Game-name": "MindsEye"
+  },
+  {
+    "id": 2251,
+    "Game-name": "Demonschool"
+  },
+  {
+    "id": 2252,
+    "Game-name": "Sonic Rumble"
+  },
+  {
+    "id": 2253,
+    "Game-name": "Kirby Air Riders"
+  },
+  {
+    "id": 2254,
+    "Game-name": "Monument Valley 3"
+  },
+  {
+    "id": 2255,
+    "Game-name": "Dragon Quest IX"
+  },
+  {
+    "id": 2256,
+    "Game-name": "Freshly-Picked Tingle's Rosy Rupeeland"
+  },
+  {
+    "id": 2258,
+    "Game-name": "Wheel World"
+  },
+  {
+    "id": 2259,
+    "Game-name": "Bomb Rush Cyberfunk"
+  },
+  {
+    "id": 2264,
+    "Game-name": "Master Detective Archives: RAIN CODE Plus"
+  },
+  {
+    "id": 2267,
+    "Game-name": "Hardspace: Shipbreaker"
+  },
+  {
+    "id": 2268,
+    "Game-name": "American McGee's Alice"
+  },
+  {
+    "id": 2280,
+    "Game-name": "Cruelty Squad"
+  },
+  {
+    "id": 2282,
+    "Game-name": "The Plucky Squire"
+  },
+  {
+    "id": 2283,
+    "Game-name": "Life is Strange: Double Exposure"
+  },
+  {
+    "id": 2285,
+    "Game-name": "Sniper: Ghost Warrior 3"
+  },
+  {
+    "id": 2287,
+    "Game-name": "Dead Space 3"
+  },
+  {
+    "id": 2288,
+    "Game-name": "Life Is Strange: Before the Storm"
+  },
+  {
+    "id": 2290,
+    "Game-name": "Alien: Rogue Incursion - Evolved Edition"
+  },
+  {
+    "id": 2292,
+    "Game-name": "Wario Land: Shake It!"
+  },
+  {
+    "id": 2293,
+    "Game-name": "Sonic and the Secret Rings"
+  },
+  {
+    "id": 2294,
+    "Game-name": "Sonic Unleashed (Wii)"
+  },
+  {
+    "id": 2296,
+    "Game-name": "Forspoken"
+  },
+  {
+    "id": 2297,
+    "Game-name": "Wii Sports"
+  },
+  {
+    "id": 2298,
+    "Game-name": "Tomb Raider: Underworld"
+  },
+  {
+    "id": 2299,
+    "Game-name": "Jet Set Radio"
+  },
+  {
+    "id": 2300,
+    "Game-name": "Octodad: Dadliest Catch"
+  },
+  {
+    "id": 2301,
+    "Game-name": "Shantae: 1/2 Genie Hero"
+  },
+  {
+    "id": 2302,
+    "Game-name": "Berserk and the Band of the Hawk"
+  },
+  {
+    "id": 2303,
+    "Game-name": "Umbrella Corps"
+  },
+  {
+    "id": 2305,
+    "Game-name": "Painkiller"
+  },
+  {
+    "id": 2306,
+    "Game-name": "Warhammer 40,000: Space Marine - Master Crafted Edition"
+  },
+  {
+    "id": 2307,
+    "Game-name": "Tom Clancy's Splinter Cell: Conviction"
+  },
+  {
+    "id": 2308,
+    "Game-name": "Metro: Last Light Redux"
+  },
+  {
+    "id": 2309,
+    "Game-name": "Journey"
+  },
+  {
+    "id": 2310,
+    "Game-name": "Deadpool"
+  },
+  {
+    "id": 2311,
+    "Game-name": "Boo Party"
+  },
+  {
+    "id": 2312,
+    "Game-name": "The Knight Witch"
+  },
+  {
+    "id": 2313,
+    "Game-name": "WORLD OF FINAL FANTASY: MAXIMA"
+  },
+  {
+    "id": 2314,
+    "Game-name": "Spec Ops: The Line"
+  },
+  {
+    "id": 2315,
+    "Game-name": "Nights into Dreams"
+  },
+  {
+    "id": 2316,
+    "Game-name": "Virginia"
+  },
+  {
+    "id": 2317,
+    "Game-name": "Terminator 2D: No Fate"
+  },
+  {
+    "id": 2318,
+    "Game-name": "Dynasty Warriors: Origins"
+  },
+  {
+    "id": 2319,
+    "Game-name": "Final Fantasy III Pixel Remaster"
+  },
+  {
+    "id": 2320,
+    "Game-name": "Sand Land"
+  },
+  {
+    "id": 2321,
+    "Game-name": "RAIDOU Remastered: The Mystery of the Soulless Army"
+  },
+  {
+    "id": 2322,
+    "Game-name": "Visions of Mana"
+  },
+  {
+    "id": 2323,
+    "Game-name": "River City Saga: Three Kingdoms"
+  },
+  {
+    "id": 2324,
+    "Game-name": "Tangle Tower (Switch)"
+  },
+  {
+    "id": 2325,
+    "Game-name": "Outland"
+  },
+  {
+    "id": 2326,
+    "Game-name": "Peak"
+  },
+  {
+    "id": 2327,
+    "Game-name": "Mighty Morphin Power Rangers: Rita's Rewind"
+  },
+  {
+    "id": 2328,
+    "Game-name": "Headbangers: Rhythm Royale"
+  },
+  {
+    "id": 2329,
+    "Game-name": "Stray Gods: The Roleplaying Musical"
+  },
+  {
+    "id": 2330,
+    "Game-name": "Lumines Arise"
+  },
+  {
+    "id": 2331,
+    "Game-name": "F-Zero GX"
+  },
+  {
+    "id": 2332,
+    "Game-name": "Rhythm Heaven Fever"
+  },
+  {
+    "id": 2333,
+    "Game-name": "Donkey Kong: Barrel Blast"
+  },
+  {
+    "id": 2334,
+    "Game-name": "Sonic Heroes"
+  },
+  {
+    "id": 2335,
+    "Game-name": "Killer7"
+  },
+  {
+    "id": 2336,
+    "Game-name": "Sonic Riders"
+  },
+  {
+    "id": 2337,
+    "Game-name": "Marvel Cosmic Invasion"
+  },
+  {
+    "id": 2338,
+    "Game-name": "Rogue Flight"
+  },
+  {
+    "id": 2339,
+    "Game-name": "Lost Words: Beyond the Page"
+  },
+  {
+    "id": 2340,
+    "Game-name": "Mio: Memories in Orbit"
+  },
+  {
+    "id": 2341,
+    "Game-name": "Metroid Prime 4: Beyond"
+  },
+  {
+    "id": 2342,
+    "Game-name": "Bayonetta Origins: Cereza and the Lost Demon"
+  },
+  {
+    "id": 2343,
+    "Game-name": "Iron Man 2"
+  },
+  {
+    "id": 2344,
+    "Game-name": "Toy Story 3"
+  },
+  {
+    "id": 2345,
+    "Game-name": "JDM: Japanese Drift Master"
+  },
+  {
+    "id": 2346,
+    "Game-name": "Cairn"
+  },
+  {
+    "id": 2347,
+    "Game-name": "Highguard"
+  },
+  {
+    "id": 2348,
+    "Game-name": "God of War Sons of Sparta"
+  },
+  {
+    "id": 2349,
+    "Game-name": "Reanimal"
+  },
+  {
+    "id": 2350,
+    "Game-name": "BlazBlue Entropy Effect X"
+  },
+  {
+    "id": 2351,
+    "Game-name": "Still Wakes the Deep"
+  },
+  {
+    "id": 2352,
+    "Game-name": "Resident Evil Requiem"
+  },
+  {
+    "id": 2353,
+    "Game-name": "The Wolf Among Us"
+  },
+  {
+    "id": 2354,
+    "Game-name": "Slots & Daggers"
+  },
+  {
+    "id": 2355,
+    "Game-name": "James Bond 007: Blood Stone"
+  },
+  {
+    "id": 2356,
+    "Game-name": "Sniper Ghost Warrior Contracts 2"
+  },
+  {
+    "id": 2357,
+    "Game-name": "Bleach Rebirth of Souls"
+  },
+  {
+    "id": 2358,
+    "Game-name": "Teenage Mutant Ninja Turtles: Mutants Unleashed"
+  },
+  {
+    "id": 2359,
+    "Game-name": "Piece By Piece"
+  },
+  {
+    "id": 2360,
+    "Game-name": "Hell Pie"
+  },
+  {
+    "id": 2361,
+    "Game-name": "Snoopy & The Great Mystery Club"
+  },
+  {
+    "id": 2362,
+    "Game-name": "Fatal Frame II: Crimson Butterfly REMAKE"
+  },
+  {
+    "id": 2363,
+    "Game-name": "Hell Is Us"
+  },
+  {
+    "id": 2364,
+    "Game-name": "Skate Story"
+  },
+  {
+    "id": 2365,
+    "Game-name": "Lovish"
+  },
+  {
+    "id": 2366,
+    "Game-name": "Scott Pilgrim EX"
+  },
+  {
+    "id": 2367,
+    "Game-name": "RUSHING BEAT X: Return Of Brawl Brothers"
+  },
+  {
+    "id": 2368,
+    "Game-name": "Mostroscopy"
+  },
+  {
+    "id": 2369,
+    "Game-name": "After Burner: Climax"
+  },
+  {
+    "id": 2370,
+    "Game-name": "The Wild at Heart"
+  },
+  {
+    "id": 2371,
+    "Game-name": "South of Midnight"
+  },
+  {
+    "id": 2372,
+    "Game-name": "The Rogue Prince of Persia"
+  },
+  {
+    "id": 2373,
+    "Game-name": "HighFleet"
+  },
+  {
+    "id": 2374,
+    "Game-name": "Kirby Fighters 2"
+  },
+  {
+    "id": 2375,
+    "Game-name": "Valiant Hearts: The Great War"
+  },
+  {
+    "id": 2376,
+    "Game-name": "#DRIVE Rally"
+  },
+  {
+    "id": 2377,
+    "Game-name": "Front Mission 3: Remake"
+  },
+  {
+    "id": 2378,
+    "Game-name": "Mouse: P.I. For Hire"
+  },
+  {
+    "id": 2379,
+    "Game-name": "The Legend of Zelda: The Wind Waker HD"
+  },
+  {
+    "id": 2380,
+    "Game-name": "Super Meat Boy 3D"
+  },
+  {
+    "id": 2381,
+    "Game-name": "Bread & Fred"
+  },
+  {
+    "id": 2382,
+    "Game-name": "Shadow Labyrinth"
+  },
+  {
+    "id": 2383,
+    "Game-name": "Shinobi: Art of Vengeance"
+  },
+  {
+    "id": 2384,
+    "Game-name": "Mado Monogatari: Fia and the Wondrous Academy"
+  },
+  {
+    "id": 2385,
+    "Game-name": "Nikoderiko: The Magical World"
+  },
+  {
+    "id": 2386,
+    "Game-name": "Nidhogg II"
+  },
+  {
+    "id": 2387,
+    "Game-name": "Eiyuden Chronicle: Rising"
+  },
+  {
+    "id": 2388,
+    "Game-name": "Star Ocean: The Divine Force"
+  },
+  {
+    "id": 2389,
+    "Game-name": "Last Stop"
+  },
+  {
+    "id": 2390,
+    "Game-name": "Two Point Campus (Mouse/Keyboard)"
+  },
+  {
+    "id": 2391,
+    "Game-name": "Dishonored 2 (Mouse/Keyboard)"
+  },
+  {
+    "id": 2392,
+    "Game-name": "Moomintroll: Winter's Warmth"
+  },
+  {
+    "id": 2393,
+    "Game-name": "Return to Monkey Island (iPad)"
+  },
+  {
+    "id": 2394,
+    "Game-name": "Card Shark"
+  },
+  {
+    "id": 2395,
+    "Game-name": "Samson"
+  },
+  {
+    "id": 2396,
+    "Game-name": "Assassin's Creed: Revelations"
+  },
+  {
+    "id": 2397,
+    "Game-name": "Expeditions: A MudRunner Game"
+  },
+  {
+    "id": 2398,
+    "Game-name": "System Shock"
+  },
+  {
+    "id": 2399,
+    "Game-name": "Dead as Disco"
+  },
+  {
+    "id": 2400,
+    "Game-name": "The Quarry"
+  },
+  {
+    "id": 2401,
+    "Game-name": "Ghost Trick: Phantom Detective"
+  },
+  {
+    "id": 2402,
+    "Game-name": "Directive 8020"
+  },
+  {
+    "id": 2403,
+    "Game-name": "Soulstone Survivors"
+  },
+  {
+    "id": 2404,
+    "Game-name": "Bubsy 4D"
+  },
+  {
+    "id": 2405,
+    "Game-name": "Disney Epic Mickey Rebrushed"
+  },
+  {
+    "id": 2406,
+    "Game-name": "Phoenix Springs"
+  },
+  {
+    "id": 2407,
+    "Game-name": "World War Z"
+  },
+  {
+    "id": 2409,
+    "Game-name": "Shadows of the Damned: Hella Remastered"
+  },
+  {
+    "id": 2410,
+    "Game-name": "Fable: The Journey"
+  },
+  {
+    "id": 2412,
+    "Game-name": "Inmost"
+  },
+  {
+    "id": 2413,
+    "Game-name": "FragPunk"
+  },
+  {
+    "id": 2415,
+    "Game-name": "Wipeout"
+  },
+  {
+    "id": 2416,
+    "Game-name": "The Park"
+  },
+  {
+    "id": 2417,
+    "Game-name": "Gal*Gun Returns"
+  },
+  {
+    "id": 2418,
+    "Game-name": "Warriors All-Stars"
+  },
+  {
+    "id": 2419,
+    "Game-name": "Mighty No. 9"
+  },
+  {
+    "id": 2420,
+    "Game-name": "Thunder Ray"
+  },
+  {
+    "id": 2421,
+    "Game-name": "The Legend of Heroes: Trails into Reverie"
+  }
+]
