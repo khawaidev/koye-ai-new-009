@@ -108,6 +108,7 @@ const CopyCommand = ({ command }: { command: string }) => {
 // The nav reads that + the CSS theme to decide its text/button colors.
 const Navbar = () => {
     const [sectionTheme, setSectionTheme] = useState<'light' | 'dark'>('light');
+    const [isScrolled, setIsScrolled] = useState(false);
     // useTheme from shadcn/next-themes so we know the active CSS theme
     const { theme } = useTheme();
     const isDark = theme === 'dark';
@@ -115,6 +116,20 @@ const Navbar = () => {
     // Combine: if dark mode AND we've scrolled into a dark section → white nav
     // Otherwise (light mode, or dark mode over the bright hero video) → dark nav
     const navTheme: 'light' | 'dark' = isDark && sectionTheme === 'dark' ? 'dark' : 'light';
+
+    // Track scroll position to add glassy background when past hero section
+    useEffect(() => {
+        const handleScroll = () => {
+            // Hero section is approximately 100vh, check if we've scrolled past it
+            const heroHeight = window.innerHeight * 0.8;
+            setIsScrolled(window.scrollY > heroHeight);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Check initial position
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         // Observe every section that declares data-nav-theme
@@ -151,10 +166,14 @@ const Navbar = () => {
 
     // Derived classes based on detected section theme
     const isLight = navTheme === 'light';
-    const textCls = isLight
-        ? 'text-black/75 hover:text-black'
+    // Nav text: change color when scrolled (black in light mode, gray-200 in dark mode)
+    const textCls = isScrolled
+        ? (isDark ? 'text-gray-200/80 hover:text-gray-200' : 'text-black/75 hover:text-black')
         : 'text-white/80 hover:text-white';
-    const logoCls = 'text-white';
+    // Logo: black when scrolled in light mode, gray-200 when scrolled in dark mode
+    const logoCls = isScrolled
+        ? (isDark ? 'text-gray-200' : 'text-black')
+        : 'text-white';
     const signupCls = isLight
         ? 'text-black/80 hover:bg-black/10'
         : 'text-white/80 hover:bg-white/10';
@@ -164,24 +183,24 @@ const Navbar = () => {
     const dropdownTextCls = 'text-black/60 hover:text-black hover:bg-black/5';
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent transition-colors duration-500">
+        <nav className={`fixed top-1 left-8 right-8 z-50 transition-all duration-500 rounded-full ${isScrolled ? 'bg-background/70 backdrop-blur-xl shadow-lg border border-border/20' : 'bg-transparent'}`}>
             <div
                 className="mx-auto flex items-center justify-between"
-                style={{ padding: '6px 60px' }}
+                style={{ padding: '4px 16px' }}
             >
                 {/* Logo */}
                 <div className="flex items-center gap-2.5">
                     <AppIcon alt="KOYE" className="w-8 h-8 rounded-full shadow-sm" />
                     <span
                         className={`font-schibsted font-bold tracking-tight transition-colors duration-500 ${logoCls}`}
-                        style={{ fontSize: 22 }}
+                        style={{ fontSize: 25 }}
                     >
-                        Koye AI
+                        Khawain.
                     </span>
                 </div>
 
                 {/* Nav Links */}
-                <div className="hidden md:flex items-center gap-8">
+                <div className="hidden md:flex items-center gap-5">
                     <a
                         href="#cli"
                         onClick={(e) => handleNavClick(e, 'cli')}
@@ -207,7 +226,7 @@ const Navbar = () => {
                                     'Full game asset generation',
                                     'AI 3D game asset and texture',
                                     'Payment integration',
-                                    'Multiplayer game servers built in',
+                                    'Multiplayer game servers',
                                     'Game ad revenue'
                                 ].map((option) => (
                                     <a
@@ -229,14 +248,6 @@ const Navbar = () => {
                         style={{ fontSize: 15 }}
                     >
                         Projects
-                    </a>
-                    <a
-                        href="#about"
-                        onClick={(e) => handleNavClick(e, 'about')}
-                        className={`font-schibsted font-medium transition-colors duration-500 ${textCls}`}
-                        style={{ fontSize: 15 }}
-                    >
-                        Community
                     </a>
                     <a
                         href="#pricing"
@@ -394,6 +405,88 @@ const Hero = () => {
             {/* Soft blurred transition to next section */}
             <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background via-background/50 to-transparent pointer-events-none" />
             <div className="absolute bottom-0 left-0 right-0 h-20 backdrop-blur-[4px] pointer-events-none [mask-image:radial-gradient(ellipse_120%_100%_at_50%_-20%,transparent_30%,black_100%)]" />
+        </section>
+    );
+};
+
+// ─── Games ───────────────────────────────────────────────────────
+const Games = () => {
+    const games = [
+        {
+            name: "Champions of Valor",
+            iconImage: "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/images/icon3.png",
+            image: "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/images/ChatGPT%20Image%20Jul%205%2C%202026%2C%2007_24_22%20PM.png",
+            tags: ["Moba", "5v5", "Multiplayer", "Competitive", "Mobile", "Action"]
+        },
+        {
+            name: "Terra Xilen",
+            iconImage: "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/images/icon1.png",
+            image: "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/images/ChatGPT%20Image%20Jul%205%2C%202026%2C%2007_54_28%20PM.png",
+            tags: ["Multiplayer", "PVE", "Co-op", "Action", "Shooter", "Survival"]
+        },
+        {
+            name: "Helum",
+            iconImage: "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/images/icon2.png",
+            image: "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/images/ChatGPT%20Image%20Jul%205%2C%202026%2C%2007_41_15%20PM.png",
+            tags: ["Survival", "Online", "PVE", "Fantasy", "Mobile"]
+        }
+    ];
+
+    return (
+        <section id="games" data-nav-theme="light" className="relative pt-12 pb-8 bg-background overflow-hidden scroll-mt-16">
+            {/* Soft blurred transition from Hero video section */}
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background via-background/50 to-transparent pointer-events-none z-10" />
+            <div className="absolute top-0 left-0 right-0 h-20 backdrop-blur-[4px] pointer-events-none z-10 [mask-image:radial-gradient(ellipse_120%_100%_at_50%_120%,transparent_30%,black_100%)]" />
+
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+                <div className="text-center mb-8">
+                    <h2
+                        className="font-fustat font-bold text-foreground mb-4"
+                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px' }}
+                    >
+                        Games built by Koye
+                    </h2>
+                </div>
+
+                {/* Infinite Auto-scrolling carousel */}
+                <div className="flex overflow-hidden -mx-6">
+                    <motion.div
+                        className="flex"
+                        animate={{ x: ["0%", "-50%"] }}
+                        transition={{ ease: "linear", duration: 30, repeat: Infinity }}
+                    >
+                        {[...games, ...games].map((game, i) => (
+                            <div key={`${game.name}-${i}`} className="flex-none w-[85vw] md:w-[600px]">
+                                <div className="h-full p-6 border border-border/40 bg-muted/20 backdrop-blur-md flex flex-col gap-6 transition-all hover:bg-muted/30">
+                                    <div className="flex items-center gap-4 px-2">
+                                        <div className="w-14 h-14 rounded-2xl bg-foreground text-background shadow-md flex items-center justify-center shrink-0 overflow-hidden">
+                                            <img src={game.iconImage} alt={`${game.name} icon`} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <h3 className="text-3xl font-schibsted font-bold text-foreground tracking-tight">{game.name}</h3>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {game.tags.map((tag) => (
+                                                    <span key={tag} className="px-2 py-0.5 text-[10px] font-schibsted font-medium text-foreground/80 bg-muted/60 border border-border/40 rounded-full">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="rounded-2xl overflow-hidden border border-border/50 shadow-inner bg-black/5 aspect-video relative group">
+                                        <img src={game.image} alt={game.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Soft blurred transition to next section */}
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background via-background/50 to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-20 backdrop-blur-[4px] pointer-events-none z-10 [mask-image:radial-gradient(ellipse_120%_100%_at_50%_-20%,transparent_30%,black_100%)]" />
         </section>
     );
 };
@@ -569,7 +662,7 @@ const TerminalCarousel = () => {
                                 </div>
                                 <span className="text-white/50 text-sm font-schibsted ml-2">koye_terminal</span>
                             </div>
-                            <div className="p-6 font-mono text-sm text-white/90 space-y-2 h-[350px] overflow-y-auto text-left">
+                            <div className="p-6 font-mono text-sm text-white/90 space-y-2 h-[350px] text-left">
                                 <div className="flex items-center gap-2">
                                     <span className="text-green-400">$</span>
                                     <span>curl -fsSL https://start.koye.ai/install.sh | bash</span>
@@ -621,7 +714,7 @@ const TerminalCarousel = () => {
 
                     {/* Slide 3: File Tree */}
                     <div className="w-1/3 shrink-0 px-2 flex justify-center">
-                        <div className="w-full p-6 bg-background rounded-2xl border border-border/60 shadow-lg h-[350px] overflow-y-auto text-left">
+                        <div className="w-full p-6 bg-background rounded-2xl border border-border/60 shadow-lg h-[350px] text-left">
                             <h4 className="font-mono font-bold text-foreground mb-4">$ tree koye-assets/</h4>
                             <pre className="text-sm text-muted-foreground font-mono">
                                 {`koye-assets/
@@ -660,7 +753,7 @@ const TerminalCarousel = () => {
 
 // ─── CLI Section ─────────────────────────────────────────────────
 const CLI = () => (
-    <section id="cli" data-nav-theme="dark" className="py-28 bg-muted/20 scroll-mt-16">
+    <section id="cli" data-nav-theme="dark" className="py-28 bg-background scroll-mt-16">
         <div className="max-w-6xl mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
                 <div>
@@ -728,26 +821,54 @@ const CLI = () => (
     </section>
 );
 
-// ─── Pricing Details Carousel ────────────────────────────────────
-const PricingDetailsCarousel = () => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const nextSlide = useCallback(() => setActiveIndex((c) => (c + 1) % 2), []);
-    const prevSlide = useCallback(() => setActiveIndex((c) => (c - 1 + 2) % 2), []);
-
-    useEffect(() => {
-        const interval = setInterval(nextSlide, 3000);
-        return () => clearInterval(interval);
-    }, [nextSlide]);
-
+// ─── Credits ─────────────────────────────────────────────────────
+const Credits = () => {
     return (
-        <div className="relative max-w-5xl mx-auto px-4 group mt-12">
-            <div className="overflow-hidden rounded-2xl">
-                <div
-                    className="flex transition-transform duration-500 ease-in-out"
-                    style={{ width: '200%', transform: `translateX(-${activeIndex * 50}%)` }}
-                >
-                    {/* Slide 1: Credit Top-Ups */}
-                    <div className="w-1/2 shrink-0 px-4 pb-4">
+        <section id="credits" data-nav-theme="light" className="py-28 bg-muted/10 scroll-mt-16 border-t border-border/50">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="text-center mb-16">
+                    <h2
+                        className="font-fustat font-bold text-foreground mb-5"
+                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px' }}
+                    >
+                        Credits & Top-Ups
+                    </h2>
+                    <p className="text-muted-foreground font-noto max-w-2xl mx-auto text-lg">
+                        Simple, transparent pricing for all generation features.
+                    </p>
+                </div>
+
+                <div className="space-y-24">
+                    {/* Credit Costs */}
+                    <div>
+                        <div className="text-center mb-10">
+                            <h3 className="text-2xl md:text-3xl font-schibsted font-bold text-foreground mb-3">
+                                Credit Costs
+                            </h3>
+                            <p className="text-muted-foreground text-sm font-noto max-w-lg mx-auto">
+                                Transparent pricing for every action. Know exactly what you're paying for.
+                            </p>
+                        </div>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                            {[
+                                { icon: MessageSquare, name: 'AI Chat', cost: '100 credits / 1M tokens' },
+                                { icon: Image, name: 'Image Gen', cost: '5-15 credits / image' },
+                                { icon: Box, name: '3D Model', cost: '20-70 credits / model' },
+                                { icon: Video, name: 'Video Gen', cost: '10-25 credits / second' },
+                                { icon: Music, name: 'Audio Gen', cost: '5 credits / second' },
+                                { icon: Sparkles, name: 'Game Gen', cost: '100-500 credits / game' },
+                            ].map((item) => (
+                                <div key={item.name} className="p-6 bg-background border border-border/60 shadow-sm rounded-xl text-center hover:shadow-lg transition-all">
+                                    <item.icon className="w-8 h-8 mx-auto mb-3 text-foreground" />
+                                    <p className="font-schibsted text-base text-foreground font-semibold">{item.name}</p>
+                                    <p className="text-sm text-muted-foreground font-noto mt-1">{item.cost}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Credit Top-Ups */}
+                    <div>
                         <div className="text-center mb-10">
                             <h3 className="text-2xl md:text-3xl font-schibsted font-bold text-foreground mb-3 flex items-center justify-center gap-3">
                                 <div className="p-2.5 bg-muted/50 rounded-xl shadow-sm border border-border/50">
@@ -759,7 +880,7 @@ const PricingDetailsCarousel = () => {
                                 Need more generating power? Instantly top up your account with more credits.
                             </p>
                         </div>
-                        <div className="grid sm:grid-cols-3 gap-6">
+                        <div className="grid sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
                             <div className="p-7 bg-background border border-border/60 rounded-2xl text-center hover:shadow-xl transition-all flex flex-col justify-between">
                                 <div>
                                     <div className="text-4xl font-schibsted font-bold text-foreground mb-1">$5<span className="text-2xl text-muted-foreground/60">.00</span></div>
@@ -815,72 +936,17 @@ const PricingDetailsCarousel = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Slide 2: Credit Costs */}
-                    <div className="w-1/2 shrink-0 px-4 pb-4">
-                        <div className="text-center mb-10">
-                            <h3 className="text-2xl md:text-3xl font-schibsted font-bold text-foreground mb-3">
-                                Credit Costs
-                            </h3>
-                            <p className="text-muted-foreground text-sm font-noto max-w-lg mx-auto">
-                                Transparent pricing for every action. Know exactly what you're paying for.
-                            </p>
-                        </div>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-                            {[
-                                { icon: MessageSquare, name: 'AI Chat', cost: '100 credits / 1M tokens' },
-                                { icon: Image, name: 'Image Gen', cost: '5-15 credits / image' },
-                                { icon: Box, name: '3D Model', cost: '20-70 credits / model' },
-                                { icon: Video, name: 'Video Gen', cost: '10-25 credits / second' },
-                                { icon: Music, name: 'Audio Gen', cost: '5 credits / second' },
-                                { icon: Sparkles, name: 'Game Gen', cost: '100-500 credits / game' },
-                            ].map((item) => (
-                                <div key={item.name} className="p-5 bg-background border border-border/60 shadow-sm rounded-xl text-center hover:shadow-lg transition-all">
-                                    <item.icon className="w-6 h-6 mx-auto mb-2 text-foreground" />
-                                    <p className="font-schibsted text-sm text-foreground font-semibold">{item.name}</p>
-                                    <p className="text-xs text-muted-foreground font-noto mt-1">{item.cost}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
-
-            {/* Arrows */}
-            <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-background border border-border rounded-full p-2.5 text-foreground opacity-0 group-hover:opacity-100 transition-all z-10 hover:bg-muted shadow-lg md:-translate-x-full"
-                aria-label="Previous pane"
-            >
-                <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-background border border-border rounded-full p-2.5 text-foreground opacity-0 group-hover:opacity-100 transition-all z-10 hover:bg-muted shadow-lg md:translate-x-full"
-                aria-label="Next pane"
-            >
-                <ChevronRight className="w-5 h-5" />
-            </button>
-
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-6">
-                {[0, 1].map((idx) => (
-                    <button
-                        key={idx}
-                        onClick={() => setActiveIndex(idx)}
-                        className={`h-2 rounded-full transition-all ${activeIndex === idx ? 'bg-foreground w-6' : 'bg-muted-foreground/30 w-2 hover:bg-muted-foreground/60'
-                            }`}
-                        aria-label={`Go to slide ${idx + 1}`}
-                    />
-                ))}
-            </div>
-        </div>
+        </section>
     );
 };
 
 // ─── Pricing ─────────────────────────────────────────────────────
 const Pricing = () => {
     const { setIsUpgradeModalOpen } = useAppStore();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
 
     const plans = [
         {
@@ -925,16 +991,34 @@ const Pricing = () => {
     ];
 
     return (
-        <section id="pricing" data-nav-theme="dark" className="py-28 bg-background scroll-mt-16">
-            <div className="max-w-7xl mx-auto px-6">
+        <section id="pricing" data-nav-theme="dark" className="relative py-28 scroll-mt-16 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden bg-background">
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                    src={isDark
+                        ? "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/videos/Grasslands_with_falling_leaves_202607051803.mp4"
+                        : "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/videos/Grasslands_with_strong_winds_202607051833.mp4"
+                    }
+                />
+            </div>
+
+            {/* Soft blurred transition from top section */}
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background via-background/50 to-transparent pointer-events-none z-10" />
+            <div className="absolute top-0 left-0 right-0 h-20 backdrop-blur-[4px] pointer-events-none z-10 [mask-image:radial-gradient(ellipse_120%_100%_at_50%_120%,transparent_30%,black_100%)]" />
+
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="text-center mb-16">
                     <h2
-                        className="font-fustat font-bold text-foreground mb-5"
-                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px' }}
+                        className="font-fustat font-bold text-white drop-shadow-md mb-5"
+                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px', textShadow: '0 1px 8px rgba(0,0,0,0.35)' }}
                     >
                         Simple, Transparent Pricing
                     </h2>
-                    <p className="text-muted-foreground font-noto max-w-2xl mx-auto text-lg">
+                    <p className="text-white/90 font-noto max-w-2xl mx-auto text-lg drop-shadow-sm">
                         Choose the plan that fits your needs. All plans work across web app and CLI.
                     </p>
                 </div>
@@ -943,9 +1027,9 @@ const Pricing = () => {
                     {plans.map((plan) => (
                         <div
                             key={plan.name}
-                            className={`relative p-8 rounded-2xl flex flex-col transition-all border ${plan.popular
-                                ? 'bg-muted/10 border-foreground shadow-2xl shadow-foreground/10'
-                                : 'bg-background border-border/60 hover:shadow-xl hover:shadow-black/5'
+                            className={`relative p-8 rounded-2xl flex flex-col transition-all border backdrop-blur-xl ${plan.popular
+                                ? 'bg-background/90 border-foreground shadow-2xl shadow-foreground/20'
+                                : 'bg-background/70 border-border/40 hover:bg-background/80 hover:shadow-xl'
                                 }`}
                         >
                             {plan.tag && (
@@ -958,20 +1042,21 @@ const Pricing = () => {
                                     {plan.tag}
                                 </div>
                             )}
-                            <div className="mb-8 mt-2">
+                            <div className="mb-6 mt-2">
                                 <h3 className="text-xl font-schibsted font-bold mb-2 text-foreground">{plan.name}</h3>
                                 <div className="flex items-baseline gap-1 text-foreground">
                                     <span className="text-4xl font-bold font-schibsted">{plan.price}</span>
-                                    <span className="text-muted-foreground text-sm font-noto">/mo</span>
+                                    <span className="text-foreground/80 text-sm font-noto">/mo</span>
                                 </div>
-                                <div className="text-sm text-muted-foreground mt-1 font-noto">{plan.inr}</div>
-                                <div className="mt-4 p-3 bg-muted/40 rounded-xl border border-border/50 shadow-inner">
-                                    <p className="text-sm font-schibsted text-muted-foreground">{plan.credits}</p>
-                                </div>
+                                <div className="text-sm text-foreground/80 mt-1 font-noto">{plan.inr}</div>
                             </div>
-                            <ul className="flex-1 space-y-4 mb-8">
+                            <ul className="flex-1 space-y-3 mb-6">
+                                <li className="flex items-start gap-3 text-sm text-foreground/80 font-noto">
+                                    <Star className="w-4 h-4 mt-0.5 text-foreground fill-foreground" />
+                                    <span className="font-schibsted font-medium">{plan.credits.replace('/month', '')}</span>
+                                </li>
                                 {plan.features.map((feat) => (
-                                    <li key={feat} className="flex items-start gap-3 text-sm text-muted-foreground font-noto">
+                                    <li key={feat} className="flex items-start gap-3 text-sm text-foreground/80 font-noto">
                                         <Check className="w-4 h-4 mt-0.5 text-foreground" />
                                         <span>{feat}</span>
                                     </li>
@@ -981,7 +1066,7 @@ const Pricing = () => {
                                 onClick={() => setIsUpgradeModalOpen(true)}
                                 className={`w-full py-3.5 font-schibsted text-sm font-semibold rounded-xl transition-colors shadow-sm ${plan.popular
                                     ? 'bg-foreground text-background hover:opacity-90'
-                                    : 'border border-border/80 text-foreground hover:bg-muted'
+                                    : 'border border-border/80 text-foreground bg-background/50 hover:bg-background/80'
                                     }`}
                             >
                                 {plan.cta}
@@ -990,42 +1075,41 @@ const Pricing = () => {
                     ))}
                 </div>
 
-                <div className="text-center mb-16">
-                    <button
-                        type="button"
-                        onClick={() => setIsUpgradeModalOpen(true)}
-                        className="text-sm font-schibsted text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors"
-                    >
-                        View full pricing
-                    </button>
-                </div>
+            </div>
 
-                {/* FAQ */}
-                <div className="max-w-3xl mx-auto mb-16">
-                    <div className="text-center mb-8">
-                        <h3 className="text-2xl md:text-3xl font-fustat font-bold text-foreground" style={{ letterSpacing: '-1px' }}>
-                            Frequently Asked Questions
-                        </h3>
-                        <p className="text-muted-foreground mt-2 font-noto">Everything you need to know about plans and billing.</p>
-                    </div>
-                    <div className="space-y-3">
-                        {[
-                            { q: 'Does Annual billing save money?', a: 'Yes. Annual billing saves 10% compared to paying monthly.' },
-                            { q: 'Can I change plans later?', a: 'Yes. You can upgrade anytime, and you can switch plans as your needs change.' },
-                            { q: 'What are credits used for?', a: 'Credits power generation features like chat, images, 3D, video, and audio.' },
-                        ].map((item) => (
-                            <details key={item.q} className="rounded-2xl border border-border/60 bg-background p-5 hover:shadow-md transition-shadow shadow-sm">
-                                <summary className="cursor-pointer list-none flex items-center justify-between gap-3 outline-none">
-                                    <span className="font-schibsted font-semibold text-foreground">{item.q}</span>
-                                    <span className="text-xs font-black px-2.5 py-1 rounded-full bg-muted/60 text-muted-foreground">+</span>
-                                </summary>
-                                <p className="mt-3 text-sm text-muted-foreground font-noto leading-relaxed">{item.a}</p>
-                            </details>
-                        ))}
-                    </div>
-                </div>
+            {/* Soft blurred transition to FAQ section */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-32 backdrop-blur-[8px] pointer-events-none z-10 [mask-image:radial-gradient(ellipse_150%_100%_at_50%_-20%,transparent_20%,black_100%)]" />
+        </section>
+    );
+};
 
-                <PricingDetailsCarousel />
+// ─── FAQ ────────────────────────────────────────────────────────
+const FAQ = () => {
+    return (
+        <section id="faq" data-nav-theme="light" className="py-28 bg-background scroll-mt-16">
+            <div className="max-w-3xl mx-auto px-6">
+                <div className="text-center mb-8">
+                    <h3 className="text-2xl md:text-3xl font-fustat font-bold text-foreground" style={{ letterSpacing: '-1px' }}>
+                        Frequently Asked Questions
+                    </h3>
+                    <p className="text-muted-foreground mt-2 font-noto">Everything you need to know about plans and billing.</p>
+                </div>
+                <div className="space-y-3">
+                    {[
+                        { q: 'Does Annual billing save money?', a: 'Yes. Annual billing saves 10% compared to paying monthly.' },
+                        { q: 'Can I change plans later?', a: 'Yes. You can upgrade anytime, and you can switch plans as your needs change.' },
+                        { q: 'What are credits used for?', a: 'Credits power generation features like chat, images, 3D, video, and audio.' },
+                    ].map((item) => (
+                        <details key={item.q} className="rounded-2xl border border-border/60 bg-background p-5 hover:shadow-md transition-shadow shadow-sm">
+                            <summary className="cursor-pointer list-none flex items-center justify-between gap-3 outline-none">
+                                <span className="font-schibsted font-semibold text-foreground">{item.q}</span>
+                                <span className="text-xs font-black px-2.5 py-1 rounded-full bg-muted/60 text-muted-foreground">+</span>
+                            </summary>
+                            <p className="mt-3 text-sm text-muted-foreground font-noto leading-relaxed">{item.a}</p>
+                        </details>
+                    ))}
+                </div>
             </div>
         </section>
     );
@@ -1155,7 +1239,6 @@ const Footer = () => {
                         <ul className="space-y-4 text-sm text-muted-foreground font-noto">
                             <li><a href="#features" onClick={(e) => handleNavClick(e, 'features')} className="hover:text-foreground transition-colors">Features</a></li>
                             <li><a href="#pricing" onClick={(e) => handleNavClick(e, 'pricing')} className="hover:text-foreground transition-colors">Pricing</a></li>
-                            <li><a href="#about" onClick={(e) => handleNavClick(e, 'about')} className="hover:text-foreground transition-colors">About</a></li>
                             <li><Link to="/animations" className="hover:text-foreground transition-colors">Animations Library</Link></li>
                         </ul>
                     </div>
@@ -1213,10 +1296,10 @@ export const LandingPage = () => {
         <div className="min-h-screen bg-background text-foreground scroll-smooth" style={{ fontFamily: "'Noto Sans', sans-serif" }}>
             <Navbar />
             <Hero />
+            <Games />
             <Features />
             <CLI />
             <Pricing />
-            <About />
             <Footer />
         </div>
     );
