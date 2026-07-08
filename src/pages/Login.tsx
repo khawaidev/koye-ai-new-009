@@ -28,6 +28,15 @@ export function Login() {
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const windowRef = useRef<HTMLDivElement>(null)
+  const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia("(max-width: 767px)").matches)
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)")
+    const apply = () => setIsMobileLayout(mq.matches)
+    apply()
+    mq.addEventListener("change", apply)
+    return () => mq.removeEventListener("change", apply)
+  }, [])
 
   // Handle mouse down on title bar
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -135,7 +144,7 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen p-4 relative overflow-hidden bg-background">
+    <div className="min-h-screen p-4 relative overflow-hidden bg-background flex items-start justify-center md:block">
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
@@ -143,12 +152,14 @@ export function Login() {
         <BackgroundPaths title="Background Paths" />
       </div>
       <div
-        className="w-full max-w-md"
+        className={`w-full max-w-md ${isMobileLayout ? "mx-auto mt-16" : ""}`}
         style={{
-          position: "absolute",
-          left: position.x !== null ? `${position.x}px` : "50%",
-          top: position.y !== null ? `${position.y}px` : "50%",
-          transform: position.x !== null || position.y !== null ? "none" : "translate(-50%, -50%)",
+          ...(isMobileLayout ? {} : {
+            position: "absolute",
+            left: position.x !== null ? `${position.x}px` : "50%",
+            top: position.y !== null ? `${position.y}px` : "50%",
+            transform: position.x !== null || position.y !== null ? "none" : "translate(-50%, -50%)",
+          }),
           cursor: isDragging ? "grabbing" : "default",
         }}
         ref={windowRef}
@@ -232,6 +243,5 @@ export function Login() {
     </div>
   )
 }
-
 
 

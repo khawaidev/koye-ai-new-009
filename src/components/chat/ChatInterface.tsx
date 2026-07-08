@@ -2143,6 +2143,7 @@ Now complete the request. REQUIREMENTS:
   const isSidebarOpen = useAppStore(state => state.isSidebarOpen)
 
   // Resizable builder logic
+  const ENABLE_CHAT_BUILDER = false
   const [builderWidth, setBuilderWidth] = useState(() => window.innerWidth * 0.4)
   const isDraggingBuilder = useRef(false)
   const [isBuilderResizeHover, setIsBuilderResizeHover] = useState(false)
@@ -2598,7 +2599,7 @@ Now complete the request. REQUIREMENTS:
       </div>
 
         {/* Resizable Divider and Builder Area */}
-        {currentProject && (
+        {currentProject && ENABLE_CHAT_BUILDER && (
            <>
                <div 
                    className={cn(

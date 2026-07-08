@@ -14,6 +14,7 @@ import {
     Globe,
     Heart,
     Image,
+    Instagram,
     MessageSquare,
     Mic,
     Music,
@@ -23,6 +24,7 @@ import {
     Sparkles,
     Star,
     Terminal,
+    Twitter,
     Users,
     Video,
     Zap
@@ -183,7 +185,7 @@ const Navbar = () => {
     const dropdownTextCls = 'text-black/60 hover:text-black hover:bg-black/5';
 
     return (
-        <nav className={`fixed top-1 left-8 right-8 z-50 transition-all duration-500 rounded-full ${isScrolled ? 'bg-background/70 backdrop-blur-xl shadow-lg border border-border/20' : 'bg-transparent'}`}>
+        <nav className={`fixed top-2 left-2 right-2 sm:left-4 sm:right-4 md:left-8 md:right-8 z-50 transition-all duration-500 rounded-full ${isScrolled ? 'bg-background/70 backdrop-blur-xl shadow-lg border border-border/20' : 'bg-transparent'}`}>
             <div
                 className="mx-auto flex items-center justify-between"
                 style={{ padding: '4px 16px' }}
@@ -645,49 +647,49 @@ const TerminalCarousel = () => {
     }, []);
 
     return (
-        <div className="w-full flex flex-col gap-4">
-            <div className="relative w-full overflow-hidden rounded-2xl">
+        <div className="w-full flex flex-col gap-3 md:gap-4">
+            <div className="relative w-full overflow-hidden rounded-xl md:rounded-2xl">
                 <div
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{ width: '300%', transform: `translateX(-${activeIndex * (100 / 3)}%)` }}
                 >
                     {/* Slide 1: Terminal */}
-                    <div className="w-1/3 shrink-0 px-2 flex justify-center">
-                        <div className="w-full bg-[#0e1311] rounded-2xl overflow-hidden shadow-2xl border border-[#2a2f2d]">
-                            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/10 bg-black/20">
-                                <div className="flex gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-sm" />
-                                    <div className="w-3 h-3 rounded-full bg-yellow-500/80 shadow-sm" />
-                                    <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-sm" />
+                    <div className="w-1/3 shrink-0 px-1 md:px-2 flex justify-center">
+                        <div className="w-full bg-[#0e1311] rounded-xl md:rounded-2xl overflow-hidden shadow-2xl border border-[#2a2f2d]">
+                            <div className="flex items-center gap-2 px-3 md:px-5 py-2.5 md:py-3.5 border-b border-white/10 bg-black/20">
+                                <div className="flex gap-1.5 md:gap-2">
+                                    <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80 shadow-sm" />
+                                    <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-500/80 shadow-sm" />
+                                    <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500/80 shadow-sm" />
                                 </div>
-                                <span className="text-white/50 text-sm font-schibsted ml-2">koye_terminal</span>
+                                <span className="text-white/50 text-xs md:text-sm font-schibsted ml-1 md:ml-2">koye_terminal</span>
                             </div>
-                            <div className="p-6 font-mono text-sm text-white/90 space-y-2 h-[350px] text-left">
+                            <div className="p-3 md:p-6 font-mono text-xs md:text-sm text-white/90 space-y-1.5 md:space-y-2 h-[200px] md:h-[350px] text-left overflow-hidden">
                                 <div className="flex items-center gap-2">
                                     <span className="text-green-400">$</span>
-                                    <span>curl -fsSL https://start.koye.ai/install.sh | bash</span>
+                                    <span className="truncate">curl -fsSL https://start.koye.ai/install.sh | bash</span>
                                 </div>
-                                <div className="text-white/50 pl-4">✓ KOYE CLI installed successfully</div>
-                                <div className="flex items-center gap-2 mt-4">
+                                <div className="text-white/50 pl-3 md:pl-4 text-xs md:text-sm">✓ KOYE CLI installed successfully</div>
+                                <div className="flex items-center gap-2 mt-2 md:mt-4">
                                     <span className="text-green-400">$</span>
                                     <span>koye init</span>
                                 </div>
-                                <div className="text-white/50 pl-4">✓ Initialized in ./my-game-project</div>
-                                <div className="flex items-center gap-2 mt-4">
+                                <div className="text-white/50 pl-3 md:pl-4 text-xs md:text-sm">✓ Initialized in ./my-game-project</div>
+                                <div className="flex items-center gap-2 mt-2 md:mt-4">
                                     <span className="text-green-400">$</span>
                                     <span>koye chat</span>
                                 </div>
-                                <div className="text-white/50 pl-4">🎮 Starting AI game dev assistant...</div>
-                                <div className="mt-4 p-3 border border-white/10 rounded-xl bg-white/5">
-                                    <div className="text-green-400 mb-2 font-bold">[KOYE AI]</div>
-                                    <div className="text-white/80">
+                                <div className="text-white/50 pl-3 md:pl-4 text-xs md:text-sm">🎮 Starting AI game dev assistant...</div>
+                                <div className="mt-2 md:mt-4 p-2 md:p-3 border border-white/10 rounded-lg md:rounded-xl bg-white/5">
+                                    <div className="text-green-400 mb-1 md:mb-2 font-bold text-xs md:text-sm">[KOYE AI]</div>
+                                    <div className="text-white/80 text-xs md:text-sm">
                                         What would you like to create today?<br />
                                         <span className="text-white/40">• Generate 2D sprites</span><br />
                                         <span className="text-white/40">• Create 3D models</span><br />
                                         <span className="text-white/40">• Generate audio/video</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 mt-4">
+                                <div className="flex items-center gap-2 mt-2 md:mt-4">
                                     <span className="text-green-400">$</span>
                                     <span className="animate-pulse">_</span>
                                 </div>
@@ -696,27 +698,27 @@ const TerminalCarousel = () => {
                     </div>
 
                     {/* Slide 2: CLI Commands */}
-                    <div className="w-1/3 shrink-0 px-2 flex justify-center items-center">
-                        <div className="w-full grid grid-cols-2 gap-4 h-[350px] content-center text-left">
+                    <div className="w-1/3 shrink-0 px-1 md:px-2 flex justify-center items-center">
+                        <div className="w-full grid grid-cols-2 gap-2 md:gap-4 h-[200px] md:h-[350px] content-center text-left">
                             {[
                                 { cmd: 'koye init', desc: 'Initialize in project' },
                                 { cmd: 'koye login', desc: 'Authenticate account' },
                                 { cmd: 'koye chat', desc: 'Start AI assistant' },
                                 { cmd: 'koye profile', desc: 'View account info' },
                             ].map((item) => (
-                                <div key={item.cmd} className="p-5 bg-background rounded-xl border border-border/60 shadow-lg flex flex-col justify-center">
-                                    <code className="text-sm font-mono text-foreground font-semibold">{item.cmd}</code>
-                                    <p className="text-xs text-muted-foreground mt-1 font-noto">{item.desc}</p>
+                                <div key={item.cmd} className="p-2.5 md:p-5 bg-background rounded-lg md:rounded-xl border border-border/60 shadow-lg flex flex-col justify-center">
+                                    <code className="text-xs md:text-sm font-mono text-foreground font-semibold">{item.cmd}</code>
+                                    <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1 font-noto">{item.desc}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Slide 3: File Tree */}
-                    <div className="w-1/3 shrink-0 px-2 flex justify-center">
-                        <div className="w-full p-6 bg-background rounded-2xl border border-border/60 shadow-lg h-[350px] text-left">
-                            <h4 className="font-mono font-bold text-foreground mb-4">$ tree koye-assets/</h4>
-                            <pre className="text-sm text-muted-foreground font-mono">
+                    <div className="w-1/3 shrink-0 px-1 md:px-2 flex justify-center">
+                        <div className="w-full p-3 md:p-6 bg-background rounded-xl md:rounded-2xl border border-border/60 shadow-lg h-[200px] md:h-[350px] text-left overflow-hidden">
+                            <h4 className="font-mono font-bold text-foreground mb-2 md:mb-4 text-xs md:text-sm">$ tree koye-assets/</h4>
+                            <pre className="text-[10px] md:text-sm text-muted-foreground font-mono leading-tight md:leading-normal overflow-hidden">
                                 {`koye-assets/
 ├── images/
 │   ├── character_front.png
@@ -736,12 +738,12 @@ const TerminalCarousel = () => {
             </div>
 
             {/* Dots */}
-            <div className="flex justify-center gap-2 mt-2">
+            <div className="flex justify-center gap-1.5 md:gap-2 mt-1 md:mt-2">
                 {[0, 1, 2].map((idx) => (
                     <button
                         key={idx}
                         onClick={() => setActiveIndex(idx)}
-                        className={`h-2 rounded-full transition-all ${activeIndex === idx ? 'bg-foreground w-6' : 'bg-muted-foreground/30 w-2 hover:bg-muted-foreground/60'
+                        className={`h-1.5 md:h-2 rounded-full transition-all ${activeIndex === idx ? 'bg-foreground w-4 md:w-6' : 'bg-muted-foreground/30 w-1.5 md:w-2 hover:bg-muted-foreground/60'
                             }`}
                         aria-label={`Go to slide ${idx + 1}`}
                     />
@@ -753,9 +755,9 @@ const TerminalCarousel = () => {
 
 // ─── CLI Section ─────────────────────────────────────────────────
 const CLI = () => (
-    <section id="cli" data-nav-theme="dark" className="py-28 bg-background scroll-mt-16">
-        <div className="max-w-6xl mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+    <section id="cli" data-nav-theme="dark" className="py-12 md:py-28 bg-background scroll-mt-16">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
                 <div>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -763,17 +765,17 @@ const CLI = () => (
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border shadow-sm text-sm font-schibsted font-medium mb-6 text-foreground/70">
-                            <Terminal className="w-4 h-4" />
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-background border border-border shadow-sm text-xs md:text-sm font-schibsted font-medium mb-4 md:mb-6 text-foreground/70">
+                            <Terminal className="w-3.5 h-3.5" />
                             <span>Command Line Interface</span>
                         </div>
                         <h2
-                            className="font-fustat font-bold text-foreground mb-6"
-                            style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px' }}
+                            className="font-fustat font-bold text-foreground mb-4 md:mb-6"
+                            style={{ fontSize: 'clamp(24px, 5vw, 48px)', letterSpacing: '-2px' }}
                         >
                             KOYE CLI
                         </h2>
-                        <p className="font-noto text-muted-foreground text-lg mb-8 leading-relaxed">
+                        <p className="font-noto text-muted-foreground text-sm md:text-lg mb-6 md:mb-8 leading-relaxed">
                             Build game assets directly from your terminal. The KOYE CLI integrates seamlessly
                             with your development workflow, letting you generate assets without leaving your IDE.
                         </p>
@@ -784,7 +786,7 @@ const CLI = () => (
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
                         viewport={{ once: true }}
-                        className="space-y-5 mb-8"
+                        className="space-y-4 md:space-y-5 mb-6 md:mb-8"
                     >
                         {[
                             { icon: Download, title: 'Easy Installation', desc: 'One-line install script. Works on macOS, Linux, and Windows (WSL).' },
@@ -792,13 +794,13 @@ const CLI = () => (
                             { icon: Zap, title: 'Same Credits System', desc: 'Use your account credits across web app and CLI. Synced automatically.' },
                             { icon: Globe, title: 'Unity & Unreal Ready', desc: 'Export formats optimized for game engines. Direct import support.' },
                         ].map((item) => (
-                            <div key={item.title} className="flex items-start gap-4">
-                                <div className="w-10 h-10 bg-foreground text-background shadow-md rounded-xl flex items-center justify-center shrink-0">
-                                    <item.icon className="w-4 h-4" />
+                            <div key={item.title} className="flex items-start gap-3 md:gap-4">
+                                <div className="w-8 h-8 md:w-10 md:h-10 bg-foreground text-background shadow-md rounded-xl flex items-center justify-center shrink-0">
+                                    <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                 </div>
                                 <div>
-                                    <h4 className="font-schibsted font-semibold text-foreground mb-0.5">{item.title}</h4>
-                                    <p className="text-sm text-muted-foreground font-noto">{item.desc}</p>
+                                    <h4 className="font-schibsted font-semibold text-foreground mb-0.5 text-sm md:text-base">{item.title}</h4>
+                                    <p className="text-xs md:text-sm text-muted-foreground font-noto">{item.desc}</p>
                                 </div>
                             </div>
                         ))}
@@ -1209,58 +1211,97 @@ const Footer = () => {
     );
 
     return (
-        <footer className="py-16 bg-background border-t border-border">
-            <div className="max-w-6xl mx-auto px-6">
-                <div className="grid md:grid-cols-4 gap-12 mb-12">
-                    <div>
-                        <div className="flex items-center gap-2.5 mb-6">
-                            <AppIcon alt="KOYE" className="w-8 h-8 rounded-full shadow-sm" />
-                            <span className="font-schibsted font-bold text-xl text-foreground tracking-tight">
-                                Koye AI
-                            </span>
-                        </div>
-                        <p className="text-muted-foreground text-sm font-noto leading-relaxed">
-                            AI-powered game asset creation platform. Use in the browser or directly from your terminal.
-                        </p>
+        <footer className="py-6 md:py-12 bg-background border-t border-border">
+            <div className="max-w-6xl mx-auto px-4 md:px-6">
+                {/* Mobile: Compact single row */}
+                <div className="flex flex-col items-center gap-3 md:hidden text-center">
+                    <div className="flex items-center gap-2">
+                        <AppIcon alt="Khawain" className="w-6 h-6 rounded-full shadow-sm" />
+                        <span className="font-schibsted font-bold text-base text-foreground tracking-tight">
+                            Khawain.
+                        </span>
                     </div>
-
-                    <div>
-                        <h4 className="font-schibsted font-semibold mb-6 text-foreground">Platforms</h4>
-                        <ul className="space-y-4 text-sm text-muted-foreground font-noto">
-                            <li><Link to="/signup" className="hover:text-foreground transition-colors">Web App</Link></li>
-                            <li><a href="#cli" onClick={(e) => handleNavClick(e, 'cli')} className="hover:text-foreground transition-colors">CLI Tool</a></li>
-                            <li><a href="#" className="hover:text-foreground transition-colors">API Access</a></li>
-                            <li><a href="#" className="hover:text-foreground transition-colors">Documentation</a></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="font-schibsted font-semibold mb-6 text-foreground">Resources</h4>
-                        <ul className="space-y-4 text-sm text-muted-foreground font-noto">
-                            <li><a href="#features" onClick={(e) => handleNavClick(e, 'features')} className="hover:text-foreground transition-colors">Features</a></li>
-                            <li><a href="#pricing" onClick={(e) => handleNavClick(e, 'pricing')} className="hover:text-foreground transition-colors">Pricing</a></li>
-                            <li><Link to="/animations" className="hover:text-foreground transition-colors">Animations Library</Link></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="font-schibsted font-semibold mb-6 text-foreground">Legal</h4>
-                        <ul className="space-y-4 text-sm text-muted-foreground font-noto">
-                            <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-                            <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
-                            <li><a href="#" className="hover:text-foreground transition-colors">Cookie Policy</a></li>
-                        </ul>
+                    <p className="text-muted-foreground text-xs font-noto">
+                        AI powered game generation
+                    </p>
+                    <p className="text-muted-foreground text-xs font-noto">
+                        @2025 Khawain. All rights reserved.
+                    </p>
+                    <div className="flex items-center gap-4 mt-1">
+                        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                            <Instagram className="w-4 h-4" />
+                        </a>
+                        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                            <Twitter className="w-4 h-4" />
+                        </a>
+                        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                            <MessageSquare className="w-4 h-4" />
+                        </a>
                     </div>
                 </div>
 
-                <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-muted-foreground text-sm font-noto">
-                        © 2024 Koye AI. All rights reserved.
-                    </p>
-                    <div className="flex items-center gap-6 text-sm text-muted-foreground font-noto">
-                        <a href="#" className="hover:text-foreground transition-colors">Twitter</a>
-                        <a href="#" className="hover:text-foreground transition-colors">GitHub</a>
-                        <a href="#" className="hover:text-foreground transition-colors">Discord</a>
+                {/* Desktop: Full footer */}
+                <div className="hidden md:block">
+                    <div className="grid md:grid-cols-4 gap-8 mb-8">
+                        <div>
+                            <div className="flex items-center gap-2.5 mb-4">
+                                <AppIcon alt="Khawain" className="w-8 h-8 rounded-full shadow-sm" />
+                                <span className="font-schibsted font-bold text-xl text-foreground tracking-tight">
+                                    Khawain.
+                                </span>
+                            </div>
+                            <p className="text-muted-foreground text-sm font-noto leading-relaxed">
+                                AI-powered game asset creation platform. Use in the browser or directly from your terminal.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 className="font-schibsted font-semibold mb-4 text-foreground">Platforms</h4>
+                            <ul className="space-y-3 text-sm text-muted-foreground font-noto">
+                                <li><Link to="/signup" className="hover:text-foreground transition-colors">Web App</Link></li>
+                                <li><a href="#cli" onClick={(e) => handleNavClick(e, 'cli')} className="hover:text-foreground transition-colors">CLI Tool</a></li>
+                                <li><a href="#" className="hover:text-foreground transition-colors">API Access</a></li>
+                                <li><a href="#" className="hover:text-foreground transition-colors">Documentation</a></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="font-schibsted font-semibold mb-4 text-foreground">Resources</h4>
+                            <ul className="space-y-3 text-sm text-muted-foreground font-noto">
+                                <li><a href="#features" onClick={(e) => handleNavClick(e, 'features')} className="hover:text-foreground transition-colors">Features</a></li>
+                                <li><a href="#pricing" onClick={(e) => handleNavClick(e, 'pricing')} className="hover:text-foreground transition-colors">Pricing</a></li>
+                                <li><Link to="/animations" className="hover:text-foreground transition-colors">Animations Library</Link></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="font-schibsted font-semibold mb-4 text-foreground">Legal</h4>
+                            <ul className="space-y-3 text-sm text-muted-foreground font-noto">
+                                <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
+                                <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
+                                <li><a href="#" className="hover:text-foreground transition-colors">Cookie Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+                        <p className="text-muted-foreground text-sm font-noto">
+                            © 2025 Khawain. All rights reserved.
+                        </p>
+                        <div className="flex items-center gap-5 text-sm text-muted-foreground font-noto">
+                            <a href="#" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                                <Instagram className="w-4 h-4" />
+                                <span>Instagram</span>
+                            </a>
+                            <a href="#" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                                <Twitter className="w-4 h-4" />
+                                <span>X</span>
+                            </a>
+                            <a href="#" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                                <MessageSquare className="w-4 h-4" />
+                                <span>Discord</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

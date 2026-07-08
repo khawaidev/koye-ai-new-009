@@ -65,6 +65,7 @@ export function WorkflowManager() {
   } = useAppStore()
   // const isGenerating = useAppStore((state) => state.isGenerating) // unused
   const { addToast } = useToast()
+  const ENABLE_EMBEDDED_BUILDER = false
 
   const {
     isActive: isGameDevActive,
@@ -2225,7 +2226,21 @@ export function WorkflowManager() {
                   </div>
                 </div>
               ) : currentProject ? (
-                <Builder hideSidebar={true} />
+                ENABLE_EMBEDDED_BUILDER ? (
+                  <Builder hideSidebar={true} />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <div className="text-center">
+                      <p className="text-foreground font-mono text-lg mb-4">Builder is available in a separate tab.</p>
+                      <Button
+                        onClick={() => window.open(`${window.location.origin}/builder/${currentProject.id}?hideSidebar=true`, "_blank")}
+                        className="bg-foreground text-background hover:bg-muted-foreground border border-foreground font-mono"
+                      >
+                        Open Builder
+                      </Button>
+                    </div>
+                  </div>
+                )
               ) : (
                 <div className="flex h-full items-center justify-center">
                   <div className="text-center">

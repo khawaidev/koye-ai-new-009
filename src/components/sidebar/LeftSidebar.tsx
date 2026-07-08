@@ -260,11 +260,11 @@ export function LeftSidebar({ isOpen, stage, setStage, onToggleSidebar }: LeftSi
         {currentProject && (
           <div className="relative group flex justify-center w-full mt-2">
             <button
-              onClick={() => setStage?.("build")}
+              onClick={() => window.open(`${window.location.origin}/builder/${currentProject.id}?hideSidebar=true`, '_blank')}
               className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground/10 text-foreground transition-colors hover:bg-foreground/20 dark:bg-white/5 dark:hover:bg-white/10"
               title={currentProject.name}
             >
-              <Folder className="h-[18px] w-[18px]" />
+              <ExternalLink className="h-[18px] w-[18px]" />
             </button>
             <div className="absolute left-[52px] top-0 hidden group-hover:flex flex-col bg-popover text-popover-foreground border border-border shadow-md rounded-md py-1 px-1 z-50 whitespace-nowrap animate-in fade-in slide-in-from-left-2 transition-all min-w-[140px]">
               <div className="flex items-center justify-between px-2 py-1.5 border-b border-border/50">

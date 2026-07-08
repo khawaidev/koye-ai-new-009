@@ -19,6 +19,7 @@ import {
   Layers,
   LogOut,
   Mail,
+  Menu,
   Maximize2,
   MessageSquare,
   Plus,
@@ -221,8 +222,14 @@ export function Dashboard() {
 
   // Set sidebar open by default ONLY for dashboard
   useEffect(() => {
-    setIsSidebarOpen(true)
-    return () => setIsSidebarOpen(false)
+    const mq = window.matchMedia("(min-width: 768px)")
+    const apply = () => setIsSidebarOpen(mq.matches)
+    apply()
+    mq.addEventListener("change", apply)
+    return () => {
+      mq.removeEventListener("change", apply)
+      setIsSidebarOpen(false)
+    }
   }, [setIsSidebarOpen])
 
   const loadTokenUsage = async () => {
@@ -565,7 +572,7 @@ export function Dashboard() {
         {/* Left Sidebar */}
         <div
           className={cn(
-            "bg-background/40 backdrop-blur-2xl border-r border-foreground/10 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col z-20",
+            "fixed md:relative inset-y-0 left-0 bg-background/40 backdrop-blur-2xl border-r border-foreground/10 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col z-20",
             !isSidebarOpen ? "w-0 overflow-hidden border-none mx-0" : "w-72"
           )}
         >
@@ -617,16 +624,33 @@ export function Dashboard() {
           </div>
         </div>
 
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 md:hidden z-10"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col bg-background overflow-hidden">
+          <div className="shrink-0 md:hidden flex items-center justify-between px-4 py-3 border-b border-border/40">
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen((v) => !v)}
+              className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-background/50"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+            <div className="text-sm font-bold font-mono text-foreground">Dashboard</div>
+            <div className="w-9" />
+          </div>
           {/* Tab Content */}
           <div className="flex-1 overflow-y-auto">
             {activeTab === "explore" && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-6 max-w-6xl mx-auto"
+                className="p-4 sm:p-6 max-w-6xl mx-auto"
               >
                 <div className="relative mb-8 group">
                   <div className="absolute -top-6 -left-6 w-5 h-5 bg-foreground/5 text-foreground rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
@@ -669,7 +693,7 @@ export function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="p-6 space-y-12 max-w-7xl mx-auto"
+                className="p-4 sm:p-6 space-y-12 max-w-7xl mx-auto"
               >
                 {/* User Profile Section */}
                 <div className="bg-foreground/5 border border-foreground/10 p-5 rounded-lg relative overflow-hidden group">
@@ -999,7 +1023,7 @@ export function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-6 space-y-10 max-w-6xl mx-auto"
+                className="p-4 sm:p-6 space-y-10 max-w-6xl mx-auto"
               >
                 {/* Credit Balance Card */}
                 <div className="bg-foreground/5 border border-foreground/10 p-6 rounded-lg relative overflow-hidden">
@@ -1122,7 +1146,7 @@ export function Dashboard() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-6 space-y-12 max-w-6xl mx-auto"
+                className="p-4 sm:p-6 space-y-12 max-w-6xl mx-auto"
               >
                 <div className="text-center mb-8">
                   <h2 className="text-base font-bold tracking-tighter mb-4">System Capabilities</h2>
@@ -1178,7 +1202,7 @@ export function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-6 space-y-10 max-w-4xl mx-auto"
+                className="p-4 sm:p-6 space-y-10 max-w-4xl mx-auto"
               >
                 <div className="bg-foreground/5 border border-foreground/10 p-6 rounded-lg backdrop-blur-xl">
                   <h2 className="text-sm font-bold tracking-tight mb-6 flex items-center gap-4">

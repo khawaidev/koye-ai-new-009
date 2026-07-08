@@ -111,6 +111,8 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
     const [showWelcome, setShowWelcome] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [activeTab, setActiveTab] = useState<'files' | 'preview'>('preview')
+    const [isGamePreview, setIsGamePreview] = useState(false)
+    const [gamePreviewKey, setGamePreviewKey] = useState(0)
 
     // Upload overlay state — controlled by BuilderSidebar, rendered here
     const [uploadState, setUploadState] = useState<UploadOverlayState | null>(null)
@@ -193,10 +195,15 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
         }
     }
 
-    const handlePlay = () => {
-        console.log("Play project")
-        window.open(`/project-engine-render?projectId=${projectId}&name=${encodeURIComponent(projectName)}`, '_blank')
-    }
+    const handlePlay = useCallback(() => {
+        if (!projectId) return
+        setActiveTab("preview")
+        setIsGamePreview((prev) => {
+            const next = !prev
+            if (next) setGamePreviewKey((v) => v + 1)
+            return next
+        })
+    }, [projectId])
 
     const [engineErrors, setEngineErrors] = useState<Array<{ timestamp: number; source: string; message: string; stack?: string }>>([])
     const [showEngineErrors, setShowEngineErrors] = useState(false)
@@ -1001,6 +1008,8 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
                     hasUnsavedChanges={hasUnsavedChanges}
                     onDownload={handleDownload}
                     onPublish={handlePublish}
+                    onPlay={handlePlay}
+                    isPlaying={isGamePreview}
                 />
                 
                 <div className="flex-1 flex min-h-0 border-t border-border/60 relative overflow-hidden">
@@ -1019,7 +1028,16 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
 
                     {/* Middle - Viewer / Upload Overlay */}
                     <div className={cn("h-full bg-muted/20 relative border-x border-border/60", activeTab === 'preview' ? "flex-1 min-w-0" : "hidden")}>
-                        <UnifiedViewer />
+                        {isGamePreview && projectId ? (
+                            <iframe
+                                key={`${projectId}:${gamePreviewKey}`}
+                                src={`/project-engine-render?projectId=${projectId}&name=${encodeURIComponent(projectName)}`}
+                                className="h-full w-full border-0 bg-black"
+                                allowFullScreen
+                            />
+                        ) : (
+                            <UnifiedViewer />
+                        )}
 
                         {engineErrors.length > 0 && (
                             <div className="absolute left-4 bottom-4 z-[54] max-w-[720px] w-[min(720px,calc(100%-2rem))]">

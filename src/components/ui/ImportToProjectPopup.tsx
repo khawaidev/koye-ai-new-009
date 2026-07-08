@@ -3,8 +3,9 @@ import { Folder, FolderInput, Loader2, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/useAuth"
 import { importAssetToProject, createAssetFromUrl, type AssetType } from "../../services/assetService"
-import { getProjects, type Project } from "../../services/supabase"
+import { getProjects } from "../../services/supabase"
 import { useAppStore } from "../../store/useAppStore"
+import type { Project } from "../../types"
 
 interface ImportToProjectPopupProps {
     isOpen: boolean
@@ -22,7 +23,7 @@ export function ImportToProjectPopup({
     assetName,
 }: ImportToProjectPopupProps) {
     const { user } = useAuth()
-    const { currentProject, setCurrentProject, setStage } = useAppStore()
+    const { currentProject, setCurrentProject } = useAppStore()
     const [projects, setProjects] = useState<Project[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [isImporting, setIsImporting] = useState<string | null>(null) // project ID being imported to
@@ -69,8 +70,7 @@ export function ImportToProjectPopup({
                 }
             }
 
-            // Navigate to builder
-            setStage("build")
+            window.open(`${window.location.origin}/builder/${project.id}?hideSidebar=true`, "_blank")
             onClose()
         } catch (err) {
             console.error("Import failed:", err)

@@ -368,7 +368,7 @@ export function GameEngine() {
       {/* Main Content Area */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Left Panel */}
-        <div className="w-64 shrink-0 bg-gray-900 border-r border-gray-700 flex flex-col">
+        <div className="hidden lg:flex w-64 shrink-0 bg-gray-900 border-r border-gray-700 flex-col">
           {/* Tabs */}
           <div className="flex border-b border-gray-700">
             <button
@@ -424,10 +424,10 @@ export function GameEngine() {
         {/* Center Viewport */}
         <div className="flex-1 flex flex-col min-w-0 bg-gray-950">
           {/* Viewport Header */}
-          <div className="shrink-0 bg-gray-900 border-b border-gray-700 px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-300">{projectName}</span>
+          <div className="shrink-0 bg-gray-900 border-b border-gray-700 px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-sm text-gray-300 truncate">{projectName}</span>
                 <button className="text-gray-500 hover:text-gray-300">
                   <ChevronDown className="h-4 w-4" />
                 </button>
@@ -487,7 +487,7 @@ export function GameEngine() {
         </div>
 
         {/* Right Panel - Inspector */}
-        <div className="w-64 shrink-0 bg-gray-900 border-l border-gray-700 flex flex-col">
+        <div className="hidden lg:flex w-64 shrink-0 bg-gray-900 border-l border-gray-700 flex-col">
           {/* Tabs */}
           <div className="flex border-b border-gray-700">
             {(["Inspector", "Node", "History"] as const).map((tab) => (

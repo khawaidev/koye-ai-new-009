@@ -264,7 +264,7 @@ export function Phaser2DGameEngine() {
       {/* Main Content Area */}
       <div className="flex flex-1 min-h-0">
         {/* Left Sidebar - Assets */}
-        <div className="w-64 bg-gray-800 border-r border-gray-700 overflow-y-auto">
+        <div className="hidden md:block w-64 bg-gray-800 border-r border-gray-700 overflow-y-auto">
           <div className="p-4">
             <h2 className="text-sm font-semibold text-gray-300 mb-3">Assets</h2>
             <div className="space-y-2">
@@ -298,7 +298,7 @@ export function Phaser2DGameEngine() {
         </div>
 
         {/* Right Sidebar - Inspector */}
-        <div className="w-64 bg-gray-800 border-l border-gray-700 overflow-y-auto">
+        <div className="hidden md:block w-64 bg-gray-800 border-l border-gray-700 overflow-y-auto">
           <div className="p-4">
             <h2 className="text-sm font-semibold text-gray-300 mb-3">Inspector</h2>
             {selectedAsset ? (
@@ -321,4 +321,3 @@ export function Phaser2DGameEngine() {
     </div>
   )
 }
-
