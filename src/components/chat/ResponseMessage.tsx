@@ -1,5 +1,6 @@
-import { Globe } from "lucide-react"
+import { Globe, Play } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { cn } from "../../lib/utils"
 import type { ImageView, WebSearchResult } from "../../types"
 import { ImageZoomModal } from "../image-generation/ImageZoomModal"
@@ -15,6 +16,7 @@ import { ImageGenLoadingCard } from "./generation/ImageGenLoadingCard"
 import { AudioGenLoadingCard } from "./generation/AudioGenLoadingCard"
 import { VideoGenLoadingCard } from "./generation/VideoGenLoadingCard"
 import { Model3DGenLoadingCard } from "./generation/Model3DGenLoadingCard"
+import { useAppStore } from "../../store/useAppStore"
 
 interface ResponseMessageProps {
   content: string
@@ -40,6 +42,7 @@ interface ResponseMessageProps {
   showConnectPrompt?: boolean
   onConnectProject?: () => void
   onCreateProject?: () => void
+  playableUrl?: string // New field for the "play" button URL
 }
 
 export function ResponseMessage({
@@ -66,7 +69,10 @@ export function ResponseMessage({
   onConnectProject,
   onCreateProject,
   fileOperations,
+  playableUrl,
 }: ResponseMessageProps) {
+  const navigate = useNavigate();
+  const { generatedFiles, currentProject } = useAppStore();
   // Determine agent state based on props
   const agentState = isSwitching ? "thinking" : isThinking ? "thinking" : isStreaming ? "speaking" : "idle"
 
@@ -75,6 +81,12 @@ export function ResponseMessage({
 
   // Check if images are still loading (either explicit flag or placeholder images with empty URLs)
   const isLoadingImages = isGeneratingImage || (generatedImages && generatedImages.some(img => !img.url || img.url === ""))
+
+  const handlePlayClick = () => {
+    if (playableUrl) {
+      window.open(playableUrl, '_blank');
+    }
+  }
 
   // State for image zoom modal
   const [selectedSampleImage, setSelectedSampleImage] = useState<{ url: string; id: number } | null>(null)
@@ -115,6 +127,17 @@ export function ResponseMessage({
             <Response content={content} isStreaming={isStreaming} />
           )}
         </div>
+
+        {/* Play Button */}
+        {playableUrl && (
+          <button
+            onClick={handlePlayClick}
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors self-end"
+          >
+            <Play className="h-5 w-5" />
+            <span>Play</span>
+          </button>
+        )}
 
         {/* Web Search Loading Indicator */}
         {isWebSearching && (

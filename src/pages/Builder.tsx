@@ -114,6 +114,16 @@ export function Builder({ projectId: propsProjectId, projectName: propsProjectNa
     const [isGamePreview, setIsGamePreview] = useState(false)
     const [gamePreviewKey, setGamePreviewKey] = useState(0)
 
+    // Auto-start preview when opened with ?autopreview=true (from chat Play button)
+    useEffect(() => {
+        if (searchParams.get('autopreview') === 'true' && projectId) {
+            setActiveTab('preview')
+            setIsGamePreview(true)
+            setGamePreviewKey(v => v + 1)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [projectId])
+
     // Upload overlay state — controlled by BuilderSidebar, rendered here
     const [uploadState, setUploadState] = useState<UploadOverlayState | null>(null)
 

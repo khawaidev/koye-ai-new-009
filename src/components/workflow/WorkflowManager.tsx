@@ -14,7 +14,6 @@ import type { Image, ImageView, Message, ModelStatus } from "../../store/useAppS
 import { useAppStore } from "../../store/useAppStore"
 import { useGameDevStore } from "../../store/useGameDevStore"
 import { useTaskStore, getTaskDisplayName } from "../../store/useTaskStore"
-import { Builder } from "../../pages/Builder"
 import { AudioGeneration } from "../audio-generation/AudioGeneration"
 import { ChatInterface } from "../chat/ChatInterface"
 import { MediaGeneration } from "../media-generation/MediaGeneration"
@@ -648,6 +647,7 @@ export function WorkflowManager() {
             ...lastMessage,
             isGeneratingVideo: false,
             videos: [videoUrl],
+            playableUrl: videoUrl, // Set playableUrl for generated video
           }
           const updatedMessages = currentMessages.map((msg) =>
             msg.id === assistantMessageId ? updatedMessage : msg
@@ -1575,6 +1575,7 @@ export function WorkflowManager() {
                 const updatedMessage: Message = {
                   ...lastMessage,
                   model3dUrl: status.result.modelUrl,
+                  playableUrl: status.result.modelUrl, // Set playableUrl for generated 3D model
                 }
                 const updatedMessages = currentMessages.map((msg) =>
                   msg.id === assistantMessageId ? updatedMessage : msg
@@ -2226,21 +2227,17 @@ export function WorkflowManager() {
                   </div>
                 </div>
               ) : currentProject ? (
-                ENABLE_EMBEDDED_BUILDER ? (
-                  <Builder hideSidebar={true} />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-foreground font-mono text-lg mb-4">Builder is available in a separate tab.</p>
-                      <Button
-                        onClick={() => window.open(`${window.location.origin}/builder/${currentProject.id}?hideSidebar=true`, "_blank")}
-                        className="bg-foreground text-background hover:bg-muted-foreground border border-foreground font-mono"
-                      >
-                        Open Builder
-                      </Button>
-                    </div>
+                <div className="flex h-full items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-foreground font-mono text-lg mb-4">Your game is ready to run.</p>
+                    <Button
+                      onClick={() => window.open(`${window.location.origin}/play/${currentProject.id}`, "_blank")}
+                      className="bg-foreground text-background hover:bg-muted-foreground border border-foreground font-mono"
+                    >
+                      Launch Game Runner
+                    </Button>
                   </div>
-                )
+                </div>
               ) : (
                 <div className="flex h-full items-center justify-center">
                   <div className="text-center">

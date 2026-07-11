@@ -1,4 +1,4 @@
-import { Check, Crown, Loader2, Sparkles, X } from "lucide-react"
+import { CheckCircle, Crown, Loader2, Sparkles, StarIcon, X } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -10,76 +10,7 @@ import { subscribeToPlan } from "../services/pricingService"
 import { openRazorpayCheckout } from "../services/razorpay"
 import { useAppStore } from "../store/useAppStore"
 
-interface PricingPlan {
-  name: string
-  price: string
-  priceUsd: string
-  description: string
-  features: string[]
-  highlight?: boolean
-}
 
-const plans: PricingPlan[] = [
-  {
-    name: "INDIE",
-    price: "₹399/month",
-    priceUsd: "$4.99/month",
-    description: "Best for students",
-    features: [
-      "500 credits/month",
-      "No commercial license",
-      "Community support",
-      "Standard priority",
-      "5GB storage",
-    ],
-  },
-  {
-    name: "PRO",
-    price: "₹1,299/month",
-    priceUsd: "$19.99/month",
-    description: "Great for indie developers",
-    features: [
-      "3,000 credits/month",
-      "Standard priority",
-      "20GB storage",
-      "Commercial license",
-      "Unity/Unreal helpers",
-      "Full export options",
-    ],
-    highlight: true,
-  },
-  {
-    name: "PRO_PLUS",
-    price: "₹2,499/month",
-    priceUsd: "$34.99/month",
-    description: "For creators who need more",
-    features: [
-      "8,000 credits/month",
-      "High priority queue",
-      "100GB storage",
-      "Commercial license",
-      "Early access features",
-      "AI code generation",
-      "Custom export presets",
-    ],
-  },
-  {
-    name: "STUDIO",
-    price: "₹49,999+ /month",
-    priceUsd: "$999+ /month",
-    description: "For studios & production houses",
-    features: [
-      "Unlimited credits",
-      "Unlimited team seats",
-      "Unlimited storage",
-      "Private inference endpoint",
-      "Guaranteed SLA",
-      "Dedicated support engineer",
-      "On-premise deployment option",
-      "Custom model fine-tuning",
-    ],
-  },
-]
 
 export function Pricing() {
   const navigate = useNavigate()
@@ -118,6 +49,7 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
   const [processingPlan, setProcessingPlan] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [billing, setBilling] = useState<"monthly" | "annual">("annual")
+  const [frequency, setFrequency] = useState<"monthly" | "yearly">("monthly")
 
   const isDark = theme === "dark"
 
@@ -137,6 +69,51 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
     STUDIO: "STUDIO",
   }
 
+  const landingPagePlans = [
+    {
+      name: 'Indie',
+      info: 'For students & hobbyists',
+      price: { monthly: 5, yearly: 54 },
+      features: [
+        { text: '500 credits/month' },
+        { text: 'No commercial license' },
+        { text: 'Community support' },
+        { text: 'Standard priority' },
+        { text: '5GB storage' },
+      ],
+      btn: { text: 'Select Plan', href: '/signup' },
+      highlighted: false,
+    },
+    {
+      name: 'Pro',
+      info: 'For indie developers',
+      price: { monthly: 20, yearly: 216 },
+      features: [
+        { text: '3,000 credits/month' },
+        { text: 'Commercial license' },
+        { text: 'Unity/Unreal helpers' },
+        { text: 'Full export options' },
+        { text: '20GB storage' },
+      ],
+      btn: { text: 'Select Plan', href: '/signup' },
+      highlighted: true,
+    },
+    {
+      name: 'Pro Plus',
+      info: 'For small teams',
+      price: { monthly: 35, yearly: 378 },
+      features: [
+        { text: '8,000 credits/month' },
+        { text: 'High priority queue' },
+        { text: '100GB storage' },
+        { text: 'Early access features' },
+        { text: 'AI code generation' },
+      ],
+      btn: { text: 'Select Plan', href: '/signup' },
+      highlighted: false,
+    },
+  ];
+
   const handleGetStarted = async (planName: string) => {
     if (!isAuthenticated) {
       navigate("/signup")
@@ -153,7 +130,7 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
       return
     }
 
-    const dbPlanName = planNameMap[planName]
+    const dbPlanName = planNameMap[planName.toUpperCase()]
     const dbPlan = dbPlans.find((p) => p.name === dbPlanName)
 
     if (!dbPlan) {
@@ -170,9 +147,15 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
     setError(null)
 
     try {
-      const billingMonths = billing === "annual" ? 12 : 1
-      const billingDiscount = billing === "annual" ? 0.9 : 1
-      const amountInPaise = Math.round(dbPlan.priceInr * billingMonths * billingDiscount * 100)
+      const selectedPlan = landingPagePlans.find(p => p.name.toLowerCase() === planName.toLowerCase());
+      if (!selectedPlan) {
+        throw new Error("Selected plan not found in landing page plans.");
+      }
+
+      const amountUsd = frequency === "monthly" ? selectedPlan.price.monthly : selectedPlan.price.yearly;
+      const amountInr = amountUsd * 83; // Assuming 1 USD = 83 INR for conversion
+      const amountInPaise = Math.round(amountInr * 100);
+
       const iconUrl = new URL("/images/app/new-icon2.png", window.location.origin).href
 
       await openRazorpayCheckout(
@@ -180,7 +163,7 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
           amount: amountInPaise,
           currency: "INR",
           name: "KOYE AI",
-          description: `${billing === "annual" ? "Annual" : "Monthly"} subscription to ${dbPlan.displayName}`,
+          description: `${frequency === "yearly" ? "Annual" : "Monthly"} subscription to ${selectedPlan.name}`,
           image: iconUrl,
           prefill: {
             name: user.email?.split("@")[0] || "User",
@@ -190,7 +173,7 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
             plan_id: dbPlan.id,
             plan_name: dbPlan.name,
             user_id: user.id,
-            billing_cycle: billing,
+            billing_cycle: frequency,
           },
           theme: {
             color: "#000000",
@@ -222,8 +205,6 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
     }
   }
 
-  const featuredPlans = plans.filter((p) => ["INDIE", "PRO", "PRO_PLUS"].includes(p.name))
-
   return (
     <AnimatePresence>
       {open && (
@@ -245,17 +226,16 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 12 }}
             transition={{ duration: 0.16 }}
-            className={cn(
-              "relative w-full max-w-5xl max-h-[90vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col",
-              isDark ? "bg-[#0d0d0f] border-white/10 text-white" : "bg-background border-border text-foreground"
-            )}
+            className="relative w-full max-w-5xl max-h-[90vh] rounded-2xl border border-white/10 bg-[#0a0a0b] shadow-2xl overflow-hidden flex flex-col"
           >
-            <div className={cn("flex items-center justify-between px-6 py-4 border-b", isDark ? "border-white/10" : "border-border")}>
+            {/* Soft blurred transition from top */}
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/50 via-[#0a0a0b]/50 to-transparent pointer-events-none z-10" />
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 relative z-10">
               <div className="flex items-center gap-3">
-                <Sparkles className={cn("h-4 w-4", isDark ? "text-amber-300" : "text-amber-600")} />
+                <Sparkles className="h-4 w-4 text-amber-300" />
                 <div>
-                  <div className="font-semibold">Upgrade Your Plan</div>
-                  <div className={cn("text-xs mt-0.5", isDark ? "text-white/60" : "text-muted-foreground")}>
+                  <div className="font-semibold text-white">Upgrade Your Plan</div>
+                  <div className="text-xs mt-0.5 text-white/60">
                     Choose a plan that matches your workflow. Annual saves 10%.
                   </div>
                 </div>
@@ -272,118 +252,112 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
               </button>
             </div>
 
-            <div className="px-6 py-4 flex items-center justify-center">
-              <div className={cn("inline-flex rounded-full border p-1", isDark ? "border-white/10" : "border-border")}>
+            <div className="px-6 py-4 flex items-center justify-center relative z-10">
+              <div className="bg-muted/30 inline-flex rounded-full border border-white/10 p-1">
                 <button
                   type="button"
-                  onClick={() => setBilling("monthly")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-semibold transition-colors",
-                    billing === "monthly"
-                      ? isDark ? "bg-white text-black" : "bg-foreground text-background"
-                      : isDark ? "text-white/70 hover:bg-white/5" : "text-muted-foreground hover:bg-muted"
-                  )}
+                  onClick={() => setFrequency("monthly")}
+                  className="relative px-5 py-1.5 text-sm capitalize"
                 >
-                  Monthly
+                  <span className={`relative z-10 ${frequency === "monthly" ? "text-background" : "text-white/80"}`}>Monthly</span>
+                  {frequency === "monthly" && (
+                    <motion.span
+                      layoutId="billing-pill"
+                      transition={{ type: 'spring', duration: 0.4 }}
+                      className="bg-foreground absolute inset-0 z-0 rounded-full"
+                    />
+                  )}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setBilling("annual")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-semibold transition-colors flex items-center gap-2",
-                    billing === "annual"
-                      ? isDark ? "bg-white text-black" : "bg-foreground text-background"
-                      : isDark ? "text-white/70 hover:bg-white/5" : "text-muted-foreground hover:bg-muted"
-                  )}
+                  onClick={() => setFrequency("yearly")}
+                  className="relative px-5 py-1.5 text-sm capitalize flex items-center gap-2"
                 >
-                  Annual
-                  <span className={cn("text-[10px] font-black px-2 py-0.5 rounded-full", isDark ? "bg-amber-400/20 text-amber-300" : "bg-amber-500/15 text-amber-700")}>
-                    SAVE 10%
-                  </span>
+                  <span className={`relative z-10 ${frequency === "yearly" ? "text-background" : "text-white/80"}`}>Annual</span>
+                  {frequency === "yearly" && (
+                    <motion.span
+                      layoutId="billing-pill"
+                      transition={{ type: 'spring', duration: 0.4 }}
+                      className="bg-foreground absolute inset-0 z-0 rounded-full"
+                    />
+                  )}
+                  {frequency === "yearly" && (
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 relative z-10">
+                      SAVE 10%
+                    </span>
+                  )}
                 </button>
               </div>
             </div>
 
             <div className="px-6 pb-6 flex-1 min-h-0 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {featuredPlans.map((plan) => {
-                  const highlight = plan.name === "PRO"
-                  const dbPlanName = planNameMap[plan.name]
+                {landingPagePlans.map((plan) => {
+                  const dbPlanName = planNameMap[plan.name.toUpperCase()]
                   const dbPlan = dbPlans.find((p) => p.name === dbPlanName)
                   const isCurrent = !!subscription && subscription.planName === dbPlanName && subscription.status === "active"
                   const isProcessing = processingPlan === plan.name
-                  const monthlyUsd = dbPlan ? dbPlan.priceUsd : parseFloat(plan.priceUsd.replace(/[^0-9.]/g, "")) || 0
-                  const monthlyInr = dbPlan ? dbPlan.priceInr : parseFloat(plan.price.replace(/[^0-9.]/g, "").replaceAll(",", "")) || 0
-                  const discountedMonthlyUsd = billing === "annual" ? monthlyUsd * 0.9 : monthlyUsd
-                  const discountedMonthlyInr = billing === "annual" ? monthlyInr * 0.9 : monthlyInr
-                  const billedText = billing === "annual" ? "billed annually" : "billed monthly"
-                  const annualTotalInr = monthlyInr * 12 * 0.9
+                  const price = frequency === 'monthly' ? plan.price.monthly : plan.price.yearly;
+                  const billedText = frequency === "yearly" ? "billed annually" : "billed monthly"
                   const canCheckout = !!dbPlan && !pricingLoading
 
                   return (
                     <div
                       key={plan.name}
-                      className={cn(
-                        "rounded-2xl border p-5 flex flex-col gap-4",
-                        isDark ? "border-white/10 bg-white/[0.03]" : "border-border bg-card",
-                        highlight ? (isDark ? "ring-1 ring-amber-400/30" : "ring-1 ring-amber-500/30") : ""
-                      )}
+                      className={`relative flex flex-col rounded-lg border bg-muted/20 p-5 ${
+                        plan.highlighted ? 'bg-muted/40 border-amber-500/50' : 'border-border/60'
+                      }`}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="text-sm font-semibold">{plan.name === "INDIE" ? "Standard" : plan.name === "PRO" ? "Pro" : "Ultra"}</div>
-                          <div className={cn("mt-1 text-xs", isDark ? "text-white/60" : "text-muted-foreground")}>{plan.description}</div>
+                      {plan.highlighted && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                          <p className="bg-foreground text-background flex items-center gap-1 rounded-md border px-3 py-1 text-xs font-bold">
+                            <StarIcon className="h-3 w-3 fill-current" />
+                            Popular
+                          </p>
                         </div>
-                        {highlight && (
-                          <span className={cn("whitespace-nowrap text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border", isDark ? "border-amber-400/30 text-amber-300" : "border-amber-500/30 text-amber-700")}>
-                            Most Popular
-                          </span>
+                      )}
+
+                      <div className="mb-4">
+                        <div className="text-lg font-medium text-foreground">{plan.name}</div>
+                        <div className="text-muted-foreground text-sm">{plan.info}</div>
+                        <h3 className="mt-2 flex items-end gap-1 text-foreground">
+                          <span className="text-3xl font-bold">${price}</span>
+                          <span className="text-muted-foreground text-sm">/{frequency === 'monthly' ? 'month' : 'year'}</span>
+                        </h3>
+                        <div className="text-xs text-white/60 mt-1">
+                          {billedText}
+                        </div>
+                        {frequency === "yearly" && (
+                          <div className="text-xs mt-1 text-amber-300/90">
+                            Save 10%
+                          </div>
                         )}
                       </div>
 
-                      <div className="flex items-end justify-between gap-4">
-                        <div>
-                          <div className="text-3xl font-bold tracking-tight">
-                            ${discountedMonthlyUsd.toFixed(2)}
+                      <div className="flex-1 space-y-3 mb-5">
+                        {plan.features.map((feature, index) => (
+                          <div key={index} className="flex items-center gap-2 text-sm text-foreground/80">
+                            <CheckCircle className="h-4 w-4 text-foreground shrink-0" />
+                            <span>{feature.text}</span>
                           </div>
-                          <div className={cn("text-xs mt-1", isDark ? "text-white/60" : "text-muted-foreground")}>
-                            ₹{new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Math.round(discountedMonthlyInr))} /mo • {billedText}
-                          </div>
-                          {billing === "annual" && (
-                            <div className={cn("text-xs mt-1", isDark ? "text-amber-300/90" : "text-amber-700")}>
-                              ₹{new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Math.round(annualTotalInr))} /year • save 10%
-                            </div>
-                          )}
-                        </div>
-                        <div className={cn("text-xs pb-1 text-right", isDark ? "text-white/60" : "text-muted-foreground")}>/mo</div>
+                        ))}
                       </div>
 
                       <button
                         type="button"
                         disabled={isProcessing || isCurrent || !canCheckout}
                         onClick={() => (isCurrent || !canCheckout ? undefined : handleGetStarted(plan.name))}
-                        className={cn(
-                          "w-full rounded-xl py-2.5 text-sm font-bold transition-colors border flex items-center justify-center gap-2",
+                        className={`w-full py-2.5 text-sm font-semibold rounded-lg text-center transition-colors ${
                           isCurrent
-                            ? isDark ? "bg-white/10 border-white/10 text-white/80" : "bg-muted border-border text-muted-foreground"
-                            : highlight
-                              ? isDark ? "bg-amber-400 text-black border-amber-400 hover:bg-amber-300" : "bg-foreground text-background border-foreground hover:opacity-90"
-                              : isDark ? "bg-white text-black border-white hover:bg-white/90" : "bg-background text-foreground border-border hover:bg-muted",
-                          !canCheckout ? "opacity-70 cursor-not-allowed" : ""
-                        )}
+                            ? 'bg-foreground/10 border border-foreground/10 text-foreground/80'
+                            : plan.highlighted
+                              ? 'bg-foreground text-background hover:opacity-90'
+                              : 'border border-border/80 text-foreground bg-background/50 hover:bg-background/80'
+                        } ${!canCheckout ? "opacity-70 cursor-not-allowed" : ""}`}
                       >
                         {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                        {!canCheckout ? "Loading..." : isCurrent ? "Current Plan" : plan.name === "INDIE" ? "Get Standard" : plan.name === "PRO" ? "Get Pro" : "Get Ultra"}
+                        {!canCheckout ? "Loading..." : isCurrent ? "Current Plan" : plan.btn.text}
                       </button>
-
-                      <div className="space-y-2 pt-1">
-                        {plan.features.slice(0, 6).map((feature) => (
-                          <div key={feature} className="flex items-start gap-2">
-                            <Check className={cn("h-4 w-4 mt-0.5", isDark ? "text-white/80" : "text-foreground")} />
-                            <div className={cn("text-xs leading-relaxed", isDark ? "text-white/70" : "text-foreground")}>{feature}</div>
-                          </div>
-                        ))}
-                      </div>
                     </div>
                   )
                 })}
@@ -395,19 +369,19 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
                 </div>
               )}
 
-              <div className={cn("mt-6 rounded-2xl border p-4 flex items-center justify-between", isDark ? "border-white/10 bg-white/[0.03]" : "border-border bg-card")}>
+              <div className="mt-6 rounded-lg border border-border/60 bg-muted/20 p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Crown className={cn("h-4 w-4", isDark ? "text-amber-300" : "text-amber-600")} />
-                  <div className="text-sm font-semibold">Secure checkout</div>
+                  <Crown className="h-4 w-4 text-amber-300" />
+                  <div className="text-sm font-semibold text-white">Secure checkout</div>
                 </div>
-                <div className={cn("text-xs", isDark ? "text-white/60" : "text-muted-foreground")}>
+                <div className="text-xs text-white/60">
                   Payments handled by Razorpay
                 </div>
               </div>
 
-              <div className={cn("mt-6 rounded-2xl border p-5", isDark ? "border-white/10 bg-white/[0.03]" : "border-border bg-card")}>
-                <div className="text-sm font-semibold">FAQ</div>
-                <div className={cn("mt-1 text-xs", isDark ? "text-white/60" : "text-muted-foreground")}>
+              <div className="mt-6 rounded-lg border border-border/60 bg-muted/20 p-5">
+                <div className="text-sm font-semibold text-white">FAQ</div>
+                <div className="mt-1 text-xs text-white/60">
                   Quick answers about billing, credits, and plan changes.
                 </div>
                 <div className="mt-4 space-y-2">
@@ -435,15 +409,15 @@ export function UpgradeModal({ open, onClose }: { open: boolean; onClose: () => 
                   ].map((item) => (
                     <details
                       key={item.q}
-                      className={cn("group rounded-xl border px-4 py-3", isDark ? "border-white/10 bg-black/10" : "border-border bg-background")}
+                      className="group rounded-xl border border-border/60 bg-black/10 px-4 py-3"
                     >
                       <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
-                        <div className="text-sm font-semibold">{item.q}</div>
-                        <div className={cn("text-xs font-black px-2 py-1 rounded-full", isDark ? "bg-white/10 text-white/70" : "bg-muted text-muted-foreground")}>
+                        <div className="text-sm font-semibold text-white">{item.q}</div>
+                        <div className="text-xs font-black px-2 py-1 rounded-full bg-white/10 text-white/70">
                           +
                         </div>
                       </summary>
-                      <div className={cn("mt-2 text-sm leading-relaxed", isDark ? "text-white/70" : "text-muted-foreground")}>
+                      <div className="mt-2 text-sm leading-relaxed text-white/70">
                         {item.a}
                       </div>
                     </details>

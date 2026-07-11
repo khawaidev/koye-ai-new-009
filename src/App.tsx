@@ -3,13 +3,12 @@ import "./App.css"
 import { ToastProvider } from "./components/ui/toast"
 import { WorkflowManager } from "./components/workflow/WorkflowManager"
 import { AnimationsLibrary } from "./pages/AnimationsLibrary"
-import { Builder } from "./pages/Builder"
 import { Dashboard } from "./pages/Dashboard"
 import { GameEngine } from "./pages/GameEngine"
+import { GameRunner } from "./pages/GameRunner"
 import { LandingPage } from "./pages/LandingPage"
 import { Login } from "./pages/Login"
 import { Phaser2DGameEngine } from "./pages/Phaser2DGameEngine"
-import { ProjectEngineRender } from "./pages/ProjectEngineRender"
 import { SignUp } from "./pages/SignUp"
 import { UpgradeModal } from "./pages/Pricing"
 import { useAppStore } from "./store/useAppStore"
@@ -24,11 +23,9 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/builder" element={<Builder />} />
-        <Route path="/builder/:projectId" element={<Builder />} />
+        <Route path="/play/:projectId" element={<GameRunner />} />
         <Route path="/game-engine" element={<GameEngine />} />
         <Route path="/phaser-2d-engine" element={<Phaser2DGameEngine />} />
-        <Route path="/project-engine-render" element={<ProjectEngineRender />} />
         <Route path="/animations" element={<AnimationsLibrary />} />
         <Route path="/app" element={<WorkflowManager />} />
         <Route path="/" element={<LandingPage />} />

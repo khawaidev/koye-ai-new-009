@@ -164,6 +164,25 @@ export function ChatInput({
   const [inputHeight, setInputHeight] = useState(52)
   const [isInputEmpty, setIsInputEmpty] = useState(true)
   const [isParaliumHovered, setIsParaliumHovered] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [pastedText, setPastedText] = useState<string | null>(null) // New state for pasted long text
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    setImages(prev => [...prev, ...files]);
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
@@ -254,11 +273,13 @@ export function ChatInput({
       }
     })
     const textContent = clone.textContent || ""
-    if (textContent.trim() || images.length > 0 || mentions.length > 0) {
-      onSend(textContent, images, mentions)
+    const fullContent = pastedText ? `${pastedText}\n\n${textContent}` : textContent
+    if (fullContent.trim() || images.length > 0 || mentions.length > 0) {
+      onSend(fullContent, images, mentions)
       editorRef.current.innerHTML = ""
       setIsInputEmpty(true)
       setImages([])
+      setPastedText(null) // Clear pasted text after sending
       setShowSuggestions(false)
       setSuggestionSearch("")
       setInputHeight(52) // Collapse to original size
@@ -318,6 +339,34 @@ export function ChatInput({
       }
     }
     setShowSuggestions(false)
+  }
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const items = Array.from(e.clipboardData.items);
+    let hasImage = false;
+    let hasLongText = false;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          setImages(prev => [...prev, file]);
+        }
+        hasImage = true;
+      } else if (item.type === 'text/plain') {
+        const text = e.clipboardData.getData('text/plain');
+        if (text.length > 100) { // Define "long" text as > 100 characters
+          e.preventDefault();
+          setPastedText(text);
+          hasLongText = true;
+        }
+      }
+    }
+    // If there's no image and no long text, let the default behavior handle short text
+    if (!hasImage && !hasLongText) {
+      // Allow default paste for short text
+    }
   }
 
   const insertMention = (file: FileMention) => {
@@ -449,6 +498,23 @@ export function ChatInput({
 
   return (
     <div className={cn("space-y-3", isHero ? "mb-0" : "mb-[15px]")}>
+      {pastedText && (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-mini">
+          <div className="relative shrink-0 group flex items-center bg-muted/80 text-muted-foreground p-2 rounded-lg border border-white shadow-md">
+            <FileText className="h-5 w-5 mr-2 shrink-0" />
+            <span className="text-sm font-mono leading-tight truncate max-w-[200px]" title={pastedText}>
+              {pastedText.substring(0, 50)}...
+            </span>
+            <button
+              onClick={() => setPastedText(null)}
+              className="absolute -right-1 -top-1 rounded-full bg-background border border-border p-1 shadow-lg hover:bg-muted transition-all opacity-0 group-hover:opacity-100"
+            >
+              <X className="h-3 w-3 text-foreground" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {images.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-mini">
           {images.map((img, idx) => {
@@ -484,19 +550,23 @@ export function ChatInput({
 
       <div className="relative flex items-center">
         <div className="flex-1 relative">
-          <div
-            className={cn(
-              "flex flex-col gap-3 border px-3 py-3 shadow-sm transition-all duration-200",
-              inputHeight > 88 || isHero ? "rounded-2xl" : "rounded-xl",
-              images.length > 0
-                ? "bg-card/95 backdrop-blur-xl border-border shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
-                : "bg-background border-border",
-              isHero && "px-4 py-3 bg-card/90 border-border/70 shadow-[0_20px_50px_rgba(15,15,15,0.08)] dark:bg-[#262625] dark:border-[#323230] dark:shadow-[0_28px_80px_rgba(0,0,0,0.42)]",
-              !isHero && "bg-card/88 border-border/80 dark:bg-[#262625] dark:border-[#323230] dark:shadow-[0_16px_40px_rgba(0,0,0,0.26)]",
-              "focus-within:border-foreground/15 dark:focus-within:border-[#4d4c49] focus-within:shadow-md"
-            )}
-            style={{ minHeight: `${Math.max(inputHeight + 38, isHero ? 86 : 108)}px`, height: 'auto' }}
-          >
+          <div 
+                        className={cn(
+                            "flex flex-col gap-3 border px-3 py-3 shadow-sm transition-all duration-200",
+                            inputHeight > 88 || isHero ? "rounded-2xl" : "rounded-xl",
+                            images.length > 0
+                                ? "bg-card/95 backdrop-blur-xl border-border shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
+                                : "bg-background border-border",
+                            isHero && "px-4 py-3 bg-card/90 border-border/70 shadow-[0_20px_50px_rgba(15,15,15,0.08)] dark:bg-[#262625] dark:border-[#323230] dark:shadow-[0_28px_80px_rgba(0,0,0,0.42)]",
+                            !isHero && "bg-card/88 border-border/80 dark:bg-[#262625] dark:border-[#323230] dark:shadow-[0_16px_40px_rgba(0,0,0,0.26)]",
+                            "focus-within:border-foreground/15 dark:focus-within:border-[#4d4c49] focus-within:shadow-md",
+                            isDragging && "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+                        )}
+                        style={{ minHeight: `${Math.max(inputHeight + 38, isHero ? 86 : 108)}px`, height: 'auto' }}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                    >
             <input
               ref={fileInputRef}
               type="file"
@@ -523,7 +593,7 @@ export function ChatInput({
                 onInput={handleInput}
                 onKeyDown={handleKeyDown}
                 onKeyUp={handleInput}
-                onPaste={() => setTimeout(handleInput, 0)}
+                onPaste={handlePaste}
                 onCut={() => setTimeout(handleInput, 0)}
                 onClick={handleEditorClick}
                 className={cn(
@@ -728,8 +798,8 @@ export function ChatInput({
                             className={cn(
                               "relative w-full overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group border",
                               selectedModelMode === 'paralium'
-                                ? "bg-gradient-to-br from-violet-500/25 to-fuchsia-500/15 border-violet-500/40 text-foreground"
-                                : "bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5 border-violet-500/25 text-foreground/70 hover:text-foreground hover:bg-muted dark:hover:bg-white/5",
+                                ? "bg-gradient-to-br from-white/20 to-white/10 border-white/30 text-foreground"
+                                : "bg-gradient-to-br from-white/10 to-white/5 border-white/20 text-foreground/70 hover:text-foreground hover:bg-muted dark:hover:bg-white/5",
                               isParalliumLocked ? "opacity-90" : ""
                             )}
                             type="button"
@@ -757,11 +827,11 @@ export function ChatInput({
                               </div>
                             </div>
                             {isParalliumLocked ? (
-                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-violet-500" />
+                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-white" />
                             ) : selectedModelMode === 'paralium' ? (
                               <Check className="h-3.5 w-3.5 ml-auto" />
                             ) : (
-                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-violet-500/70" />
+                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-white/70" />
                             )}
                           </button>
                         </div>

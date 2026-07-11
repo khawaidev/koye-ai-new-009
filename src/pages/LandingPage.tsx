@@ -4,9 +4,11 @@ import {
     ArrowUp,
     Box,
     Check,
+    CheckCircle,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
+    Clipboard,
     Cloud,
     Code,
     Copy,
@@ -23,19 +25,19 @@ import {
     Search,
     Sparkles,
     Star,
+    StarIcon,
     Terminal,
     Twitter,
+    Upload,
     Users,
     Video,
     Zap
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAppStore } from '../store/useAppStore';
 import { AppIcon } from '../components/ui/AppIcon';
-import { ThemeToggle } from '../components/ui/theme-toggle';
-import { useTheme } from '../components/theme-provider';
 
 
 // ─── Smooth scroll ───────────────────────────────────────────────
@@ -106,56 +108,20 @@ const CopyCommand = ({ command }: { command: string }) => {
 };
 
 // ─── Navbar ──────────────────────────────────────────────────────
-// Each section carries data-nav-theme="light" | "dark".
-// The nav reads that + the CSS theme to decide its text/button colors.
 const Navbar = () => {
-    const [sectionTheme, setSectionTheme] = useState<'light' | 'dark'>('light');
     const [isScrolled, setIsScrolled] = useState(false);
-    // useTheme from shadcn/next-themes so we know the active CSS theme
-    const { theme } = useTheme();
-    const isDark = theme === 'dark';
-
-    // Combine: if dark mode AND we've scrolled into a dark section → white nav
-    // Otherwise (light mode, or dark mode over the bright hero video) → dark nav
-    const navTheme: 'light' | 'dark' = isDark && sectionTheme === 'dark' ? 'dark' : 'light';
 
     // Track scroll position to add glassy background when past hero section
     useEffect(() => {
         const handleScroll = () => {
-            // Hero section is approximately 100vh, check if we've scrolled past it
             const heroHeight = window.innerHeight * 0.8;
             setIsScrolled(window.scrollY > heroHeight);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Check initial position
+        handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    useEffect(() => {
-        // Observe every section that declares data-nav-theme
-        const sections = document.querySelectorAll<HTMLElement>('[data-nav-theme]');
-        if (!sections.length) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const t = (entry.target as HTMLElement).dataset.navTheme as 'light' | 'dark';
-                        setSectionTheme(t);
-                    }
-                });
-            },
-            {
-                // Trigger when the section's top edge passes the nav (~56px tall)
-                rootMargin: '-56px 0px -80% 0px',
-                threshold: 0,
-            }
-        );
-
-        sections.forEach((s) => observer.observe(s));
-        return () => observer.disconnect();
     }, []);
 
     const handleNavClick = useCallback(
@@ -166,22 +132,6 @@ const Navbar = () => {
         []
     );
 
-    // Derived classes based on detected section theme
-    const isLight = navTheme === 'light';
-    // Nav text: change color when scrolled (black in light mode, gray-200 in dark mode)
-    const textCls = isScrolled
-        ? (isDark ? 'text-gray-200/80 hover:text-gray-200' : 'text-black/75 hover:text-black')
-        : 'text-white/80 hover:text-white';
-    // Logo: black when scrolled in light mode, gray-200 when scrolled in dark mode
-    const logoCls = isScrolled
-        ? (isDark ? 'text-gray-200' : 'text-black')
-        : 'text-white';
-    const signupCls = isLight
-        ? 'text-black/80 hover:bg-black/10'
-        : 'text-white/80 hover:bg-white/10';
-    const loginCls = isLight
-        ? 'bg-black text-white hover:bg-black/80'
-        : 'bg-white text-black hover:bg-white/80';
     const dropdownTextCls = 'text-black/60 hover:text-black hover:bg-black/5';
 
     return (
@@ -194,7 +144,7 @@ const Navbar = () => {
                 <div className="flex items-center gap-2.5">
                     <AppIcon alt="KOYE" className="w-8 h-8 rounded-full shadow-sm" />
                     <span
-                        className={`font-schibsted font-bold tracking-tight transition-colors duration-500 ${logoCls}`}
+                        className="font-schibsted font-bold tracking-tight text-white"
                         style={{ fontSize: 25 }}
                     >
                         Khawain.
@@ -206,7 +156,7 @@ const Navbar = () => {
                     <a
                         href="#cli"
                         onClick={(e) => handleNavClick(e, 'cli')}
-                        className={`font-schibsted font-medium transition-colors duration-500 ${textCls}`}
+                        className="font-schibsted font-medium text-white/80 hover:text-white transition-colors duration-500"
                         style={{ fontSize: 15 }}
                     >
                         Platform
@@ -215,7 +165,7 @@ const Navbar = () => {
                         <a
                             href="#features"
                             onClick={(e) => handleNavClick(e, 'features')}
-                            className={`font-schibsted font-medium flex items-center gap-1 py-4 transition-colors duration-500 ${textCls}`}
+                            className="font-schibsted font-medium flex items-center gap-1 py-4 text-white/80 hover:text-white transition-colors duration-500"
                             style={{ fontSize: 15 }}
                         >
                             Features
@@ -246,7 +196,7 @@ const Navbar = () => {
                     <a
                         href="#cli"
                         onClick={(e) => handleNavClick(e, 'cli')}
-                        className={`font-schibsted font-medium transition-colors duration-500 ${textCls}`}
+                        className="font-schibsted font-medium text-white/80 hover:text-white transition-colors duration-500"
                         style={{ fontSize: 15 }}
                     >
                         Projects
@@ -254,29 +204,22 @@ const Navbar = () => {
                     <a
                         href="#pricing"
                         onClick={(e) => handleNavClick(e, 'pricing')}
-                        className={`font-schibsted font-medium transition-colors duration-500 ${textCls}`}
+                        className="font-schibsted font-medium text-white/80 hover:text-white transition-colors duration-500"
                         style={{ fontSize: 15 }}
                     >
                         Pricing
                     </a>
                 </div>
 
-                {/* Auth Buttons & Theme */}
+                {/* CTA Button */}
                 <div className="flex items-center gap-3">
-                    <ThemeToggle />
                     <Link
                         to="/signup"
-                        className={`font-schibsted font-medium px-4 py-2 rounded-full transition-colors duration-500 ${signupCls}`}
+                        className="font-schibsted font-semibold px-5 py-2 rounded-full bg-white text-black hover:bg-white/90 transition-colors duration-500 flex items-center gap-2"
                         style={{ fontSize: 14 }}
                     >
-                        Sign Up
-                    </Link>
-                    <Link
-                        to="/login"
-                        className={`font-schibsted font-semibold px-5 py-2 rounded-full shadow-md transition-colors duration-500 ${loginCls}`}
-                        style={{ fontSize: 14 }}
-                    >
-                        Log In
+                        Start building for free
+                        <ArrowRight className="w-4 h-4" />
                     </Link>
                 </div>
             </div>
@@ -288,10 +231,77 @@ const Navbar = () => {
 // ─── Hero ────────────────────────────────────────────────────────
 const Hero = () => {
     const [inputValue, setInputValue] = useState('');
+    const [showAttachMenu, setShowAttachMenu] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+    const attachMenuRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Close attach menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (attachMenuRef.current && !attachMenuRef.current.contains(event.target as Node)) {
+                setShowAttachMenu(false);
+            }
+        };
+        if (showAttachMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showAttachMenu]);
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const files = Array.from(e.dataTransfer.files);
+        setAttachedFiles(prev => [...prev, ...files]);
+    };
+
+    const handlePaste = (e: React.ClipboardEvent) => {
+        const clipboardData = e.clipboardData;
+        const items = Array.from(clipboardData.items);
+        let hasImage = false;
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                e.preventDefault();
+                const file = item.getAsFile();
+                if (file) {
+                    setAttachedFiles(prev => [...prev, file]);
+                }
+                hasImage = true;
+            }
+        }
+        if (!hasImage) {
+            const text = clipboardData.getData('text/plain');
+            if (text && text.length > 0) {
+                setInputValue(prev => prev + text);
+            }
+        }
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        setAttachedFiles(prev => [...prev, ...files]);
+    }
+
+    const removeFile = (index: number) => {
+        setAttachedFiles(prev => prev.filter((_, i) => i !== index));
+    }
 
     return (
         <section data-nav-theme="light" className="relative min-h-screen flex flex-col items-center overflow-hidden bg-background">
-            <VideoBackground />
 
             <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full px-6" style={{ marginTop: '-50px' }}>
                 {/* Top spacer for nav */}
@@ -367,7 +377,52 @@ const Hero = () => {
                     </div>
 
                     {/* Unified input + action row — single bg-background container */}
-                    <div className="mx-2 mb-2 bg-background rounded-xl shadow-inner border border-border/50 mt-2">
+                    <div 
+                        className={`mx-2 mb-2 bg-background rounded-xl shadow-inner border shadow-2xl mt-2 transition-all ${isDragging ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30' : 'border-border/50'}`}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                    >
+                        <input 
+                            type="file" 
+                            ref={fileInputRef} 
+                            className="hidden" 
+                            multiple 
+                            accept="image/*,video/*,text/*,.md,.js,.ts,.jsx,.tsx,.html,.css,.json,.py"
+                            onChange={handleFileSelect}
+                        />
+
+                        {attachedFiles.length > 0 && (
+                            <div className="flex gap-2 overflow-x-auto scrollbar-mini px-3 pt-3">
+                                {attachedFiles.map((file, index) => {
+                                    const isImage = file.type.startsWith('image/');
+                                    const isVideo = file.type.startsWith('video/');
+                                    return (
+                                        <div key={index} className="relative shrink-0 group flex flex-col items-center">
+                                            {isImage ? (
+                                                <img 
+                                                    src={URL.createObjectURL(file)} 
+                                                    alt={`Preview ${index+1}`} 
+                                                    className="h-12 w-16 rounded-lg border border-border object-cover" 
+                                                />
+                                            ) : (
+                                                <div className="h-12 w-16 rounded-lg border border-border flex flex-col items-center justify-center bg-muted/80 text-muted-foreground p-1">
+                                                    {isVideo ? <Video className="h-5 w-5 mb-0.5" /> : <FileText className="h-5 w-5 mb-0.5" />}
+                                                    <span className="text-[8px] font-mono leading-tight truncate w-full text-center">{file.name}</span>
+                                                </div>
+                                            )}
+                                            <button
+                                                onClick={() => removeFile(index)}
+                                                className="absolute -right-1 -top-1 rounded-full bg-background border border-border p-0.5 shadow-lg hover:bg-muted transition-all opacity-0 group-hover:opacity-100"
+                                            >
+                                                <X className="h-3 w-3 text-foreground" />
+                                            </button>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )}
+
                         {/* Text input row */}
                         <div className="flex items-center gap-3 px-3 pt-3 pb-2">
                             <input
@@ -375,6 +430,7 @@ const Hero = () => {
                                 placeholder="Describe your game idea..."
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
+                                onPaste={handlePaste}
                                 className="flex-1 text-base outline-none font-noto bg-transparent text-foreground placeholder:text-muted-foreground"
                                 style={{ fontSize: 16 }}
                             />
@@ -385,10 +441,72 @@ const Hero = () => {
                         {/* Action buttons + counter — same container, no border/bg */}
                         <div className="flex items-center justify-between px-2 pb-2">
                             <div className="flex items-center gap-0.5">
-                                <button className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-muted rounded-lg transition-colors">
-                                    <Paperclip className="w-3.5 h-3.5 text-foreground/60" />
-                                    <span className="text-foreground/60 text-xs font-schibsted font-medium">Attach</span>
-                                </button>
+                                {/* Attach Button with Dropdown */}
+                                <div className="relative" ref={attachMenuRef}>
+                                    <button
+                                        onClick={() => {
+                                            setShowAttachMenu(!showAttachMenu);
+                                        }}
+                                        className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-muted rounded-lg transition-colors"
+                                    >
+                                        <Paperclip className="w-3.5 h-3.5 text-foreground/60" />
+                                        <span className="text-foreground/60 text-xs font-schibsted font-medium">Attach</span>
+                                    </button>
+
+                                    {/* Attach Dropdown Menu */}
+                                    {showAttachMenu && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            transition={{ duration: 0.15 }}
+                                            className="absolute bottom-full left-0 mb-2 w-56 bg-background border border-border/60 shadow-xl rounded-2xl overflow-hidden z-50"
+                                        >
+                                            <div className="p-2">
+                                                <button 
+                                                    onClick={() => {
+                                                        fileInputRef.current?.click();
+                                                        setShowAttachMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-foreground hover:bg-muted/60 rounded-xl transition-colors">
+                                                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground/10">
+                                                        <Upload className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="text-left">
+                                                        <div className="font-medium">Upload from device</div>
+                                                        <div className="text-xs text-muted-foreground">Images, videos, files</div>
+                                                    </div>
+                                                </button>
+
+                                                <button
+                                                    onClick={() => {
+                                                        navigator.clipboard.readText().then((text) => {
+                                                            if (text) {
+                                                                setInputValue((prev) => prev + text);
+                                                            }
+                                                        });
+                                                        setShowAttachMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-foreground hover:bg-muted/60 rounded-xl transition-colors"
+                                                >
+                                                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground/10">
+                                                        <Clipboard className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="text-left">
+                                                        <div className="font-medium">Paste from clipboard</div>
+                                                        <div className="text-xs text-muted-foreground">Text or images</div>
+                                                    </div>
+                                                </button>
+                                            </div>
+
+                                            <div className="px-3 py-2 border-t border-border/40">
+                                                <p className="text-[10px] text-muted-foreground text-center">
+                                                    Supports: JPG, PNG, GIF, MP4, MD, JS, TS, JSON
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </div>
                                 <button className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-muted rounded-lg transition-colors">
                                     <Mic className="w-3.5 h-3.5 text-foreground/60" />
                                     <span className="text-foreground/60 text-xs font-schibsted font-medium">Voice</span>
@@ -753,76 +871,6 @@ const TerminalCarousel = () => {
     );
 };
 
-// ─── CLI Section ─────────────────────────────────────────────────
-const CLI = () => (
-    <section id="cli" data-nav-theme="dark" className="py-12 md:py-28 bg-background scroll-mt-16">
-        <div className="max-w-6xl mx-auto px-4 md:px-6">
-            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
-                <div>
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        viewport={{ once: true }}
-                    >
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-background border border-border shadow-sm text-xs md:text-sm font-schibsted font-medium mb-4 md:mb-6 text-foreground/70">
-                            <Terminal className="w-3.5 h-3.5" />
-                            <span>Command Line Interface</span>
-                        </div>
-                        <h2
-                            className="font-fustat font-bold text-foreground mb-4 md:mb-6"
-                            style={{ fontSize: 'clamp(24px, 5vw, 48px)', letterSpacing: '-2px' }}
-                        >
-                            KOYE CLI
-                        </h2>
-                        <p className="font-noto text-muted-foreground text-sm md:text-lg mb-6 md:mb-8 leading-relaxed">
-                            Build game assets directly from your terminal. The KOYE CLI integrates seamlessly
-                            with your development workflow, letting you generate assets without leaving your IDE.
-                        </p>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        viewport={{ once: true }}
-                        className="space-y-4 md:space-y-5 mb-6 md:mb-8"
-                    >
-                        {[
-                            { icon: Download, title: 'Easy Installation', desc: 'One-line install script. Works on macOS, Linux, and Windows (WSL).' },
-                            { icon: Code, title: 'Project Integration', desc: 'Initialize in any folder. Assets auto-save to organized directories.' },
-                            { icon: Zap, title: 'Same Credits System', desc: 'Use your account credits across web app and CLI. Synced automatically.' },
-                            { icon: Globe, title: 'Unity & Unreal Ready', desc: 'Export formats optimized for game engines. Direct import support.' },
-                        ].map((item) => (
-                            <div key={item.title} className="flex items-start gap-3 md:gap-4">
-                                <div className="w-8 h-8 md:w-10 md:h-10 bg-foreground text-background shadow-md rounded-xl flex items-center justify-center shrink-0">
-                                    <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                                </div>
-                                <div>
-                                    <h4 className="font-schibsted font-semibold text-foreground mb-0.5 text-sm md:text-base">{item.title}</h4>
-                                    <p className="text-xs md:text-sm text-muted-foreground font-noto">{item.desc}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </motion.div>
-
-                    <CopyCommand command="curl -fsSL https://start.koye.ai/install.sh | bash" />
-                </div>
-
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    viewport={{ once: true }}
-                    className="w-full flex items-center justify-center"
-                >
-                    <TerminalCarousel />
-                </motion.div>
-            </div>
-        </div>
-    </section>
-);
-
 // ─── Credits ─────────────────────────────────────────────────────
 const Credits = () => {
     return (
@@ -945,138 +993,161 @@ const Credits = () => {
 };
 
 // ─── Pricing ─────────────────────────────────────────────────────
+type FREQUENCY = 'monthly' | 'yearly';
+
 const Pricing = () => {
-    const { setIsUpgradeModalOpen } = useAppStore();
-    const { theme } = useTheme();
-    const isDark = theme === 'dark';
+    const [frequency, setFrequency] = useState<FREQUENCY>('monthly');
 
     const plans = [
         {
-            name: 'INDIE',
-            tag: 'STUDENTS',
-            price: '$4.99',
-            inr: '₹399/mo',
-            credits: '500 credits/month',
-            features: ['No commercial license', 'Community support', 'Standard priority', '5GB storage'],
-            cta: 'Select Plan',
-            popular: false,
+            name: 'Indie',
+            info: 'For students & hobbyists',
+            price: { monthly: 5, yearly: 54 },
+            features: [
+                { text: '500 credits/month' },
+                { text: 'No commercial license' },
+                { text: 'Community support' },
+                { text: 'Standard priority' },
+                { text: '5GB storage' },
+            ],
+            btn: { text: 'Select Plan', href: '/signup' },
+            highlighted: false,
         },
         {
-            name: 'PRO',
-            tag: 'POPULAR',
-            price: '$19.99',
-            inr: '₹1,299/mo',
-            credits: '3,000 credits/month',
-            features: ['Commercial license', 'Unity/Unreal helpers', 'Full export options', '20GB storage', 'Standard priority'],
-            cta: 'Select Plan',
-            popular: true,
+            name: 'Pro',
+            info: 'For indie developers',
+            price: { monthly: 20, yearly: 216 },
+            features: [
+                { text: '3,000 credits/month' },
+                { text: 'Commercial license' },
+                { text: 'Unity/Unreal helpers' },
+                { text: 'Full export options' },
+                { text: '20GB storage' },
+            ],
+            btn: { text: 'Select Plan', href: '/signup' },
+            highlighted: true,
         },
         {
-            name: 'PRO PLUS',
-            price: '$34.99',
-            inr: '₹2,499/mo',
-            credits: '8,000 credits/month',
-            features: ['High priority queue', '100GB storage', 'Early access features', 'AI code generation', 'Custom export presets'],
-            cta: 'Select Plan',
-            popular: false,
-        },
-        {
-            name: 'STUDIO',
-            tag: 'ENTERPRISE',
-            price: '$999+',
-            inr: '₹49,999+/mo',
-            credits: 'Unlimited credits',
-            features: ['Unlimited team seats', 'Private inference', 'Guaranteed SLA', 'Dedicated support', 'Custom model fine-tuning'],
-            cta: 'Contact Sales',
-            popular: false,
+            name: 'Pro Plus',
+            info: 'For small teams',
+            price: { monthly: 35, yearly: 378 },
+            features: [
+                { text: '8,000 credits/month' },
+                { text: 'High priority queue' },
+                { text: '100GB storage' },
+                { text: 'Early access features' },
+                { text: 'AI code generation' },
+            ],
+            btn: { text: 'Select Plan', href: '/signup' },
+            highlighted: false,
         },
     ];
 
     return (
         <section id="pricing" data-nav-theme="dark" className="relative py-28 scroll-mt-16 overflow-hidden">
-            <div className="absolute inset-0 overflow-hidden bg-background">
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
-                    src={isDark
-                        ? "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/videos/Grasslands_with_falling_leaves_202607051803.mp4"
-                        : "https://pub-475cca0b7414418d866128a4b30dfd97.r2.dev/videos/Grasslands_with_strong_winds_202607051833.mp4"
-                    }
-                />
-            </div>
-
             {/* Soft blurred transition from top section */}
             <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background via-background/50 to-transparent pointer-events-none z-10" />
             <div className="absolute top-0 left-0 right-0 h-20 backdrop-blur-[4px] pointer-events-none z-10 [mask-image:radial-gradient(ellipse_120%_100%_at_50%_120%,transparent_30%,black_100%)]" />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <div className="text-center mb-16">
+            <div className="max-w-5xl mx-auto px-6 relative z-10">
+                <div className="text-center mb-8">
                     <h2
-                        className="font-fustat font-bold text-white drop-shadow-md mb-5"
-                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px', textShadow: '0 1px 8px rgba(0,0,0,0.35)' }}
+                        className="font-fustat font-bold text-white mb-4"
+                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px' }}
                     >
                         Simple, Transparent Pricing
                     </h2>
-                    <p className="text-white/90 font-noto max-w-2xl mx-auto text-lg drop-shadow-sm">
+                    <p className="text-white/80 font-noto max-w-xl mx-auto text-base">
                         Choose the plan that fits your needs. All plans work across web app and CLI.
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-16">
+                {/* Frequency Toggle */}
+                <div className="flex justify-center mb-10">
+                    <div className="bg-muted/30 inline-flex rounded-full border p-1">
+                        {(['monthly', 'yearly'] as FREQUENCY[]).map((freq) => (
+                            <button
+                                key={freq}
+                                onClick={() => setFrequency(freq)}
+                                className="relative px-5 py-1.5 text-sm capitalize"
+                            >
+                                <span className={`relative z-10 ${frequency === freq ? 'text-black' : 'text-white/80'}`}>{freq}</span>
+                                {frequency === freq && (
+                                    <motion.span
+                                        layoutId="frequency"
+                                        transition={{ type: 'spring', duration: 0.4 }}
+                                        className="bg-foreground absolute inset-0 z-0 rounded-full"
+                                    />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Pricing Cards */}
+                <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
                     {plans.map((plan) => (
                         <div
                             key={plan.name}
-                            className={`relative p-8 rounded-2xl flex flex-col transition-all border backdrop-blur-xl ${plan.popular
-                                ? 'bg-background/90 border-foreground shadow-2xl shadow-foreground/20'
-                                : 'bg-background/70 border-border/40 hover:bg-background/80 hover:shadow-xl'
+                            className={`relative flex flex-col rounded-lg border bg-muted/20 p-5 ${plan.highlighted ? 'bg-muted/40 border-foreground/50' : 'border-border/60'
                                 }`}
                         >
-                            {plan.tag && (
-                                <div
-                                    className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-xs font-schibsted font-bold rounded-full shadow-sm ${plan.popular
-                                        ? 'bg-foreground text-background'
-                                        : 'bg-muted text-foreground border border-border/50'
-                                        }`}
-                                >
-                                    {plan.tag}
+                            {plan.highlighted && (
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                                    <p className="bg-foreground text-background flex items-center gap-1 rounded-md border px-3 py-1 text-xs font-bold">
+                                        <StarIcon className="h-3 w-3 fill-current" />
+                                        Popular
+                                    </p>
                                 </div>
                             )}
-                            <div className="mb-6 mt-2">
-                                <h3 className="text-xl font-schibsted font-bold mb-2 text-foreground">{plan.name}</h3>
-                                <div className="flex items-baseline gap-1 text-foreground">
-                                    <span className="text-4xl font-bold font-schibsted">{plan.price}</span>
-                                    <span className="text-foreground/80 text-sm font-noto">/mo</span>
+                            {frequency === 'yearly' && !plan.highlighted && (
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                                    <p className="bg-primary text-primary-foreground flex items-center gap-1 rounded-md border px-3 py-1 text-xs font-bold">
+                                        {Math.round(((plan.price.monthly * 12 - plan.price.yearly) / plan.price.monthly / 12) * 100)}% off
+                                    </p>
                                 </div>
-                                <div className="text-sm text-foreground/80 mt-1 font-noto">{plan.inr}</div>
+                            )}
+
+                            <div className="mb-4">
+                                <div className="text-lg font-medium text-foreground">{plan.name}</div>
+                                <p className="text-muted-foreground text-sm">{plan.info}</p>
+                                <h3 className="mt-2 flex items-end gap-1 text-foreground">
+                                    <span className="text-3xl font-bold">${plan.price[frequency]}</span>
+                                    <span className="text-muted-foreground text-sm">/{frequency === 'monthly' ? 'month' : 'year'}</span>
+                                </h3>
                             </div>
-                            <ul className="flex-1 space-y-3 mb-6">
-                                <li className="flex items-start gap-3 text-sm text-foreground/80 font-noto">
-                                    <Star className="w-4 h-4 mt-0.5 text-foreground fill-foreground" />
-                                    <span className="font-schibsted font-medium">{plan.credits.replace('/month', '')}</span>
-                                </li>
-                                {plan.features.map((feat) => (
-                                    <li key={feat} className="flex items-start gap-3 text-sm text-foreground/80 font-noto">
-                                        <Check className="w-4 h-4 mt-0.5 text-foreground" />
-                                        <span>{feat}</span>
-                                    </li>
+
+                            <div className="flex-1 space-y-3 mb-5">
+                                {plan.features.map((feature, index) => (
+                                    <div key={index} className="flex items-center gap-2 text-sm text-foreground/80">
+                                        <CheckCircle className="h-4 w-4 text-foreground shrink-0" />
+                                        <span>{feature.text}</span>
+                                    </div>
                                 ))}
-                            </ul>
-                            <button
-                                onClick={() => setIsUpgradeModalOpen(true)}
-                                className={`w-full py-3.5 font-schibsted text-sm font-semibold rounded-xl transition-colors shadow-sm ${plan.popular
+                            </div>
+
+                            <Link
+                                to={plan.btn.href}
+                                className={`w-full py-2.5 text-sm font-semibold rounded-lg text-center transition-colors ${plan.highlighted
                                     ? 'bg-foreground text-background hover:opacity-90'
                                     : 'border border-border/80 text-foreground bg-background/50 hover:bg-background/80'
                                     }`}
                             >
-                                {plan.cta}
-                            </button>
+                                {plan.btn.text}
+                            </Link>
                         </div>
                     ))}
                 </div>
 
+                {/* Contact Team for Enterprise */}
+                <div className="flex justify-center mt-8">
+                    <Link
+                        to="/contact"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-colors border border-white/20 hover:border-white/40 rounded-full"
+                    >
+                        Contact team for Enterprise
+                    </Link>
+                </div>
             </div>
 
             {/* Soft blurred transition to FAQ section */}
@@ -1339,7 +1410,6 @@ export const LandingPage = () => {
             <Hero />
             <Games />
             <Features />
-            <CLI />
             <Pricing />
             <Footer />
         </div>

@@ -17,10 +17,13 @@ import { loadProjectFilesFromStorage, saveSingleProjectFile } from "../../servic
 import { parseR2Url } from "../../services/r2Storage"
 import { parseToolCalls, hasToolCalls, extractToolHints, stripToolMarkersForDisplay } from "../../services/agentToolParser"
 import { executeToolInSandbox, applyApprovedChanges, applySandboxChangesToFileMap } from "../../services/agentToolExecutor"
+import { isProjectRunnable, buildAutoFixPrompt, type GameRunState } from "../../services/gameReadyDetector"
 import { useAgentToolStore } from "../../store/useAgentToolStore"
 import { isFileModifyingTool, isReadOnlyTool } from "../../types/agentTools"
 import type { SandboxChange } from "../../types/agentTools"
 import { ToolApprovalCard } from "./ToolApprovalCard"
+import { SearchToolCard, useSearchToolTasks, SearchToolTracker } from "./SearchToolCard"
+import { GameReadyBanner } from "./GameReadyBanner"
 import { createProject, getProjects } from "../../services/supabase"
 import type { Message } from "../../store/useAppStore"
 import { useAppStore } from "../../store/useAppStore"
@@ -28,6 +31,7 @@ import { useGameDevStore } from "../../store/useGameDevStore"
 import { getTaskDisplayName, useTaskStore, type TaskConfig, type TaskType } from "../../store/useTaskStore"
 import type { Project } from "../../types"
 import { TaskProposalCard } from "../tasks/TaskProposalCard"
+import { TaskBar } from "../tasks/TaskBar"
 import { useTheme } from "../theme-provider"
 import { Button } from "../ui/button"
 import { AppIcon } from "../ui/AppIcon"
@@ -38,7 +42,6 @@ import { VoiceChatLayout } from "./VoiceChatLayout"
 import { useParaliumStore, SCREEN_CATEGORIES } from "../../store/useParaliumStore"
 import { ParaliumImageSelector } from "./ParaliumImageSelector"
 import { ParaliumStatusCard } from "./ParaliumStatusCard"
-import { Builder } from "../../pages/Builder"
 
 export function ChatInterface() {
   const { theme } = useTheme()
@@ -375,9 +378,18 @@ export function ChatInterface() {
   const shouldStopRef = useRef<boolean>(false)
   const titleGeneratedRef = useRef<boolean>(false)
   const [toolExecutionHints, setToolExecutionHints] = useState<string[]>([])
+  const searchToolTasks = useSearchToolTasks()
   const pendingStreamBufferRef = useRef<string>("")
   const renderedStreamTextRef = useRef<string>("")
   const streamDrainTimerRef = useRef<number | null>(null)
+
+  // ── Auto-Run Game State ──
+  const [gameRunState, setGameRunState] = useState<GameRunState>('idle')
+  const [gameRunErrorCount, setGameRunErrorCount] = useState(0)
+  const [gameRunFixAttempt, setGameRunFixAttempt] = useState(0)
+  const [showGameBanner, setShowGameBanner] = useState(false)
+  const autoFixInProgressRef = useRef(false)
+  const MAX_AUTO_FIX_ATTEMPTS = 3
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -487,7 +499,9 @@ export function ChatInterface() {
       window.open(engineUrl, '_blank', 'noopener,noreferrer')
     } else if (shouldOpen3DEngine) {
       // Open 3D game engine in new tab
-      const engineUrl = `${window.location.origin}/game-engine`
+      const engineUrl = currentProject
+        ? `${window.location.origin}/play/${currentProject.id}`
+        : `${window.location.origin}/game-engine`
       window.open(engineUrl, '_blank', 'noopener,noreferrer')
     }
   }, [messages])
@@ -1649,6 +1663,36 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
             agentStore.addToolResult(result)
             readOnlyResults.push({ tool: toolCall.tool, result: result.result })
             console.log(`[AgentTool] Auto-executed read-only: ${toolCall.tool}`, result.result)
+
+            // Track search/read tool activity for the chat UI
+            if (toolCall.tool === "search_codebase") {
+              const query = toolCall.params?.query
+              const tracker = SearchToolTracker.getInstance()
+              tracker.startSearch(toolCall.id, query)
+              const filePattern = toolCall.params?.filePattern
+              const matchedFiles: string[] = Array.isArray(result?.result?.matches)
+                ? Array.from(new Set((result.result.matches as any[]).map((m) => m.path)))
+                : Object.keys(sandboxPreviewFiles).filter((p) => !filePattern || p.includes(filePattern))
+              tracker.addScannedFiles(toolCall.id, matchedFiles.slice(0, 12))
+              tracker.completeSearch(toolCall.id)
+            } else if (toolCall.tool === "get_file_contents") {
+              const path = toolCall.params?.path
+              if (path) {
+                const tracker = SearchToolTracker.getInstance()
+                tracker.startSearch(toolCall.id, "Reading file")
+                tracker.addReadFile(toolCall.id, path)
+                tracker.completeSearch(toolCall.id)
+              }
+            } else if (toolCall.tool === "list_files") {
+              const dirPath = toolCall.params?.path || ""
+              const tracker = SearchToolTracker.getInstance()
+              tracker.startSearch(toolCall.id, dirPath ? `Listing ${dirPath}` : "Listing files")
+              const files = Array.isArray(result?.result?.files)
+                ? (result.result.files as string[]).slice(0, 12)
+                : []
+              tracker.addScannedFiles(toolCall.id, files)
+              tracker.completeSearch(toolCall.id)
+            }
           }
         }
         continue
@@ -1855,7 +1899,7 @@ Now complete the request. REQUIREMENTS:
     // Persist to R2 + Supabase (if available) or local fallback
     let applied: Record<string, string | null> = {}
     const activeProject = freshAppStore.currentProject
-    const activeUserId = freshAppStore.currentUserId
+    const activeUserId = freshAppStore.currentUserId || user?.id
 
     console.log(`[handleToolApprove] Project active: ${!!activeProject}, User active: ${!!activeUserId}`)
 
@@ -1880,7 +1924,9 @@ Now complete the request. REQUIREMENTS:
       }
     }
 
-    // Update generatedFiles in app store
+    // ── BUGFIX: Update generatedFiles FIRST, then remove sandbox changes ──
+    // This prevents the race condition where BuilderSidebar reads an empty merged
+    // view because sandbox was cleared before Zustand state propagated.
     const updatedFiles = { ...getGeneratedFiles() }
     for (const [path, content] of Object.entries(applied)) {
       if (content === null) {
@@ -1903,11 +1949,199 @@ Now complete the request. REQUIREMENTS:
       }
     }
 
-    // Remove processed changes from sandbox
+    // Remove processed changes from sandbox AFTER store update has been dispatched.
+    // A microtask delay ensures Zustand subscribers (BuilderSidebar) receive the
+    // updated generatedFiles before the sandbox overlay is cleared.
+    await new Promise<void>(resolve => setTimeout(resolve, 0))
     for (const change of changesToApply) {
       agentStore.removeSandboxChange(change.id)
     }
+
+    // ── Auto-Run Game Detection ──
+    // After files are committed, check if the project is now runnable
+    if (!autoFixInProgressRef.current) {
+      triggerAutoRunCheck(updatedFiles)
+    }
   }
+
+  // ── Auto-Run Game Logic (Silent Static Validation) ──
+  const triggerAutoRunCheck = (files: Record<string, string>) => {
+    if (!currentProject) return
+    if (!isProjectRunnable(files)) return
+
+    // Show the banner and start the run cycle
+    setShowGameBanner(true)
+    setGameRunState('running')
+    setGameRunFixAttempt(0)
+
+    // Do silent static analysis — no tab opened, no iframe
+    silentValidateAndFix(files, 0)
+  }
+
+  /**
+   * Silently validate project files for syntax errors by attempting
+   * to parse JS/TS files with `new Function()`. If errors are found,
+   * auto-fix them via AI. Repeat until clean or max attempts reached.
+   */
+  const silentValidateAndFix = async (
+    files: Record<string, string>,
+    attempt: number
+  ) => {
+    if (!currentProject) return
+
+    // Collect syntax errors from JS/TS/HTML files
+    const detectedErrors: Array<{ source: string; message: string; stack?: string }> = []
+
+    for (const [path, content] of Object.entries(files)) {
+      if (!content) continue
+      const ext = path.split('.').pop()?.toLowerCase()
+
+      // Check JS/TS files for syntax errors
+      if (ext === 'js' || ext === 'ts' || ext === 'jsx' || ext === 'tsx') {
+        try {
+          // Strip TypeScript-specific syntax for basic validation
+          let cleaned = content
+            .replace(/:\s*[A-Z][a-zA-Z<>\[\]|&,\s]*(?=[;=),\n\r}])/g, '') // strip type annotations
+            .replace(/\bimport\b.*?(?:from\s*['"].*?['"]|['"].*?['"])\s*;?/g, '') // strip imports
+            .replace(/\bexport\b\s*(default\s*)?/g, '') // strip export keywords
+            .replace(/\binterface\b[^{]*\{[^}]*\}/g, '') // strip interfaces
+            .replace(/\btype\b\s+\w+\s*=\s*[^;]+;/g, '') // strip type aliases
+
+          // Attempt to parse with Function constructor to detect syntax errors
+          new Function(cleaned)
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : String(e)
+          detectedErrors.push({
+            source: `syntax:${path}`,
+            message: msg,
+          })
+        }
+      }
+
+      // Check HTML files for basic structure issues
+      if (ext === 'html') {
+        if (!content.includes('<html') && !content.includes('<!DOCTYPE') && !content.includes('<body')) {
+          detectedErrors.push({
+            source: `structure:${path}`,
+            message: `HTML file may be incomplete — missing <html>, <!DOCTYPE>, or <body> tags`,
+          })
+        }
+      }
+    }
+
+    if (detectedErrors.length === 0) {
+      // No errors — game is ready!
+      setGameRunState('ready')
+      return
+    }
+
+    if (attempt >= MAX_AUTO_FIX_ATTEMPTS) {
+      // Gave up after max attempts
+      setGameRunState('failed')
+      setGameRunErrorCount(detectedErrors.length)
+      return
+    }
+
+    // Auto-fix errors
+    setGameRunState('fixing')
+    setGameRunErrorCount(detectedErrors.length)
+    setGameRunFixAttempt(attempt + 1)
+    autoFixInProgressRef.current = true
+
+    try {
+      const fixPrompt = buildAutoFixPrompt(detectedErrors, files)
+      const fixMessages = [{ role: 'user' as const, parts: [{ text: fixPrompt }] }]
+
+      let fixResponse = ''
+      for await (const chunk of sendMessageToGeminiStream(fixMessages)) {
+        fixResponse += chunk
+      }
+
+      if (fixResponse.trim()) {
+        // Auto-apply the fixes (no user approval needed for auto-fix loop)
+        const { toolCalls } = parseToolCalls(fixResponse)
+        const currentFiles = getGeneratedFiles() || {}
+        let patchedFiles = { ...currentFiles }
+
+        for (const tc of toolCalls) {
+          if (isFileModifyingTool(tc.tool)) {
+            const { changes } = executeToolInSandbox(tc, patchedFiles)
+            patchedFiles = applySandboxChangesToFileMap(patchedFiles, changes)
+            // Persist each change
+            if (currentProject && user) {
+              await applyApprovedChanges(
+                changes.map(c => ({ ...c, status: 'approved' as const })),
+                currentProject.id,
+                user.id,
+                null
+              ).catch(() => { /* best-effort */ })
+            }
+          }
+        }
+
+        setGeneratedFiles(patchedFiles)
+
+        // Re-validate after patching
+        setGameRunState('running')
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        await silentValidateAndFix(patchedFiles, attempt + 1)
+      } else {
+        setGameRunState('failed')
+      }
+    } catch (e) {
+      console.error('[AutoFix] Error during auto-fix:', e)
+      setGameRunState('failed')
+    } finally {
+      autoFixInProgressRef.current = false
+    }
+  }
+
+  // ── Listen for error prefill messages from GameRunner ──
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'KOYE_PREFILL_ERROR' && event.data.text) {
+        // Auto-fill the chat input with the error text from GameRunner
+        const editorEl = document.querySelector('[contenteditable="true"]') as HTMLElement
+        if (editorEl) {
+          editorEl.textContent = event.data.text
+          editorEl.dispatchEvent(new Event('input', { bubbles: true }))
+          editorEl.focus()
+
+          // Move cursor to end
+          const range = document.createRange()
+          const sel = window.getSelection()
+          range.selectNodeContents(editorEl)
+          range.collapse(false)
+          sel?.removeAllRanges()
+          sel?.addRange(range)
+        }
+      }
+    }
+
+    window.addEventListener('message', handleMessage)
+
+    // Also check for stored prefill on mount (if user navigated here directly)
+    try {
+      const stored = localStorage.getItem('koye_error_prefill')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        // Only use if recent (< 30 seconds old)
+        if (parsed.text && Date.now() - parsed.timestamp < 30000) {
+          setTimeout(() => {
+            const editorEl = document.querySelector('[contenteditable="true"]') as HTMLElement
+            if (editorEl) {
+              editorEl.textContent = parsed.text
+              editorEl.dispatchEvent(new Event('input', { bubbles: true }))
+              editorEl.focus()
+            }
+          }, 500)
+        }
+        localStorage.removeItem('koye_error_prefill')
+      }
+    } catch {}
+
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
 
   const handleToolReject = (toolCallId: string) => {
     const agentStore = useAgentToolStore.getState()
@@ -2142,71 +2376,6 @@ Now complete the request. REQUIREMENTS:
   
   const isSidebarOpen = useAppStore(state => state.isSidebarOpen)
 
-  // Resizable builder logic
-  const ENABLE_CHAT_BUILDER = false
-  const [builderWidth, setBuilderWidth] = useState(() => window.innerWidth * 0.4)
-  const isDraggingBuilder = useRef(false)
-  const [isBuilderResizeHover, setIsBuilderResizeHover] = useState(false)
-
-  useEffect(() => {
-      const handleResize = () => {
-          const vw = window.innerWidth
-          let minWidth = 0
-          let maxWidth = 0
-          if (!isSidebarOpen) {
-              minWidth = vw * 0.4
-              maxWidth = vw * 0.60
-          } else {
-              minWidth = vw * 0.25
-              maxWidth = vw * 0.43
-          }
-          setBuilderWidth(prev => Math.max(minWidth, Math.min(prev, maxWidth)))
-      }
-      
-      window.addEventListener('resize', handleResize)
-      handleResize()
-      return () => window.removeEventListener('resize', handleResize)
-  }, [isSidebarOpen])
-
-  useEffect(() => {
-      const handleMouseMove = (e: MouseEvent) => {
-          if (!isDraggingBuilder.current) return
-          e.preventDefault()
-          
-          const vw = window.innerWidth
-          let minWidth = 0
-          let maxWidth = 0
-          if (!isSidebarOpen) {
-              minWidth = vw * 0.4
-              maxWidth = vw * 0.60
-          } else {
-              minWidth = vw * 0.25
-              maxWidth = vw * 0.43
-          }
-
-          const newWidth = vw - e.clientX
-          setBuilderWidth(Math.max(minWidth, Math.min(newWidth, maxWidth)))
-      }
-
-      const handleMouseUp = () => {
-          if (isDraggingBuilder.current) {
-              isDraggingBuilder.current = false
-              document.body.style.cursor = 'auto'
-          }
-      }
-
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-
-      return () => {
-          document.removeEventListener('mousemove', handleMouseMove)
-          document.removeEventListener('mouseup', handleMouseUp)
-      }
-  }, [isSidebarOpen])
-
-  const vw = typeof window !== 'undefined' ? window.innerWidth : 1000;
-  const currentMinWidth = !isSidebarOpen ? vw * 0.4 : vw * 0.25;
-  const isBuilderExpanded = builderWidth > currentMinWidth + 10; // 10px buffer
   const creditsBalance = subscription?.creditsBalance ?? 0
 
   return (
@@ -2223,9 +2392,9 @@ Now complete the request. REQUIREMENTS:
         />
       )}
     <VoiceChatLayout>
-      <div className={cn("flex h-full w-full bg-background overflow-hidden relative flex-row transition-all duration-300", isBuilderExpanded ? "gap-3 p-4" : "")}>
+      <div className="flex h-full w-full bg-background overflow-hidden relative flex-row transition-all duration-300">
         {/* Chat Area */}
-        <div className={cn("flex-1 flex flex-col min-h-0 min-w-0 h-full items-center justify-center transition-all duration-300", isBuilderExpanded ? "rounded-xl bg-background overflow-hidden" : "bg-background")}>
+        <div className="flex-1 flex flex-col min-h-0 min-w-0 h-full items-center justify-center bg-background">
           <div className="w-full max-w-[86rem] h-full flex flex-col min-h-0">
           {/* Terminal Window */}
           <div className="flex-1 flex flex-col bg-background min-h-0 dark:bg-transparent dark:shadow-2xl">
@@ -2470,6 +2639,36 @@ Now complete the request. REQUIREMENTS:
                       />
                     )}
 
+                    {/* Agent search/read tool activity — shown inline in the message stream */}
+                    {searchToolTasks.length > 0 && (
+                      <div className="px-2">
+                        {searchToolTasks.map((task) => (
+                          <SearchToolCard key={task.id} task={task} />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Game Ready Banner */}
+                    {showGameBanner && currentProject && (
+                      <GameReadyBanner
+                        state={gameRunState}
+                        errorCount={gameRunErrorCount}
+                        fixAttempt={gameRunFixAttempt}
+                        projectId={currentProject.id}
+                        onPlay={() => {
+                          window.open(
+                            `/play/${currentProject.id}`,
+                            '_blank',
+                            'noopener,noreferrer'
+                          )
+                        }}
+                        onDismiss={() => {
+                          setShowGameBanner(false)
+                          setGameRunState('idle')
+                        }}
+                      />
+                    )}
+
                     {/* Fallback thinking state */}
                     {isGenerating && !streamingMessageId && !isThinking && !streamingContent && !isSwitchingModel && !generatingText && !isImageGenerating && (
                       <MessageBubble
@@ -2559,6 +2758,9 @@ Now complete the request. REQUIREMENTS:
                        )}
                      </div>
                   )}
+                  {/* TaskBar — shows active background tasks */}
+                  <TaskBar />
+
                   {/* Agent Tool Approval Banners (above input) */}
                   {pendingAgentToolCalls.length > 0 && (
                     <div className="space-y-2 pb-3">
@@ -2597,38 +2799,6 @@ Now complete the request. REQUIREMENTS:
           </div>
         </div>
       </div>
-
-        {/* Resizable Divider and Builder Area */}
-        {currentProject && ENABLE_CHAT_BUILDER && (
-           <>
-               <div 
-                   className={cn(
-                     "relative h-full shrink-0 flex flex-col bg-background border-border/60 z-40 hidden md:flex transition-all duration-300",
-                     isBuilderExpanded ? "rounded-xl border overflow-hidden shadow-2xl" : "border-l",
-                     isBuilderResizeHover ? "cursor-col-resize" : ""
-                   )}
-                   style={{ width: builderWidth }}
-                   onMouseMoveCapture={(e) => {
-                     if (isDraggingBuilder.current) return
-                     const bounds = e.currentTarget.getBoundingClientRect()
-                     const x = e.clientX - bounds.left
-                     setIsBuilderResizeHover(x <= 6)
-                   }}
-                   onMouseLeave={() => setIsBuilderResizeHover(false)}
-                   onMouseDownCapture={(e) => {
-                     const bounds = e.currentTarget.getBoundingClientRect()
-                     const x = e.clientX - bounds.left
-                     if (x > 6) return
-                     e.preventDefault()
-                     e.stopPropagation()
-                     isDraggingBuilder.current = true
-                     document.body.style.cursor = 'col-resize'
-                   }}
-               >
-                   <Builder hideSidebar={true} />
-               </div>
-           </>
-        )}
       </div>
       {/* Connect Project Dialog */}
       {showConnectDialog && (

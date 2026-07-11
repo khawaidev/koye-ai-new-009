@@ -98,6 +98,7 @@ export interface Message {
   isWebSearching?: boolean // Flag to show web search loading state
   fileOperations?: Array<{ type: 'create' | 'edit' | 'delete' | 'edit-image', path: string, content?: string }>
   timestamp: Date
+  playableUrl?: string // New field for the "play" button URL
 }
 
 export interface WebSearchResult {
