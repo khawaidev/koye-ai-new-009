@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 
-import animationsSource from "../../animations.md?raw"
+import animationsSource from "../../app-feature-and-implementation/animations.md?raw"
 import { Input } from "../components/ui/input"
 import { Select } from "../components/ui/select"
 

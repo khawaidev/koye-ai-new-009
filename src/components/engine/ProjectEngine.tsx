@@ -1,8 +1,8 @@
 import { ArcRotateCamera, Engine, HemisphericLight, MeshBuilder, Scene, SceneLoader, StandardMaterial, Texture, Vector3 } from "@babylonjs/core"
 import "@babylonjs/loaders"
-import { X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useAppStore } from "../../store/useAppStore"
+import { babylonRuntime } from "../../engine/BabylonRuntime"
 
 interface ProjectEngineProps {
     projectId: string
@@ -26,62 +26,23 @@ export function ProjectEngine({ projectId, projectName, onClose }: ProjectEngine
                 setIsLoading(true)
                 setError(null)
 
-                // Initialize Babylon.js engine
-                const engine = new Engine(canvasRef.current!, true, {
-                    preserveDrawingBuffer: true,
-                    stencil: true,
+                // Initialize Babylon.js engine via shared runtime
+                babylonRuntime.initialize({
+                    canvas: canvasRef.current!,
+                    clearColor: { r: 0.95, g: 0.95, b: 0.95, a: 1 },
+                    lightIntensity: 0.8,
+                    createGround: true,
                 })
-                engineRef.current = engine
 
-                // Create scene
-                const scene = new Scene(engine)
-                scene.clearColor.set(0.95, 0.95, 0.95, 1) // Light gray background
-                sceneRef.current = scene
-
-                // Create camera
-                const camera = new ArcRotateCamera(
-                    "camera",
-                    -Math.PI / 2,
-                    Math.PI / 2.5,
-                    10,
-                    Vector3.Zero(),
-                    scene
-                )
-                camera.attachControl(canvasRef.current!, true)
-                camera.lowerRadiusLimit = 2
-                camera.upperRadiusLimit = 50
-
-                // Create light
-                const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene)
-                light.intensity = 0.8
-
-                // Create ground
-                const ground = MeshBuilder.CreateGround("ground", { width: 20, height: 20 }, scene)
-                const groundMaterial = new StandardMaterial("groundMat", scene)
-                groundMaterial.diffuseColor.set(0.7, 0.7, 0.7)
-                groundMaterial.specularColor.set(0, 0, 0)
-                ground.material = groundMaterial
+                sceneRef.current = babylonRuntime.scene
+                engineRef.current = babylonRuntime.engine
 
                 // Load project assets
-                await loadProjectAssets(scene)
-
-                // Start render loop
-                engine.runRenderLoop(() => {
-                    scene.render()
-                })
-
-                // Handle window resize
-                const handleResize = () => {
-                    engine.resize()
+                if (babylonRuntime.scene) {
+                    await loadProjectAssets(babylonRuntime.scene)
                 }
-                window.addEventListener("resize", handleResize)
 
                 setIsLoading(false)
-
-                return () => {
-                    window.removeEventListener("resize", handleResize)
-                    engine.dispose()
-                }
             } catch (err) {
                 console.error("Error initializing engine:", err)
                 setError(err instanceof Error ? err.message : "Failed to initialize engine")
@@ -92,9 +53,7 @@ export function ProjectEngine({ projectId, projectName, onClose }: ProjectEngine
         initEngine()
 
         return () => {
-            if (engineRef.current) {
-                engineRef.current.dispose()
-            }
+            babylonRuntime.dispose()
         }
     }, [projectId])
 

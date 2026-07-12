@@ -96,7 +96,9 @@ export interface Message {
   generationError?: string // Optional error message for any generation failure
   webSearchResults?: WebSearchResult // Web search results from SearchAPI
   isWebSearching?: boolean // Flag to show web search loading state
-  fileOperations?: Array<{ type: 'create' | 'edit' | 'delete' | 'edit-image', path: string, content?: string }>
+  fileOperations?: Array<{ type: 'create' | 'edit' | 'delete' | 'edit-image' | 'read_file' | 'list_files', path: string, content?: string }>
+  taskBreakdown?: { title: string, tasks: Array<{ id: string, title: string, description?: string, status?: 'pending' | 'completed' }> }
+  generatedPlan?: { title: string, description: string, steps: string[] }
   timestamp: Date
   playableUrl?: string // New field for the "play" button URL
 }

@@ -215,11 +215,14 @@ const Navbar = () => {
                 <div className="flex items-center gap-3">
                     <Link
                         to="/signup"
-                        className="font-schibsted font-semibold px-5 py-2 rounded-full bg-white text-black hover:bg-white/90 transition-colors duration-500 flex items-center gap-2"
+                        className="font-schibsted font-semibold px-3 sm:px-5 py-2 rounded-full bg-white text-black hover:bg-white/90 transition-colors duration-500 flex items-center gap-2"
                         style={{ fontSize: 14 }}
                     >
-                        Start building for free
-                        <ArrowRight className="w-4 h-4" />
+                        <span className="hidden sm:inline">Start building for free</span>
+                        <span className="sm:hidden">
+                            <ArrowRight className="w-5 h-5" />
+                        </span>
+                        <ArrowRight className="w-4 h-4 hidden sm:block" />
                     </Link>
                 </div>
             </div>
@@ -1150,12 +1153,97 @@ const Pricing = () => {
                 </div>
             </div>
 
-            {/* Soft blurred transition to FAQ section */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-32 backdrop-blur-[8px] pointer-events-none z-10 [mask-image:radial-gradient(ellipse_150%_100%_at_50%_-20%,transparent_20%,black_100%)]" />
+            {/* Soft blurred transition to testimonials */}
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10" />
         </section>
     );
 };
+
+// ─── Testimonials ─────────────────────────────────────────────────
+const Testimonials = () => {
+    const testimonials = [
+        {
+            name: "Alex Chen",
+            role: "Indie Game Developer",
+            content: "KOYE AI cut my game development time by 70%. I went from concept to playable prototype in just 3 days. The asset generation is incredibly high quality.",
+            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+        },
+        {
+            name: "Sarah Martinez",
+            role: "Studio Founder",
+            content: "We've integrated KOYE into our workflow for rapid prototyping. The AI understands game design principles and delivers production-ready assets.",
+            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face"
+        },
+        {
+            name: "James Wilson",
+            role: "Solo Developer",
+            content: "As a solo dev, KOYE AI is a game-changer. I can now compete with larger studios in terms of visual quality and content depth.",
+            avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+        }
+    ];
+
+    return (
+        <section id="testimonials" data-nav-theme="dark" className="py-16 scroll-mt-16">
+            <div className="max-w-6xl mx-auto px-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-16"
+                >
+                    <h2
+                        className="font-fustat font-bold text-white mb-4"
+                        style={{ fontSize: 'clamp(28px, 4vw, 48px)', letterSpacing: '-2px' }}
+                    >
+                        Loved by Game Creators
+                    </h2>
+                    <p className="text-white/80 font-noto max-w-2xl mx-auto text-lg">
+                        Join thousands of developers building the future of games with KOYE AI.
+                    </p>
+                </motion.div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                    {testimonials.map((testimonial, index) => (
+                        <motion.div
+                            key={testimonial.name}
+                            initial={{ opacity: 0, y: 24 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: index * 0.1 }}
+                            viewport={{ once: true }}
+                            className="bg-background rounded-2xl border border-border/60 p-6 shadow-sm hover:shadow-xl transition-all"
+                        >
+                            <div className="flex items-center gap-1 mb-4">
+                                {[...Array(5)].map((_, i) => (
+                                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                ))}
+                            </div>
+                            <p className="text-foreground/80 font-noto text-sm leading-relaxed mb-6">
+                                "{testimonial.content}"
+                            </p>
+                            <div className="flex items-center gap-3">
+                                <img
+                                    src={testimonial.avatar}
+                                    alt={testimonial.name}
+                                    className="w-10 h-10 rounded-full object-cover border border-border"
+                                />
+                                <div>
+                                    <p className="font-schibsted font-semibold text-foreground text-sm">
+                                        {testimonial.name}
+                                    </p>
+                                    <p className="text-muted-foreground text-xs">
+                                        {testimonial.role}
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
 
 // ─── FAQ ────────────────────────────────────────────────────────
 const FAQ = () => {
@@ -1411,6 +1499,7 @@ export const LandingPage = () => {
             <Games />
             <Features />
             <Pricing />
+            <Testimonials />
             <Footer />
         </div>
     );

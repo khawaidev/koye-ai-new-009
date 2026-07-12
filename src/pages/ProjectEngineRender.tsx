@@ -9,6 +9,7 @@ import { useAppStore } from "../store/useAppStore"
 import { useAgentToolStore } from "../store/useAgentToolStore"
 
 import { gameScriptRunner } from "../services/gameScriptRunner"
+import { babylonRuntime } from "../engine/BabylonRuntime"
 
 export function ProjectEngineRender() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -210,37 +211,19 @@ export function ProjectEngineRender() {
             try {
                 setIsLoading(true)
 
-                // Initialize Babylon.js engine
-                const engine = new Engine(canvasRef.current!, true, {
-                    preserveDrawingBuffer: true,
-                    stencil: true,
+                // Initialize Babylon.js engine via shared runtime
+                babylonRuntime.initialize({
+                    canvas: canvasRef.current!,
+                    clearColor: { r: 0.1, g: 0.1, b: 0.1, a: 1 }, // Dark background
+                    createDefaultLights: false, // We'll add custom lights manually below
                 })
-                engineRef.current = engine
 
-                // Create scene
-                const scene = new Scene(engine)
-                scene.clearColor.set(0.1, 0.1, 0.1, 1) // Dark background
+                const scene = babylonRuntime.scene!
+                const engine = babylonRuntime.engine!
+                const camera = babylonRuntime.camera!
+
                 sceneRef.current = scene
-
-                // Create camera
-                const camera = new ArcRotateCamera(
-                    "camera",
-                    -Math.PI / 2,
-                    Math.PI / 2.5,
-                    10,
-                    Vector3.Zero(),
-                    scene
-                )
-                camera.attachControl(canvasRef.current!, true)
-                camera.lowerRadiusLimit = 1
-                camera.upperRadiusLimit = 100
-
-                // Create light
-                const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene)
-                light.intensity = 0.65
-                light.diffuse.set(1.0, 0.72, 0.55)
-                light.groundColor.set(0.22, 0.18, 0.24)
-                light.specular.set(0.08, 0.08, 0.08)
+                engineRef.current = engine
 
                 const envLight = new HemisphericLight("envLight", new Vector3(0, 1, 0), scene)
                 envLight.intensity = 0.22
@@ -255,7 +238,7 @@ export function ProjectEngineRender() {
                 keyLight.specular.set(0.08, 0.08, 0.08)
 
                 // Bind script runner
-                gameScriptRunner.bind(scene, engine)
+                gameScriptRunner.bind(scene, engine, camera, canvasRef.current!)
                 gameScriptRunner.onLogs((logs) => {
                     const startIndex = lastLoggedErrorIndexRef.current
                     lastLoggedErrorIndexRef.current = logs.length
@@ -279,23 +262,12 @@ export function ProjectEngineRender() {
                     pushRuntimeError({ source: "engine", message: msg, stack })
                 }
 
-                // Start render loop
-                engine.runRenderLoop(() => {
-                    scene.render()
-                })
-
-                // Handle window resize
-                const handleResize = () => {
-                    engine.resize()
-                }
-                window.addEventListener("resize", handleResize)
-
                 // Watch canvas wrapper for size changes (e.g. switching Desktop/Mobile view)
                 let resizeObserver: ResizeObserver | null = null
                 const observeTarget = canvasWrapperRef.current ?? canvasRef.current?.parentElement
                 if (observeTarget) {
                     resizeObserver = new ResizeObserver(() => {
-                        engine.resize()
+                        babylonRuntime.engine?.resize()
                     })
                     resizeObserver.observe(observeTarget)
                 }
@@ -303,24 +275,20 @@ export function ProjectEngineRender() {
                 setIsLoading(false)
 
                 return () => {
-                    gameScriptRunner.unbind()
-                    window.removeEventListener("resize", handleResize)
                     if (resizeObserver) resizeObserver.disconnect()
-                    scene.dispose()
-                    engine.dispose()
+                    babylonRuntime.dispose()
                 }
             } catch (err) {
-                const msg = err instanceof Error ? err.message : String(err)
-                const stack = err instanceof Error ? err.stack : undefined
-                pushRuntimeError({ source: "init", message: msg, stack })
+                console.error("Error initializing engine:", err)
+                pushRuntimeError({ source: "engine", message: err instanceof Error ? err.message : String(err) })
                 setIsLoading(false)
             }
         }
 
-        const cleanup = initEngine()
+        initEngine()
 
         return () => {
-            cleanup.then(fn => fn && fn())
+            babylonRuntime.dispose()
         }
     }, [hasLoadedFiles]) // Only run when files finish loading, don't re-run on generatedFiles or viewMode change (prevents re-initialization loops and preserves JS-added UI)
 

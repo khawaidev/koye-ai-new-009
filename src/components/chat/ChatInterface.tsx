@@ -42,6 +42,7 @@ import { VoiceChatLayout } from "./VoiceChatLayout"
 import { useParaliumStore, SCREEN_CATEGORIES } from "../../store/useParaliumStore"
 import { ParaliumImageSelector } from "./ParaliumImageSelector"
 import { ParaliumStatusCard } from "./ParaliumStatusCard"
+import { Queue, QueueSection, QueueSectionTrigger, QueueSectionLabel, QueueSectionContent, QueueList, QueueItem, QueueItemIndicator, QueueItemContent, QueueItemDescription } from "../ai-elements/queue"
 
 export function ChatInterface() {
   const { theme } = useTheme()
@@ -1612,23 +1613,54 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
     }
 
     const fileOperations = toolCalls
-      .filter(tc => !isReadOnlyTool(tc.tool))
       .map(tc => {
+        if (tc.tool === 'create_tasks' || tc.tool === 'generate_plan' || tc.tool === 'search_web' || tc.tool === 'start_background_task' || tc.tool === 'check_task_status') return null;
       const changes = statsByToolCallId.get(tc.id) || []
       const primary = changes[0]
       return {
         type: tc.tool === 'create_file' ? 'create' as const
           : tc.tool === 'delete_file' ? 'delete' as const
           : tc.params.__editImage ? 'edit-image' as const
+          : tc.tool === 'get_file_contents' ? 'read_file' as const
+          : tc.tool === 'list_files' ? 'list_files' as const
           : 'edit' as const,
-        path: tc.params.path,
+        path: tc.params.path || '',
         content: tc.params.content,
         linesAdded: primary?.linesAdded ?? 0,
         linesRemoved: primary?.linesRemoved ?? 0,
         prompt: tc.params.prompt,
         model: tc.params.model,
       }
-    })
+    }).filter(Boolean) as Array<any>
+
+    const taskBreakdownCall = toolCalls.find(tc => tc.tool === 'create_tasks')
+    const generatePlanCall = toolCalls.find(tc => tc.tool === 'generate_plan' || (tc.tool === 'create_file' && tc.params.path?.toLowerCase().includes('plan.md')))
+    
+    let taskBreakdown = undefined
+    if (taskBreakdownCall) {
+      taskBreakdown = {
+        title: taskBreakdownCall.params.title || 'Implementation Tasks',
+        tasks: taskBreakdownCall.params.tasks || []
+      }
+    }
+
+    let generatedPlan = undefined
+    if (generatePlanCall) {
+      if (generatePlanCall.tool === 'generate_plan') {
+        generatedPlan = {
+          title: generatePlanCall.params.title || 'Implementation Plan',
+          description: generatePlanCall.params.description || '',
+          steps: generatePlanCall.params.steps || []
+        }
+      } else {
+        // Fallback for when AI uses create_file to generate a plan.md
+        generatedPlan = {
+          title: 'Implementation Plan',
+          description: `Generated plan document: ${generatePlanCall.params.path}`,
+          steps: ['Read plan file details'] // Ideally we could parse markdown steps here
+        }
+      }
+    }
 
     // Update message content: strip markers, attach fileOperations metadata
       if (messageId) {
@@ -1639,6 +1671,8 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
               ...m,
               content: strippedContent || m.content,
               ...(fileOperations.length > 0 ? { fileOperations } : {}),
+              ...(taskBreakdown ? { taskBreakdown } : {}),
+              ...(generatedPlan ? { generatedPlan } : {}),
             }
           : m
       )
@@ -2781,6 +2815,46 @@ Now complete the request. REQUIREMENTS:
                       })}
                     </div>
                   )}
+                  
+                  {/* Latest Task Breakdown (Active Queue) */}
+                  {(() => {
+                    const latestTaskMsg = [...messages].reverse().find(m => m.taskBreakdown);
+                    const breakdown = latestTaskMsg?.taskBreakdown;
+                    if (!breakdown) return null;
+                    return (
+                      <div className="pb-3 px-1">
+                        <Queue>
+                          <QueueSection>
+                            <QueueSectionTrigger>
+                              <QueueSectionLabel label={breakdown.title} count={breakdown.tasks.length} />
+                            </QueueSectionTrigger>
+                            <QueueSectionContent>
+                              <QueueList>
+                                {breakdown.tasks.map((task) => (
+                                  <QueueItem key={task.id}>
+                                    <div className="flex gap-2">
+                                      <QueueItemIndicator completed={task.status === "completed"} />
+                                      <div className="flex-1 flex flex-col min-w-0">
+                                        <QueueItemContent completed={task.status === "completed"}>
+                                          {task.title}
+                                        </QueueItemContent>
+                                        {task.description && (
+                                          <QueueItemDescription completed={task.status === "completed"}>
+                                            {task.description}
+                                          </QueueItemDescription>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </QueueItem>
+                                ))}
+                              </QueueList>
+                            </QueueSectionContent>
+                          </QueueSection>
+                        </Queue>
+                      </div>
+                    );
+                  })()}
+
                   <ChatInput
                     onSend={handleSend}
                     onStop={handleStop}

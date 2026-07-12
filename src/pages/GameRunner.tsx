@@ -192,7 +192,7 @@ export function GameRunner() {
                 keyLight.intensity = 0.9
 
                 // Bind script runner
-                gameScriptRunner.bind(scene, engine)
+                gameScriptRunner.bind(scene, engine, camera, canvasRef.current!)
                 gameScriptRunner.onLogs((logs) => {
                     for (const entry of logs) {
                         if (entry.level === "error") {

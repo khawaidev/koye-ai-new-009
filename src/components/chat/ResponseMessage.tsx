@@ -17,6 +17,9 @@ import { AudioGenLoadingCard } from "./generation/AudioGenLoadingCard"
 import { VideoGenLoadingCard } from "./generation/VideoGenLoadingCard"
 import { Model3DGenLoadingCard } from "./generation/Model3DGenLoadingCard"
 import { useAppStore } from "../../store/useAppStore"
+import { Task, TaskTrigger, TaskContent, TaskItem, TaskItemFile } from "../ai-elements/task"
+import { Queue, QueueSection, QueueSectionTrigger, QueueSectionLabel, QueueSectionContent, QueueList, QueueItem, QueueItemIndicator, QueueItemContent, QueueItemDescription } from "../ai-elements/queue"
+import { Plan, PlanHeader, PlanTitle, PlanDescription, PlanTrigger, PlanContent, PlanFooter, PlanAction } from "../ai-elements/plan"
 
 interface ResponseMessageProps {
   content: string
@@ -43,6 +46,8 @@ interface ResponseMessageProps {
   onConnectProject?: () => void
   onCreateProject?: () => void
   playableUrl?: string // New field for the "play" button URL
+  taskBreakdown?: { title: string; tasks: Array<{ id: string; title: string; description?: string; status?: "pending" | "completed" }> }
+  generatedPlan?: { title: string; description: string; steps: string[] }
 }
 
 export function ResponseMessage({
@@ -70,6 +75,8 @@ export function ResponseMessage({
   onCreateProject,
   fileOperations,
   playableUrl,
+  taskBreakdown,
+  generatedPlan,
 }: ResponseMessageProps) {
   const navigate = useNavigate();
   const { generatedFiles, currentProject } = useAppStore();
@@ -155,10 +162,60 @@ export function ResponseMessage({
           <WebSearchResults results={webSearchResults} />
         )}
 
-        {/* File Operations */}
-        {fileOperations && fileOperations.length > 0 && (
+        {/* AI Generates a Plan */}
+        {generatedPlan && (
+          <div className="mt-2">
+            <Plan>
+              <PlanHeader>
+                <PlanTitle>
+                  <span className="text-xl">🚀</span> {generatedPlan.title}
+                </PlanTitle>
+                <PlanDescription>{generatedPlan.description}</PlanDescription>
+              </PlanHeader>
+              <PlanContent>
+                <div className="flex flex-col gap-2 mt-2">
+                  {generatedPlan.steps.map((step, idx) => (
+                    <div key={idx} className="flex gap-3 text-sm text-muted-foreground p-2 rounded-md hover:bg-muted/50 transition-colors">
+                      <span className="text-foreground font-mono shrink-0 w-5 text-right">{idx + 1}.</span>
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </PlanContent>
+              <PlanFooter>
+                <PlanTrigger />
+                <PlanAction>
+                  <button className="bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                    Build This Plan
+                  </button>
+                </PlanAction>
+              </PlanFooter>
+            </Plan>
+          </div>
+        )}
+
+
+
+        {/* AI File Reading (Tasks) */}
+        {fileOperations && fileOperations.some(op => op.type === 'read_file' || op.type === 'list_files') && (
+          <div className="mt-2">
+            <Task defaultOpen={true}>
+              <TaskTrigger title="Reading project files..." />
+              <TaskContent>
+                {fileOperations.filter(op => op.type === 'read_file' || op.type === 'list_files').map((op, idx) => (
+                  <TaskItem key={idx}>
+                    Read {op.type === 'read_file' ? 'file' : 'directory'} <TaskItemFile>{op.path}</TaskItemFile>
+                  </TaskItem>
+                ))}
+              </TaskContent>
+            </Task>
+          </div>
+        )}
+
+        {/* File Operations (Writes/Edits/Deletes) */}
+        {fileOperations && fileOperations.filter(op => op.type !== 'read_file' && op.type !== 'list_files').length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 mt-2">
-            {fileOperations.map((op, idx) => (
+            {fileOperations.filter(op => op.type !== 'read_file' && op.type !== 'list_files').map((op, idx) => (
               <FileOperationCard key={idx} operation={op} />
             ))}
           </div>

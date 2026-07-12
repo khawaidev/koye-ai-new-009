@@ -1,5 +1,6 @@
-import { ArrowUp, File, FolderClosed, Mic, Plus, Square, X, Paperclip, AtSign, Film, FileText, ChevronDown, ChevronUp, Crown, Check } from "lucide-react"
+import { ArrowUp, File, FolderClosed, Mic, Plus, Square, X, Paperclip, AtSign, Film, FileText, ChevronDown, ChevronUp, Crown, Check, ExternalLink } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue, useTransform } from "framer-motion"
 import { cn } from "../../lib/utils"
 import { useAppStore } from "../../store/useAppStore"
@@ -152,6 +153,7 @@ export function ChatInput({
   } = useAppStore()
   const { subscription } = usePricing({ includeUsage: false })
   const { theme } = useTheme()
+  const navigate = useNavigate()
 
   const [images, setImages] = useState<File[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -703,6 +705,17 @@ export function ChatInput({
                   )}
                 </AnimatePresence>
               </div>
+
+              {currentProject && (
+                <button
+                  onClick={() => window.open(`/app/project/${currentProject.id}/files`, '_blank')}
+                  className="flex items-center justify-center w-9 h-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                  title="Open project files in new tab"
+                  type="button"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </button>
+              )}
 
               <div className="ml-auto flex items-center gap-1.5">
                 <div className="relative" ref={modelSelectorRef}>

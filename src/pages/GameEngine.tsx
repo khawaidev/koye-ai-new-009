@@ -23,6 +23,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Button } from "../components/ui/button"
+import { babylonRuntime } from "../engine/BabylonRuntime"
 import { useAuth } from "../hooks/useAuth"
 import { cn } from "../lib/utils"
 import { useAppStore } from "../store/useAppStore"
@@ -140,22 +141,20 @@ export function GameEngine() {
   // ── Babylon scene init ──────────────────────────────────────────────────
   useEffect(() => {
     if (!canvasRef.current) return
-    const engine = new Engine(canvasRef.current, true, { preserveDrawingBuffer: true, stencil: true })
-    engineRef.current = engine
-    const scene = new Scene(engine)
-    scene.clearColor.set(0.12, 0.12, 0.14, 1)
+
+    // Initialize Babylon.js engine via shared runtime
+    babylonRuntime.initialize({
+      canvas: canvasRef.current,
+      clearColor: { r: 0.12, g: 0.12, b: 0.14, a: 1 },
+      createDefaultLights: false, // We'll add custom lights manually below
+    })
+
+    const scene = babylonRuntime.scene!
+    const engine = babylonRuntime.engine!
+    const camera = babylonRuntime.camera!
+
     sceneRef.current = scene
-
-    const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), scene)
-    camera.attachControl(canvasRef.current, true)
-    camera.lowerRadiusLimit = 0.5
-    camera.upperRadiusLimit = 200
-
-    const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene)
-    light.intensity = 0.65
-    light.diffuse.set(1.0, 0.72, 0.55)
-    light.groundColor.set(0.22, 0.18, 0.24)
-    light.specular.set(0.08, 0.08, 0.08)
+    engineRef.current = engine
 
     const envLight = new HemisphericLight("envLight", new Vector3(0, 1, 0), scene)
     envLight.intensity = 0.22
@@ -170,7 +169,7 @@ export function GameEngine() {
     keyLight.specular.set(0.08, 0.08, 0.08)
 
     // Bind the script runner to this scene
-    gameScriptRunner.bind(scene, engine)
+    gameScriptRunner.bind(scene, engine, camera, canvasRef.current!)
 
     // Load 3D assets from project files
     const merged = useAgentToolStore.getState().getMergedFiles(generatedFiles)
@@ -184,18 +183,12 @@ export function GameEngine() {
       }
     }
 
-    engine.runRenderLoop(() => scene.render())
-    const handleResize = () => engine.resize()
-    window.addEventListener("resize", handleResize)
-
     // Build initial scene graph after a tick
     setTimeout(rebuildSceneGraph, 200)
 
     return () => {
       gameScriptRunner.unbind()
-      window.removeEventListener("resize", handleResize)
-      scene.dispose()
-      engine.dispose()
+      babylonRuntime.dispose()
     }
   }, [generatedFiles])
 

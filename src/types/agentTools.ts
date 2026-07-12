@@ -30,6 +30,8 @@ export type AutonomousToolName =
   | "search_web"
   | "start_background_task"
   | "check_task_status"
+  | "create_tasks"
+  | "generate_plan"
 
 export type ToolName = FileToolName | ReadOnlyToolName | AutonomousToolName
 
@@ -174,6 +176,22 @@ export interface CheckTaskStatusParams {
   taskId: string
 }
 
+export interface CreateTasksParams {
+  title: string
+  tasks: Array<{
+    id: string
+    title: string
+    description?: string
+    status?: "pending" | "completed"
+  }>
+}
+
+export interface GeneratePlanParams {
+  title: string
+  description: string
+  steps: string[]
+}
+
 // ───── Helpers ─────
 
 /** Returns true if the tool modifies files and needs user approval */
@@ -193,5 +211,5 @@ export function isReadOnlyTool(tool: ToolName): boolean {
 
 /** Returns true if the tool is autonomous (no approval needed, agent-initiated) */
 export function isAutonomousTool(tool: ToolName): boolean {
-  return tool === "search_web" || tool === "start_background_task" || tool === "check_task_status"
+  return tool === "search_web" || tool === "start_background_task" || tool === "check_task_status" || tool === "create_tasks" || tool === "generate_plan"
 }

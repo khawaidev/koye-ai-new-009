@@ -11,6 +11,7 @@ import { Login } from "./pages/Login"
 import { Phaser2DGameEngine } from "./pages/Phaser2DGameEngine"
 import { SignUp } from "./pages/SignUp"
 import { UpgradeModal } from "./pages/Pricing"
+import { ProjectFiles } from "./pages/ProjectFiles"
 import { useAppStore } from "./store/useAppStore"
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/phaser-2d-engine" element={<Phaser2DGameEngine />} />
         <Route path="/animations" element={<AnimationsLibrary />} />
         <Route path="/app" element={<WorkflowManager />} />
+        <Route path="/app/project/:projectId/files" element={<ProjectFiles />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
