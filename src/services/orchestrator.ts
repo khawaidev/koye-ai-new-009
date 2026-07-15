@@ -3,6 +3,9 @@ import { sendMessageToOpenRouterStream } from "./openrouter"
 import { sendMessageToLaysoAIStream, type LaysoAIMessage } from "./laysoai"
 import { sendMessageToClodStream, type ClodMessage } from "./clodapi"
 import { sendMessageToCerebrasStream, type CerebrasMessage } from "./cerebras"
+import { sendMessageToGroqStream, type GroqMessage } from "./groq"
+import { sendMessageToNvidiaStream, type NvidiaMessage } from "./nvidia"
+import { sendMessageToGeminiStream } from "./gemini"
 
 export type OrchestratorIntent = "orchestrator" | "general_chatting" | "game_coding" | "initial_prototype" | "playable_game_active" | "paralium_agent"
 
@@ -218,7 +221,7 @@ export async function* routeMessageStream(
   const selectedMode: ModelMode = options.mode || "auto"
   const selectedModelId = options.selectedModelId
 
-  if (selectedMode === "models" && selectedModelId) {
+  if ((selectedMode === "models" || selectedMode === "pro") && selectedModelId) {
     const isGeminiSDKModel = selectedModelId.startsWith("gemini") && !selectedModelId.includes("preview") || selectedModelId.startsWith("gemma")
     const isClodModel = selectedModelId === "qwen-3-235B-a22b-thinking-2507" || selectedModelId === "Qwen 3 235B A22B Thinking 2507"
     const isOpenRouterModel = [
@@ -228,6 +231,7 @@ export async function* routeMessageStream(
       "openai/gpt-oss-120b:free",
       "deepseek/deepseek-v4-flash:free",
       "z-ai/glm-4.5-air:free",
+      "cohere/north-mini-code:free",
     ].includes(selectedModelId)
     const isCerebrasModel = [
       "gpt-oss-120b",
@@ -243,7 +247,9 @@ export async function* routeMessageStream(
       "claude-sonnet-4.5",
       "claude-sonnet-4-5-20250929",
     ].includes(selectedModelId)
-    
+    const isGroqModel = selectedModelId === "groq/compound"
+    const isNvidiaModel = selectedModelId === "z-ai/glm-5.2"
+
     onModelSwitch?.({
       intent: "game_coding",
       modelName: selectedModelId,
@@ -270,6 +276,18 @@ export async function* routeMessageStream(
     } else if (isLaysoModel) {
       const msgs = convertToStandardMessages(geminiMessages) as LaysoAIMessage[]
       for await (const chunk of sendMessageToLaysoAIStream(selectedModelId, msgs)) {
+        yield chunk
+      }
+      return "game_coding"
+    } else if (isGroqModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as GroqMessage[]
+      for await (const chunk of sendMessageToGroqStream(selectedModelId, msgs)) {
+        yield chunk
+      }
+      return "game_coding"
+    } else if (isNvidiaModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as NvidiaMessage[]
+      for await (const chunk of sendMessageToNvidiaStream(selectedModelId, msgs)) {
         yield chunk
       }
       return "game_coding"
@@ -308,6 +326,9 @@ export async function* routeMessageStream(
      if (intent === "initial_prototype" || intent === "playable_game_active" || intent === "orchestrator") {
         intent = "game_coding"
      }
+  } else if (selectedMode === "pro") {
+     // Pro mode routes everything to NVIDIA GLM 5.2 — a high-quality model
+     intent = "game_coding"
   }
 
   const modelInfo = getModelInfo(intent, isHeavy)
@@ -349,6 +370,25 @@ export async function* routeMessageStream(
 
   // ─── GAME CODING ──────────────────────────────────────────────────────────────
   if (intent === "game_coding") {
+    // Pro mode uses NVIDIA GLM 5.2 for game coding tasks
+    if (selectedMode === "pro") {
+      onModelSwitch?.({ ...modelInfo, modelName: "z-ai/glm-5.2", displayName: "GLM 5.2 (Pro)", allowedModelIds: ["z-ai/glm-5.2"] })
+      const msgs = convertToStandardMessages(geminiMessages) as NvidiaMessage[]
+      try {
+        for await (const chunk of sendMessageToNvidiaStream("z-ai/glm-5.2", msgs)) {
+          yield chunk
+        }
+      } catch (e) {
+        console.warn("[Orchestrator] NVIDIA GLM 5.2 failed, falling back to Claude Sonnet 4.5", e)
+        onModelSwitch?.({ ...modelInfo, modelName: "claude-sonnet-4-5-20250929", displayName: "Claude Sonnet 4.5 (Fallback)", allowedModelIds: ["claude-sonnet-4-5-20250929"] })
+        const fallbackMsgs = convertToStandardMessages(geminiMessages) as LaysoAIMessage[]
+        for await (const chunk of sendMessageToLaysoAIStream("claude-sonnet-4-5-20250929", fallbackMsgs)) {
+          yield chunk
+        }
+      }
+      return intent
+    }
+
     if (isHeavy) {
       onModelSwitch?.({ ...modelInfo, modelName: "claude-sonnet-4-5-20250929", displayName: "Claude Sonnet 4.5 (Heavy)", allowedModelIds: ["claude-sonnet-4-5-20250929"] })
       const msgs = convertToStandardMessages(geminiMessages) as LaysoAIMessage[]
@@ -376,4 +416,86 @@ export async function* routeMessageStream(
   
   onModelSwitch?.(modelInfo)
   return intent
+}
+
+export async function* getDirectModelStream(
+  mode: ModelMode,
+  selectedModelId: string | undefined,
+  geminiMessages: any[]
+): AsyncGenerator<string, void, unknown> {
+  if (mode === "pro") {
+    const msgs = convertToStandardMessages(geminiMessages) as NvidiaMessage[]
+    yield* sendMessageToNvidiaStream("z-ai/glm-5.2", msgs)
+    return
+  }
+
+  if (mode === "fast") {
+    yield* sendMessageToGeminiStream(geminiMessages, {
+      preferredModelId: "gemini-3.1-flash-lite",
+      disableFallback: true
+    })
+    return
+  }
+
+  if (mode === "models" && selectedModelId) {
+    const isGeminiSDKModel = selectedModelId.startsWith("gemini") && !selectedModelId.includes("preview") || selectedModelId.startsWith("gemma")
+    const isClodModel = selectedModelId === "qwen-3-235B-a22b-thinking-2507" || selectedModelId === "Qwen 3 235B A22B Thinking 2507"
+    const isOpenRouterModel = [
+      "moonshotai/kimi-k2.6:free",
+      "nvidia/nemotron-3-super-120b-a12b:free",
+      "poolside/laguna-m.1:free",
+      "openai/gpt-oss-120b:free",
+      "deepseek/deepseek-v4-flash:free",
+      "z-ai/glm-4.5-air:free",
+      "cohere/north-mini-code:free",
+    ].includes(selectedModelId)
+    const isCerebrasModel = [
+      "gpt-oss-120b",
+    ].includes(selectedModelId)
+    const isLaysoModel = [
+      "deepseek-v4-pro",
+      "gemini-3-pro-preview",
+      "gemini-3.1-pro-preview-thinking",
+      "gpt-5.2",
+      "claude-opus-4.5",
+      "claude-opus-4.7-thinking",
+      "claude-opus-4-7-thinking",
+      "claude-sonnet-4.5",
+      "claude-sonnet-4-5-20250929",
+    ].includes(selectedModelId)
+    const isGroqModel = selectedModelId === "groq/compound"
+    const isNvidiaModel = selectedModelId === "z-ai/glm-5.2"
+
+    if (isGeminiSDKModel) {
+      yield* sendMessageToGeminiStream(geminiMessages, {
+        preferredModelId: selectedModelId,
+        disableFallback: true
+      })
+    } else if (isClodModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as ClodMessage[]
+      yield* sendMessageToClodStream(msgs)
+    } else if (isCerebrasModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as CerebrasMessage[]
+      yield* sendMessageToCerebrasStream(selectedModelId, msgs)
+    } else if (isLaysoModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as LaysoAIMessage[]
+      yield* sendMessageToLaysoAIStream(selectedModelId, msgs)
+    } else if (isGroqModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as GroqMessage[]
+      yield* sendMessageToGroqStream(selectedModelId, msgs)
+    } else if (isNvidiaModel) {
+      const msgs = convertToStandardMessages(geminiMessages) as NvidiaMessage[]
+      yield* sendMessageToNvidiaStream(selectedModelId, msgs)
+    } else {
+      const msgs = convertToStandardMessages(geminiMessages) as any[]
+      yield* sendMessageToOpenRouterStream(selectedModelId, msgs)
+    }
+    return
+  }
+
+  // Fallback
+  yield* sendMessageToGeminiStream(geminiMessages, {
+    preferredModelId: "gemini-3.1-flash-lite",
+    disableFallback: true
+  })
 }

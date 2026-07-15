@@ -38,11 +38,13 @@ export interface ModelSpec {
 export interface SmartRouteOptions {
   preferredModelId?: string
   allowedModelIds?: string[]
+  disableFallback?: boolean
 }
 
 export const MODEL_SPECS: ModelSpec[] = [
   // Fast/primary Gemini chain
   { id: "gemini-3.1-flash-lite",         rpm: 15, tpm: 250_000, rpd: 500 },
+  { id: "gemini-3-flash-live",           rpm: 15, tpm: 1_000_000, rpd: 1500 },
   { id: "gemini-3-flash",                rpm: 15, tpm: 1_000_000, rpd: 1500 },
   { id: "gemini-3.5-flash",              rpm: 15, tpm: 1_000_000, rpd: 1500 },
   { id: "gemini-2.5-flash",              rpm: 10, tpm: 250_000, rpd: 20 },
@@ -288,7 +290,7 @@ export async function pickRoute(
   estimatedTokens: number = 500,
   options?: string | SmartRouteOptions
 ): Promise<SmartRouteResult> {
-  const { preferredModelId, allowedModelIds } = normalizeRouteOptions(options)
+  const { preferredModelId, allowedModelIds, disableFallback } = normalizeRouteOptions(options)
 
   for (const apiKey of GEMINI_API_KEYS) {
     const kh = hashKey(apiKey)
@@ -308,14 +310,16 @@ export async function pickRoute(
 
     // Try models in priority order using the already-loaded records
     // If a preferred model is specified, check it first
-    const modelsToTry = MODEL_SPECS.filter((spec) =>
+    let modelsToTry = MODEL_SPECS.filter((spec) =>
       !allowedModelIds || allowedModelIds.includes(spec.id)
     )
     if (modelsToTry.length === 0) {
       continue
     }
 
-    if (preferredModelId) {
+    if (disableFallback && preferredModelId) {
+      modelsToTry = modelsToTry.filter(m => m.id === preferredModelId)
+    } else if (preferredModelId) {
       const prefIdx = modelsToTry.findIndex(m => m.id === preferredModelId)
       if (prefIdx > -1) {
         const [pref] = modelsToTry.splice(prefIdx, 1)

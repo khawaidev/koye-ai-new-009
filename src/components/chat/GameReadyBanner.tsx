@@ -121,10 +121,10 @@ export function GameReadyBanner({
           </motion.button>
         )}
 
-        {/* Failed — open builder button */}
+        {/* Failed — open game button */}
         {state === "failed" && projectId && (
           <a
-            href={`/builder/${projectId}`}
+            href={`/play/${projectId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="
@@ -133,7 +133,7 @@ export function GameReadyBanner({
               text-xs font-medium text-foreground transition-colors
             "
           >
-            Open Builder
+            Open Game
           </a>
         )}
 

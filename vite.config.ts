@@ -41,6 +41,7 @@ const imageProxyPlugin = () => ({
             res.writeHead(redirectRes.statusCode || 200, {
               'Content-Type': redirectRes.headers['content-type'] || 'image/png',
               'Access-Control-Allow-Origin': '*',
+              'Cross-Origin-Resource-Policy': 'cross-origin',
               'Cache-Control': 'public, max-age=3600',
             })
             redirectRes.pipe(res)
@@ -55,6 +56,7 @@ const imageProxyPlugin = () => ({
         res.writeHead(imgRes.statusCode || 200, {
           'Content-Type': imgRes.headers['content-type'] || 'image/png',
           'Access-Control-Allow-Origin': '*',
+          'Cross-Origin-Resource-Policy': 'cross-origin',
           'Cache-Control': 'public, max-age=3600',
         })
         imgRes.pipe(res)
@@ -83,6 +85,10 @@ export default defineConfig({
   server: {
     host: true,
     cors: true,
+    headers: {
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
+    },
     proxy: {
       // Proxy LightX API requests to bypass CORS
       '/api/lightx': {
@@ -118,6 +124,13 @@ export default defineConfig({
         target: 'https://api.clod.io',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/clod/, ''),
+        secure: true,
+      },
+      // Proxy NVIDIA API to bypass CORS
+      '/api/nvidia': {
+        target: 'https://integrate.api.nvidia.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/nvidia/, ''),
         secure: true,
       }
     }

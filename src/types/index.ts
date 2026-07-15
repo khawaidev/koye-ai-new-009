@@ -5,7 +5,7 @@ export type ModelFormat = "glb" | "obj" | "fbx"
 export type ModelStatus = "raw" | "textured" | "rigged"
 export type EnvironmentType = "day" | "night" | "noon" | "evening" | "dawn"
 export type BackgroundType = "city" | "forest" | "desert" | "grassland"
-export type ModelMode = "fast" | "auto" | "paralium" | "models"
+export type ModelMode = "fast" | "auto" | "paralium" | "models" | "pro"
 
 export interface Project {
   id: string

@@ -1,4 +1,4 @@
-import { ArrowUp, File, FolderClosed, Mic, Plus, Square, X, Paperclip, AtSign, Film, FileText, ChevronDown, ChevronUp, Crown, Check, ExternalLink } from "lucide-react"
+import { ArrowUp, File, FolderClosed, Mic, Plus, Square, X, Paperclip, AtSign, Film, FileText, ChevronDown, ChevronUp, Crown, Check, ExternalLink, Sparkles } from "lucide-react"
 import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue, useTransform } from "framer-motion"
@@ -31,14 +31,13 @@ interface FileMention {
 
 const MANUAL_MODELS = [
 
-  { id: "gemini-3.1-flash-lite", name: "Gemini 3.1 Flash Lite", icon: "/images/aimodels/GEMINI-ICON.png" },
-  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash", icon: "/images/aimodels/GEMINI-ICON.png" },
   { id: "claude-opus-4-7-thinking", name: "Claude Opus 4.7 Thinking", icon: "/images/aimodels/CLAUDE-ICON.png" },
   { id: "claude-sonnet-4-5-20250929", name: "Claude Sonnet 4.5", icon: "/images/aimodels/CLAUDE-ICON.png" },
   { id: "deepseek-v4-pro", name: "DeepSeek V4 Pro", icon: "/images/aimodels/DEEPSEEK-ICON.webp" },
-  { id: "moonshotai/kimi-k2.6:free", name: "Kimi K2.6", icon: "/images/aimodels/KIMI.png" },
-  { id: 'gpt-oss-120b', name: "GPT OSS 120B", icon: "/images/aimodels/GPT-ICON-WHITE.png"},
   { id: "Qwen 3 235B A22B Thinking 2507", name: "Qwen 3 235B Thinking", icon: "/images/aimodels/Qwen.png" },
+  { id: "groq/compound", name: "Compound", icon: "/images/aimodels/groq.png" },
+  { id: "z-ai/glm-5.2", name: "GLM 5.2", icon: "/images/aimodels/glm.png" },
+  { id: "cohere/north-mini-code:free", name: "North Mini Code", icon: "/images/aimodels/poolside.png" },
 
 ] as const
 
@@ -192,6 +191,7 @@ export function ChatInput({
   const plusMenuRef = useRef<HTMLDivElement>(null)
   const projectMenuRef = useRef<HTMLDivElement>(null)
   const modelSelectorRef = useRef<HTMLDivElement>(null)
+  const modelListRef = useRef<HTMLDivElement>(null)
   const didApplyDefaultModeRef = useRef(false)
 
   const hasMessages = messages.length > 0
@@ -491,6 +491,8 @@ export function ChatInput({
       }
       if (modelSelectorRef.current && !modelSelectorRef.current.contains(target)) {
         setShowModelSelector(false)
+      }
+      if (modelListRef.current && !modelListRef.current.contains(target)) {
         setShowManualModelList(false)
       }
     }
@@ -683,7 +685,6 @@ export function ChatInput({
                       {projects.length > 0 && (
                         <>
                           <div className="my-1 border-t border-border/50"></div>
-                          <div className="px-3 py-1 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Previous Projects</div>
                           <div className="max-h-48 overflow-y-auto scrollbar-mini">
                             {projects.map(p => (
                               <button
@@ -791,11 +792,71 @@ export function ChatInput({
                             )}
                             type="button"
                           >
+                            <img
+                              src="/images/app/fast.png"
+                              alt="Fast"
+                              className={cn(
+                                "h-5 w-5 object-contain shrink-0",
+                                selectedModelMode !== 'fast' && theme === "light" ? "invert" : ""
+                              )}
+                            />
                             <div className="flex-1 text-left">
                               <div className="font-bold leading-tight">Fast</div>
                               <div className={cn("text-[10px] font-mono tracking-tighter transition-colors", selectedModelMode === 'fast' ? "opacity-70" : "text-muted-foreground/60 group-hover:text-muted-foreground")}>Lightning speed responses</div>
                             </div>
                             {selectedModelMode === 'fast' && <Check className="h-3.5 w-3.5 ml-auto" />}
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setSelectedModelMode('pro')
+                              setSelectedModelId('z-ai/glm-5.2')
+                              setShowManualModelList(false)
+                              setShowModelSelector(false)
+                            }}
+                            className={cn(
+                              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group",
+                              selectedModelMode === 'pro'
+                                ? "bg-foreground text-background"
+                                : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                            )}
+                            type="button"
+                          >
+                            <img
+                              src="/images/app/pro.png"
+                              alt="Pro"
+                              className={cn(
+                                "h-5 w-5 object-contain shrink-0",
+                                selectedModelMode !== 'pro' && theme === "light" ? "invert" : ""
+                              )}
+                            />
+                            <div className="flex-1 text-left">
+                              <div className="font-bold leading-tight">Pro</div>
+                              <div className={cn("text-[10px] font-mono tracking-tighter transition-colors", selectedModelMode === 'pro' ? "opacity-70" : "text-muted-foreground/60 group-hover:text-muted-foreground")}>For complex and heavy tasks</div>
+                            </div>
+                            {selectedModelMode === 'pro' && <Check className="h-3.5 w-3.5 ml-auto" />}
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setSelectedModelMode('models')
+                              setShowManualModelList((prev) => !prev)
+                              setShowModelSelector(false)
+                            }}
+                            className={cn(
+                              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group",
+                              selectedModelMode === 'models'
+                                ? "bg-foreground text-background"
+                                : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                            )}
+                            type="button"
+                          >
+                            <Sparkles className="h-5 w-5 shrink-0" />
+                            <div className="flex-1 text-left">
+                              <div className="font-bold leading-tight">Models</div>
+                              <div className={cn("text-[10px] font-mono tracking-tighter transition-colors", selectedModelMode === 'models' ? "opacity-70" : "text-muted-foreground/60 group-hover:text-muted-foreground")}>Choose your preferred model</div>
+                            </div>
+                            {selectedModelMode === 'models' && <Check className="h-3.5 w-3.5 ml-auto" />}
                           </button>
 
                           <button
@@ -809,16 +870,24 @@ export function ChatInput({
                               setShowModelSelector(false)
                             }}
                             className={cn(
-                              "relative w-full overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group border",
+                              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] transition-all group",
                               selectedModelMode === 'paralium'
-                                ? "bg-gradient-to-br from-white/20 to-white/10 border-white/30 text-foreground"
-                                : "bg-gradient-to-br from-white/10 to-white/5 border-white/20 text-foreground/70 hover:text-foreground hover:bg-muted dark:hover:bg-white/5",
-                              isParalliumLocked ? "opacity-90" : ""
+                                ? "bg-foreground text-background"
+                                : "text-foreground/60 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
                             )}
                             type="button"
                           >
-                            <GleamBorder active={true} roundedClassName="rounded-xl" />
-                            <div className="flex-1 text-left relative">
+                            <div className="relative">
+                              <img
+                                src="/images/app/parallium-logo.png"
+                                alt="Parallium"
+                                className={cn(
+                                  "h-5 w-5 object-contain shrink-0",
+                                  selectedModelMode !== 'paralium' && theme === "light" ? "invert" : ""
+                                )}
+                              />
+                            </div>
+                            <div className="flex-1 text-left">
                               <div className="font-bold leading-tight flex items-center gap-2">
                                 <ShinyText
                                   text="Parallium"
@@ -828,7 +897,6 @@ export function ChatInput({
                                   shineColor={paraliumShineColor}
                                   className="font-bold"
                                 />
-                                
                               </div>
                               <div className={cn(
                                 "text-[10px] font-mono tracking-tighter transition-colors",
@@ -840,11 +908,11 @@ export function ChatInput({
                               </div>
                             </div>
                             {isParalliumLocked ? (
-                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-white" />
+                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-foreground" />
                             ) : selectedModelMode === 'paralium' ? (
                               <Check className="h-3.5 w-3.5 ml-auto" />
                             ) : (
-                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-white/70" />
+                              <Crown className="h-3.5 w-3.5 ml-auto shrink-0 text-muted-foreground" />
                             )}
                           </button>
                         </div>
@@ -860,6 +928,57 @@ export function ChatInput({
                             </button>
                           </div>
                         )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Models List Dropdown - Separate from mode dropdown */}
+                <div className="relative">
+                  <AnimatePresence>
+                    {showManualModelList && (
+                      <motion.div
+                        ref={modelListRef}
+                        initial={{ opacity: 0, scale: 0.95, y: hasMessages ? 10 : -10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: hasMessages ? 10 : -10 }}
+                        transition={{ duration: 0.1, ease: "easeOut" }}
+                        className={cn(
+                          "absolute right-0 w-72 bg-background border border-border shadow-2xl rounded-2xl overflow-hidden z-[60] py-2 dark:bg-[#262625] dark:border-[#323230]",
+                          hasMessages ? "bottom-full mb-3" : "top-full mt-3"
+                        )}
+                      >
+                        <div className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Select Model</div>
+                        <div className="px-2 space-y-0.5 max-h-80 overflow-y-auto">
+                          {MANUAL_MODELS.map((model) => (
+                            <button
+                              key={model.id}
+                              onClick={() => {
+                                setSelectedModelId(model.id)
+                                setShowManualModelList(false)
+                              }}
+                              className={cn(
+                                "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[14px] transition-all group",
+                                selectedModelId === model.id
+                                  ? "bg-foreground text-background"
+                                  : "text-foreground/70 hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                              )}
+                              type="button"
+                            >
+                              <img
+                                src={model.icon}
+                                alt={model.name}
+                                className={cn(
+                                  "h-5 w-5 object-contain shrink-0",
+                                  selectedModelId === model.id && theme === "light" ? "invert" : "",
+                                  model.id.startsWith("deepseek") ? "purple" : ""
+                                )}
+                              />
+                              <span className="flex-1 text-left truncate">{model.name}</span>
+                              {selectedModelId === model.id && <Check className="h-3.5 w-3.5 shrink-0" />}
+                            </button>
+                          ))}
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>

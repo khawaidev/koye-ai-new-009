@@ -1,184 +1,142 @@
-import { ArcRotateCamera, DirectionalLight, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from "@babylonjs/core"
-import "@babylonjs/loaders"
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
 import { loadProjectFilesFromStorage } from "../services/projectFiles"
 import { getAllVFSFiles } from "../services/vfs"
 import { useAppStore } from "../store/useAppStore"
-import { useAgentToolStore } from "../store/useAgentToolStore"
-
-import { gameScriptRunner } from "../services/gameScriptRunner"
-import { babylonRuntime } from "../engine/BabylonRuntime"
+import { bootWebContainer } from "../editor-runtime/WebContainerManager"
+import { ProjectLoader } from "../editor-runtime/ProjectLoader"
 
 export function ProjectEngineRender() {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const canvasWrapperRef = useRef<HTMLDivElement>(null)
-    const engineRef = useRef<Engine | null>(null)
-    const sceneRef = useRef<Scene | null>(null)
+    const iframeRef = useRef<HTMLIFrameElement>(null)
     const [searchParams] = useSearchParams()
     const { user } = useAuth()
-    const { generatedFiles, setGeneratedFiles, githubConnection } = useAppStore()
+    const { setGeneratedFiles, githubConnection } = useAppStore()
 
     const projectId = searchParams.get("projectId")
     const projectName = searchParams.get("name") || "Project"
     const [isLoading, setIsLoading] = useState(true)
-    const [hasLoadedFiles, setHasLoadedFiles] = useState(false)
     const isDeviceMode = searchParams.get("device") === "1" || searchParams.get("device") === "true"
     const [showDeviceModal, setShowDeviceModal] = useState(false)
-    const [runtimeErrors, setRuntimeErrors] = useState<Array<{ timestamp: number; source: string; message: string; stack?: string }>>([])
-    const [showErrors, setShowErrors] = useState(false)
-    const lastLoggedErrorIndexRef = useRef(0)
-
-    const pushRuntimeError = (err: { source: string; message: string; stack?: string }) => {
-        const entry = { timestamp: Date.now(), source: err.source, message: err.message, stack: err.stack }
-        setRuntimeErrors(prev => {
-            const next = [...prev, entry].slice(-50)
-            try {
-                if (projectId) localStorage.setItem(`koye_runtime_errors_${projectId}`, JSON.stringify(next))
-            } catch {
-            }
-            return next
-        })
-        setShowErrors(true)
-        console.error(`[GameRuntimeError:${err.source}]`, err.message, err.stack || "")
-        try {
-            window.opener?.postMessage({ type: "KOYE_GAME_RUNTIME_ERROR", projectId, error: entry }, "*")
-        } catch {
-        }
-    }
-
-    useEffect(() => {
-        const onError = (event: ErrorEvent) => {
-            const message = event.message || "Unknown error"
-            const stack = (event.error && typeof event.error === "object" && "stack" in event.error) ? String((event.error as any).stack || "") : undefined
-            pushRuntimeError({ source: "window", message, stack })
-        }
-
-        const onUnhandledRejection = (event: PromiseRejectionEvent) => {
-            const reason = event.reason
-            const message = reason instanceof Error ? reason.message : String(reason || "Unhandled rejection")
-            const stack = reason instanceof Error ? reason.stack : undefined
-            pushRuntimeError({ source: "promise", message, stack })
-        }
-
-        window.addEventListener("error", onError)
-        window.addEventListener("unhandledrejection", onUnhandledRejection)
-        return () => {
-            window.removeEventListener("error", onError)
-            window.removeEventListener("unhandledrejection", onUnhandledRejection)
-        }
-    }, [])
-
+    const [statusText, setStatusText] = useState("Initializing...")
+    
+    const [iframeUrl, setIframeUrl] = useState<string>("")
+    const [engineState, setEngineState] = useState<"stopped" | "booting" | "installing" | "starting" | "playing">("stopped")
+    
     const [viewMode, setViewMode] = useState<"Desktop" | "Mobile">(() => {
         const viewParam = searchParams.get("view")
         if (viewParam === "mobile") return "Mobile"
         if (viewParam === "desktop") return "Desktop"
-        // Load saved view mode preference from localStorage
-        const saved = localStorage.getItem(`render_viewMode_${projectId}`)
+        const saved = localStorage.getItem(\`render_viewMode_\${projectId}\`)
         return (saved === "Desktop" || saved === "Mobile") ? saved : "Desktop"
     })
 
-    // Save view mode preference to localStorage when it changes
     useEffect(() => {
         if (projectId) {
-            localStorage.setItem(`render_viewMode_${projectId}`, viewMode)
+            localStorage.setItem(\`render_viewMode_\${projectId}\`, viewMode)
         }
     }, [viewMode, projectId])
 
-    // Load project files on mount — prefer VFS (local, includes sandbox-synced changes)
     useEffect(() => {
-        if (!projectId || isDeviceMode) return
+        if (!projectId) return
 
-        const loadFiles = async () => {
+        const initProject = async () => {
             try {
-                // 1. Try VFS first (local IndexedDB — includes sandbox preview changes)
-                const vfsFiles = await getAllVFSFiles(projectId)
-                if (Object.keys(vfsFiles).length > 0) {
-                    console.log(`[EngineRender] Loaded ${Object.keys(vfsFiles).length} files from VFS`)
-                    setGeneratedFiles(vfsFiles)
-                    setHasLoadedFiles(true)
-                    return
-                }
+                setIsLoading(true)
+                setStatusText("Loading files...")
 
-                // 2. Fallback: if VFS is empty but user is logged in, load from R2
-                if (user) {
-                    const files = await loadProjectFilesFromStorage(projectId, user.id, githubConnection)
-                    if (Object.keys(files).length > 0) {
-                        console.log(`[EngineRender] Loaded ${Object.keys(files).length} files from R2`)
-                        setGeneratedFiles(files)
-                        setHasLoadedFiles(true)
-                        return
+                let files: Record<string, string> = {}
+                
+                // If in device mode, we might get files from sessionStorage synced via HMR
+                if (isDeviceMode) {
+                    const storageKey = \`koye_device_files_\${projectId}\`
+                    const cached = sessionStorage.getItem(storageKey)
+                    if (cached) {
+                        try {
+                            const parsed = JSON.parse(cached)
+                            if (parsed && Object.keys(parsed).length > 0) files = parsed
+                        } catch {}
                     }
-                }
-
-                // 3. Fallback: localStorage
-                const storageKey = `project_${projectId}_files`
-                const savedData = localStorage.getItem(storageKey)
-                if (savedData) {
-                    try {
-                        const parsed = JSON.parse(savedData)
-                        if (parsed.files && Object.keys(parsed.files).length > 0) {
-                            setGeneratedFiles(parsed.files)
+                } else {
+                    const vfsFiles = await getAllVFSFiles(projectId)
+                    if (Object.keys(vfsFiles).length > 0) {
+                        files = vfsFiles
+                    } else if (user) {
+                        const r2 = await loadProjectFilesFromStorage(projectId, user.id, githubConnection)
+                        if (Object.keys(r2).length > 0) files = r2
+                    }
+                    
+                    if (Object.keys(files).length === 0) {
+                        const storageKey = \`project_\${projectId}_files\`
+                        const savedData = localStorage.getItem(storageKey)
+                        if (savedData) {
+                            try {
+                                const parsed = JSON.parse(savedData)
+                                if (parsed.files && Object.keys(parsed.files).length > 0) files = parsed.files
+                            } catch (error) {}
                         }
-                    } catch (error) {
-                        console.error('Error loading from localStorage:', error)
                     }
                 }
+                
+                setGeneratedFiles(files)
+
+                setStatusText("Booting WebContainer...")
+                setEngineState("booting")
+                const webcontainer = await bootWebContainer()
+                const projLoader = new ProjectLoader(webcontainer)
+                
+                setStatusText("Loading files into container...")
+                await projLoader.loadProject(projectName, files)
+
+                setStatusText("Installing dependencies...")
+                setEngineState("installing")
+                await projLoader.installDependencies()
+
+                setStatusText("Starting dev server...")
+                setEngineState("starting")
+
+                webcontainer.on('server-ready', (port, url) => {
+                    setIframeUrl(url)
+                    setEngineState("playing")
+                    setIsLoading(false)
+                })
+
+                await projLoader.startDevServer()
             } catch (error) {
-                console.error('Error loading project files:', error)
-            } finally {
-                setHasLoadedFiles(true)
+                console.error('Error starting project engine render:', error)
+                setStatusText(\`Failed to start: \${error}\`)
             }
         }
 
-        loadFiles()
+        initProject()
     }, [projectId, user, githubConnection, setGeneratedFiles, isDeviceMode])
 
+    // Device sync logic
     useEffect(() => {
         if (!projectId || !isDeviceMode) return
         if (!import.meta.hot) return
 
-        const storageKey = `koye_device_files_${projectId}`
-        const cached = sessionStorage.getItem(storageKey)
-        if (cached) {
-            try {
-                const parsed = JSON.parse(cached) as Record<string, string>
-                if (parsed && Object.keys(parsed).length > 0) {
-                    setGeneratedFiles(parsed)
-                    setHasLoadedFiles(true)
-                }
-            } catch {
-            }
-        }
-
-        const requestId = `${Date.now()}-${Math.random().toString(16).slice(2)}`
+        const storageKey = \`koye_device_files_\${projectId}\`
+        const requestId = \`\${Date.now()}-\${Math.random().toString(16).slice(2)}\`
 
         import.meta.hot.on("koye-device-sync:snapshot", (payload: any) => {
             if (!payload || payload.projectId !== projectId || payload.requestId !== requestId) return
             if (!payload.files || typeof payload.files !== "object") return
-            try {
-                sessionStorage.setItem(storageKey, JSON.stringify(payload.files))
-            } catch {
-            }
-            setGeneratedFiles(payload.files)
-            setHasLoadedFiles(true)
+            try { sessionStorage.setItem(storageKey, JSON.stringify(payload.files)) } catch {}
+            // A full reload might be safer for WebContainer context refresh
+            window.location.reload()
         })
 
         import.meta.hot.on("koye-device-sync:update", (payload: any) => {
             if (!payload || payload.projectId !== projectId) return
             if (!payload.files || typeof payload.files !== "object") return
-            try {
-                sessionStorage.setItem(storageKey, JSON.stringify(payload.files))
-            } catch {
-            }
+            try { sessionStorage.setItem(storageKey, JSON.stringify(payload.files)) } catch {}
             window.location.reload()
         })
 
         import.meta.hot.send("koye-device-sync:request", { projectId, requestId })
-    }, [projectId, isDeviceMode, setGeneratedFiles])
+    }, [projectId, isDeviceMode])
 
-    // Listen for live sync signals from BroadcastChannel (IndexedDB VFS updates in builder)
     useEffect(() => {
         if (!projectId || isDeviceMode) return
 
@@ -187,12 +145,8 @@ export function ProjectEngineRender() {
 
         channel.onmessage = (event) => {
             if (event.data && event.data.projectId === projectId) {
-                console.log("[EngineRender] Received VFS change event:", event.data.type)
-                
-                // Debounce reload to avoid continuous refreshing during active editing/typing
                 if (reloadTimeout) clearTimeout(reloadTimeout)
                 reloadTimeout = setTimeout(() => {
-                    console.log("[EngineRender] Reloading window for live sync...")
                     window.location.reload()
                 }, 500)
             }
@@ -204,133 +158,10 @@ export function ProjectEngineRender() {
         }
     }, [projectId, isDeviceMode])
 
-    useEffect(() => {
-        if (!canvasRef.current || !hasLoadedFiles) return
-
-        const initEngine = async () => {
-            try {
-                setIsLoading(true)
-
-                // Initialize Babylon.js engine via shared runtime
-                babylonRuntime.initialize({
-                    canvas: canvasRef.current!,
-                    clearColor: { r: 0.1, g: 0.1, b: 0.1, a: 1 }, // Dark background
-                    createDefaultLights: false, // We'll add custom lights manually below
-                })
-
-                const scene = babylonRuntime.scene!
-                const engine = babylonRuntime.engine!
-                const camera = babylonRuntime.camera!
-
-                sceneRef.current = scene
-                engineRef.current = engine
-
-                const envLight = new HemisphericLight("envLight", new Vector3(0, 1, 0), scene)
-                envLight.intensity = 0.22
-                envLight.diffuse.set(0.45, 0.5, 0.62)
-                envLight.groundColor.set(0.14, 0.12, 0.18)
-                envLight.specular.set(0.0, 0.0, 0.0)
-
-                const keyLight = new DirectionalLight("keyLight", new Vector3(-1, -2, -1), scene)
-                keyLight.position = new Vector3(8, 12, 8)
-                keyLight.intensity = 0.9
-                keyLight.diffuse.set(1.0, 0.76, 0.58)
-                keyLight.specular.set(0.08, 0.08, 0.08)
-
-                // Bind script runner
-                gameScriptRunner.bind(scene, engine, camera, canvasRef.current!)
-                gameScriptRunner.onLogs((logs) => {
-                    const startIndex = lastLoggedErrorIndexRef.current
-                    lastLoggedErrorIndexRef.current = logs.length
-                    for (const entry of logs.slice(startIndex)) {
-                        if (entry.level !== "error") continue
-                        pushRuntimeError({ source: "script", message: entry.message })
-                    }
-                })
-
-                // Load project assets (NO placeholders)
-                const currentFiles = useAppStore.getState().generatedFiles
-                const mergedFiles = useAgentToolStore.getState().getMergedFiles(currentFiles)
-                await loadProjectAssets(scene, mergedFiles)
-
-                // Automatically start game logic
-                try {
-                    gameScriptRunner.play(mergedFiles)
-                } catch (e) {
-                    const msg = e instanceof Error ? e.message : String(e)
-                    const stack = e instanceof Error ? e.stack : undefined
-                    pushRuntimeError({ source: "engine", message: msg, stack })
-                }
-
-                // Watch canvas wrapper for size changes (e.g. switching Desktop/Mobile view)
-                let resizeObserver: ResizeObserver | null = null
-                const observeTarget = canvasWrapperRef.current ?? canvasRef.current?.parentElement
-                if (observeTarget) {
-                    resizeObserver = new ResizeObserver(() => {
-                        babylonRuntime.engine?.resize()
-                    })
-                    resizeObserver.observe(observeTarget)
-                }
-
-                setIsLoading(false)
-
-                return () => {
-                    if (resizeObserver) resizeObserver.disconnect()
-                    babylonRuntime.dispose()
-                }
-            } catch (err) {
-                console.error("Error initializing engine:", err)
-                pushRuntimeError({ source: "engine", message: err instanceof Error ? err.message : String(err) })
-                setIsLoading(false)
-            }
-        }
-
-        initEngine()
-
-        return () => {
-            babylonRuntime.dispose()
-        }
-    }, [hasLoadedFiles]) // Only run when files finish loading, don't re-run on generatedFiles or viewMode change (prevents re-initialization loops and preserves JS-added UI)
-
-    const loadProjectAssets = async (scene: Scene, files: Record<string, string>) => {
-        // Process 3D models (.glb, .gltf, .obj)
-        const modelFiles = Object.entries(files).filter(([path]) => {
-            const ext = path.split('.').pop()?.toLowerCase()
-            return ext === 'glb' || ext === 'gltf' || ext === 'obj'
-        })
-
-        for (const [path, content] of modelFiles) {
-            try {
-                if (content && (content.startsWith('http') || content.startsWith('data:') || content.startsWith('blob:'))) {
-                    await SceneLoader.ImportMeshAsync("", "", content, scene)
-                }
-            } catch (err) {
-                console.error(`Error loading model ${path}:`, err)
-            }
-        }
-
-        // Process textures/images (.png, .jpg)
-        const imageFiles = Object.entries(files).filter(([path]) => {
-            const ext = path.split('.').pop()?.toLowerCase()
-            return ext === 'png' || ext === 'jpg' || ext === 'jpeg'
-        })
-
-        // Process audio files (.mp3, .wav)
-        const audioFiles = Object.entries(files).filter(([path]) => {
-            const ext = path.split('.').pop()?.toLowerCase()
-            return ext === 'mp3' || ext === 'wav' || ext === 'ogg'
-        })
-
-        console.log(`Loaded: ${modelFiles.length} models, ${imageFiles.length} images, ${audioFiles.length} audio files`)
-
-        // NO PLACEHOLDERS - Scene stays empty if no assets
-    }
-
     const deviceUrl = (() => {
         if (!projectId) return ""
         const url = new URL(window.location.href)
-        url.hostname = "10.155.21.204" // Use the provided local IP address
-        url.port = window.location.port // Keep the current port
+        url.hostname = "10.155.21.204"
         url.pathname = "/project-engine-render"
         url.search = ""
         url.searchParams.set("projectId", projectId)
@@ -341,12 +172,12 @@ export function ProjectEngineRender() {
     })()
 
     const qrSrc = deviceUrl
-        ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(deviceUrl)}`
+        ? \`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=\${encodeURIComponent(deviceUrl)}\`
         : ""
 
     return (
         <div className="fixed inset-0 bg-black flex flex-col">
-            <div className={`flex flex-col flex-1 ${showDeviceModal ? "pointer-events-none blur-sm" : ""}`}>
+            <div className={\`flex flex-col flex-1 \${showDeviceModal ? "pointer-events-none blur-sm" : ""}\`}>
                 <div className="bg-gray-900 border-b border-gray-700 px-4 py-2 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-3">
                         <h1 className="text-sm font-mono text-white">
@@ -354,7 +185,7 @@ export function ProjectEngineRender() {
                         </h1>
                         {isLoading && (
                             <span className="text-xs text-gray-400 font-mono animate-pulse">
-                                Loading...
+                                {statusText}
                             </span>
                         )}
                     </div>
@@ -379,69 +210,26 @@ export function ProjectEngineRender() {
                     </div>
                 </div>
 
-                <div className={`flex-1 relative overflow-hidden bg-[#0a0a0a] flex items-center justify-center ${viewMode === "Desktop" ? "p-0" : "p-4 sm:p-8"}`}>
+                <div className={\`flex-1 relative overflow-hidden bg-[#0a0a0a] flex items-center justify-center \${viewMode === "Desktop" ? "p-0" : "p-4 sm:p-8"}\`}>
                     <div
-                        ref={canvasWrapperRef}
-                        className={`relative transition-all duration-500 ease-in-out flex items-center justify-center bg-black overflow-hidden m-auto ${
+                        className={\`relative transition-all duration-500 ease-in-out flex items-center justify-center bg-black overflow-hidden m-auto \${
                             viewMode === "Desktop"
                                 ? "w-full h-full"
                                 : "w-full max-w-[850px] aspect-[19.5/9] rounded-[2.5rem] shadow-lg shrink-0"
-                        }`}
+                        }\`}
                         style={viewMode === "Mobile" ? { maxHeight: "85%" } : undefined}
                     >
-                        <canvas
-                            ref={canvasRef}
-                            key="render-canvas"
-                            className={`block w-full h-full ${viewMode === "Mobile" ? "rounded-[2.5rem]" : ""}`}
-                            style={{ outline: "none", touchAction: "none" }}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {runtimeErrors.length > 0 && (
-                <div className="absolute left-3 bottom-3 z-[60] max-w-[720px] w-[min(720px,calc(100%-1.5rem))]">
-                    <div className="rounded-xl border border-white/10 bg-black/80 backdrop-blur-md shadow-2xl overflow-hidden">
-                        <div className="flex items-center justify-between px-3 py-2 border-b border-white/10">
-                            <div className="text-xs font-mono font-bold text-white">Runtime Errors</div>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowErrors((v) => !v)}
-                                    className="text-xs font-mono text-gray-200 hover:text-white px-2 py-1 rounded hover:bg-white/5"
-                                >
-                                    {showErrors ? "Hide" : "Show"}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setRuntimeErrors([])
-                                        setShowErrors(false)
-                                        try {
-                                            if (projectId) localStorage.removeItem(`koye_runtime_errors_${projectId}`)
-                                        } catch {
-                                        }
-                                    }}
-                                    className="text-xs font-mono text-gray-200 hover:text-white px-2 py-1 rounded hover:bg-white/5"
-                                >
-                                    Clear
-                                </button>
-                            </div>
-                        </div>
-                        {showErrors && (
-                            <div className="max-h-56 overflow-y-auto">
-                                <pre className="whitespace-pre-wrap break-words text-[11px] leading-relaxed font-mono text-gray-200 px-3 py-2">
-{runtimeErrors.map((e) => {
-    const time = new Date(e.timestamp).toLocaleTimeString()
-    const head = `[${time}] (${e.source}) ${e.message}`
-    return e.stack ? `${head}\n${e.stack}\n` : `${head}\n`
-}).join("\n")}
-                                </pre>
-                            </div>
+                        {iframeUrl && (
+                            <iframe 
+                                ref={iframeRef}
+                                src={iframeUrl} 
+                                className={\`w-full h-full bg-white border-none \${viewMode === "Mobile" ? "rounded-[2.5rem]" : ""}\`}
+                                allow="cross-origin-isolated"
+                            />
                         )}
                     </div>
                 </div>
-            )}
+            </div>
 
             {showDeviceModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">

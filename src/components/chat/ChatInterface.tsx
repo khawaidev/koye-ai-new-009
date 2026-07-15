@@ -9,7 +9,7 @@ import { uuidv4 } from "../../lib/uuid"
 import { generateChatTitle } from "../../services/chatTitleGenerator"
 import { getGameDevSystemPrompt } from "../../services/gameDevPrompt"
 import { sendMessageToGemini, sendMessageToGeminiStream, sendMessageToGeminiWithThinking, type GeminiRequestOptions } from "../../services/gemini"
-import { routeMessageStream, type ModelSwitchInfo, convertToHyperrealMessages } from "../../services/orchestrator"
+import { routeMessageStream, type ModelSwitchInfo, convertToHyperrealMessages, getDirectModelStream } from "../../services/orchestrator"
 import { sendMessageToOpenRouter } from "../../services/openrouter"
 import { webSearch, formatSearchResultsForContext } from "../../services/searchapi"
 import { buildProjectHistoryPrompt, recordSessionToProjectContext } from "../../services/projectContext"
@@ -390,6 +390,7 @@ export function ChatInterface() {
   const [gameRunFixAttempt, setGameRunFixAttempt] = useState(0)
   const [showGameBanner, setShowGameBanner] = useState(false)
   const autoFixInProgressRef = useRef(false)
+  const runtimeAutoFixRef = useRef(false)
   const MAX_AUTO_FIX_ATTEMPTS = 3
 
   const scrollToBottom = () => {
@@ -927,48 +928,53 @@ IMPORTANT RULE: If the user starts describing a game idea or starts to talk anyt
       let geminiRequestOptions: GeminiRequestOptions | undefined
 
       try {
-        // ─── Orchestrator: classify intent and route to optimal model ───
-        const orchestratorStream = routeMessageStream(geminiMessages, {
-          mode: selectedModelMode,
-          selectedModelId,
-        }, (info: ModelSwitchInfo) => {
-          preferredModelId = info.preferredModelId || info.modelName
-          geminiRequestOptions = preferredModelId?.startsWith("gemini") || preferredModelId?.startsWith("gemma")
-            ? {
-                preferredModelId,
-                allowedModelIds: info.allowedModelIds,
-                thinkingLevel: info.thinkingLevel,
-              }
-            : undefined
-          if (info.intent !== "general_chatting") {
-            setIsSwitchingModel(true)
-            setSwitchingMessage(`Routing to ${info.displayName}...`)
-            console.log(`[Orchestrator] Switching to ${info.modelName} for ${info.intent}`)
+        let activeStream
+        if (selectedModelMode !== "paralium") {
+          activeStream = getDirectModelStream(selectedModelMode, selectedModelId, geminiMessages)
+        } else {
+          // ─── Orchestrator: classify intent and route to optimal model ───
+          const orchestratorStream = routeMessageStream(geminiMessages, {
+            mode: selectedModelMode,
+            selectedModelId,
+          }, (info: ModelSwitchInfo) => {
+            preferredModelId = info.preferredModelId || info.modelName
+            geminiRequestOptions = preferredModelId?.startsWith("gemini") || preferredModelId?.startsWith("gemma")
+              ? {
+                  preferredModelId,
+                  allowedModelIds: info.allowedModelIds,
+                  thinkingLevel: info.thinkingLevel,
+                }
+              : undefined
+            if (info.intent !== "general_chatting") {
+              setIsSwitchingModel(true)
+              setSwitchingMessage(`Routing to ${info.displayName}...`)
+              console.log(`[Orchestrator] Switching to ${info.modelName} for ${info.intent}`)
+            }
+          })
+
+          // Check first yield — if the generator returns intent ("general" or "light_coding"), use existing Gemini streaming
+          const firstResult = await orchestratorStream.next()
+          let useGeminiDirect = false
+
+          if (firstResult.done) {
+            // Generator returned immediately with intent ("general" or "light_coding")
+            useGeminiDirect = true
+            setIsSwitchingModel(false)
+            setSwitchingMessage("")
           }
-        })
 
-        // Check first yield — if the generator returns intent ("general" or "light_coding"), use existing Gemini streaming
-        const firstResult = await orchestratorStream.next()
-        let useGeminiDirect = false
-
-        if (firstResult.done) {
-          // Generator returned immediately with intent ("general" or "light_coding")
-          useGeminiDirect = true
-          setIsSwitchingModel(false)
-          setSwitchingMessage("")
+          // Determine which stream to consume
+          activeStream = useGeminiDirect 
+            ? sendMessageToGeminiStream(geminiMessages, geminiRequestOptions || preferredModelId)
+            : (async function* () {
+                // Yield the first chunk we already got
+                if (!firstResult.done && firstResult.value) {
+                  yield firstResult.value
+                }
+                // Continue yielding from orchestrator
+                yield* orchestratorStream
+              })()
         }
-
-        // Determine which stream to consume
-        const activeStream = useGeminiDirect 
-          ? sendMessageToGeminiStream(geminiMessages, geminiRequestOptions || preferredModelId)
-          : (async function* () {
-              // Yield the first chunk we already got
-              if (!firstResult.done && firstResult.value) {
-                yield firstResult.value
-              }
-              // Continue yielding from orchestrator
-              yield* orchestratorStream
-            })()
 
         for await (const chunk of activeStream) {
           // Check if stop was requested
@@ -2066,6 +2072,10 @@ Now complete the request. REQUIREMENTS:
     if (detectedErrors.length === 0) {
       // No errors — game is ready!
       setGameRunState('ready')
+      // Reset runtime auto-fix if this was triggered by runtime error fix attempt
+      if (runtimeAutoFixRef.current) {
+        runtimeAutoFixRef.current = false
+      }
       return
     }
 
@@ -2134,20 +2144,21 @@ Now complete the request. REQUIREMENTS:
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === 'KOYE_PREFILL_ERROR' && event.data.text) {
-        // Auto-fill the chat input with the error text from GameRunner
-        const editorEl = document.querySelector('[contenteditable="true"]') as HTMLElement
-        if (editorEl) {
-          editorEl.textContent = event.data.text
-          editorEl.dispatchEvent(new Event('input', { bubbles: true }))
-          editorEl.focus()
+        const errorText = event.data.text
+        // Auto-send the error to AI for fixing (silent mode)
+        // Use refs to avoid dependency issues
+        if (!runtimeAutoFixRef.current && !autoFixInProgressRef.current) {
+          runtimeAutoFixRef.current = true
+          setShowGameBanner(true)
+          setGameRunState('fixing')
 
-          // Move cursor to end
-          const range = document.createRange()
-          const sel = window.getSelection()
-          range.selectNodeContents(editorEl)
-          range.collapse(false)
-          sel?.removeAllRanges()
-          sel?.addRange(range)
+          // Use setTimeout to avoid calling handleSend during render
+          setTimeout(() => {
+            // Check again after timeout to avoid race conditions
+            if (runtimeAutoFixRef.current) {
+              handleSend(errorText, [], [])
+            }
+          }, 100)
         }
       }
     }
@@ -2162,11 +2173,11 @@ Now complete the request. REQUIREMENTS:
         // Only use if recent (< 30 seconds old)
         if (parsed.text && Date.now() - parsed.timestamp < 30000) {
           setTimeout(() => {
-            const editorEl = document.querySelector('[contenteditable="true"]') as HTMLElement
-            if (editorEl) {
-              editorEl.textContent = parsed.text
-              editorEl.dispatchEvent(new Event('input', { bubbles: true }))
-              editorEl.focus()
+            if (!runtimeAutoFixRef.current && !autoFixInProgressRef.current) {
+              runtimeAutoFixRef.current = true
+              setShowGameBanner(true)
+              setGameRunState('fixing')
+              handleSend(parsed.text, [], [])
             }
           }, 500)
         }
@@ -2175,7 +2186,7 @@ Now complete the request. REQUIREMENTS:
     } catch {}
 
     return () => window.removeEventListener('message', handleMessage)
-  }, [])
+  }, [handleSend])
 
   const handleToolReject = (toolCallId: string) => {
     const agentStore = useAgentToolStore.getState()
